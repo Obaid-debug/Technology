@@ -4,9 +4,9 @@
 (function () {
   const Pages = window.Pages = window.Pages || {};
 
-  const logoSvg = '<svg class="logo" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="30" r="22" stroke="currentColor" stroke-width="5" fill="none"/><path d="M6 44h52" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M18 44a14 14 0 0 1 28 0" fill="currentColor"/></svg>';
+  const logoSvg = '<svg class="logo" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>';
 
-  function brand() { return h('a', { class: 'pub-brand', href: '#/welcome' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'Horizon Insights'), h('div', { class: 't2' }, 'BY HORIZON OPS'))); }
+  function brand() { return h('a', { class: 'pub-brand', href: '#/welcome' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'Najm Insights'), h('div', { class: 't2' }, 'BY NAJM TECHNOLOGY'))); }
   function openPortal(extra) { return U.btn('Open portal', { cls: 'btn-grad ' + (extra || ''), iconRight: 'arrowright', onClick: function () { App.go('#/login'); } }); }
 
   const capabilities = [
@@ -32,7 +32,7 @@
     /* hero */
     const stats = [['box', '40+', 'Services monitored'], ['layers', '10+', 'Integrated systems'], ['clock', '24/7', 'Real-time insights'], ['shieldcheck', '99.9%', 'Platform uptime']];
     const left = h('div', null,
-      h('span', { class: 'tag' }, U.ic('sparkles', 12), 'v2.0 · Now powered by Horizon Insights AI'),
+      h('span', { class: 'tag' }, U.ic('sparkles', 12), 'v2.0 · Now powered by Najm Insights AI'),
       h('h1', null, 'All operations.', h('br'), 'One intelligent', h('br'), h('span', { class: 'accent' }, 'cockpit.'), h('span', { class: 'caret' })),
       h('p', { class: 'lead' }, 'Unify observability, incidents, automation, and AI assistance in one operational cockpit. Investigate, automate and ship with confidence.'),
       h('div', { class: 'cta' }, openPortal(), U.btn('Explore capabilities', { cls: 'btn-outline-dark', onClick: scrollTo('capabilities') })),
@@ -41,7 +41,7 @@
     const mini = function (label, val, seed, color) { return h('div', { class: 'mini' }, h('div', { class: 'l' }, label), h('div', { class: 'v' }, val), U.sparkline(U.series(seed, 18, 50, 20), { w: 160, h: 34, color: color })); };
     const cockpit = h('div', { class: 'cockpit' },
       h('div', { class: 'h' }, h('span', { class: 'row gap-4' }, U.ic('activity', 13), 'Operations Cockpit'), h('span', { class: 'live' }, h('i'), 'Live')),
-      h('div', { class: 'grid2' }, mini('Active incidents', '14', 'inc', '#a78bfa'), mini('Alerts raised', '87', 'alr', '#67e8f9'), mini('SLA compliance', '98.4%', 'sla', '#4ade80'), mini('Alerts (24H)', '132', 'a24', '#f87171')),
+      h('div', { class: 'grid2' }, mini('Active incidents', '14', 'inc', '#f6c453'), mini('Alerts raised', '87', 'alr', '#67e8f9'), mini('SLA compliance', '98.4%', 'sla', '#4ade80'), mini('Alerts (24H)', '132', 'a24', '#f87171')),
       h('div', { class: 'ai', onClick: openAiDemo }, h('span', { class: 'ic' }, U.ic('bot', 15)), h('div', null, h('div', { class: 't' }, 'AI Assistant'), h('div', { class: 'q' }, 'Why did the token service latency spike at 14:02?')), h('span', { class: 'arrow' }, U.ic('arrowright', 15))));
     wrap.appendChild(h('section', { class: 'hero' }, left, cockpit));
 
@@ -59,9 +59,9 @@
     wrap.appendChild(h('section', { class: 'section', id: 'stack' }, h('div', { class: 'lbl' }, 'INTEGRATIONS'), h('h2', { style: { maxWidth: '520px' } }, 'Wired into the tools your teams already use.'), h('div', { class: 'marquee' }, track)));
 
     /* CTA */
-    wrap.appendChild(h('section', { id: 'cta', style: { paddingTop: '30px' } }, h('div', { class: 'cta-card' }, h('div', { class: 'portal-art' }, h('div', { class: 'base' }), h('div', { class: 'ring' }), h('div', { class: 'frame' })), h('div', null, h('h2', null, 'Ready to step into the cockpit?'), h('p', null, 'Sign in to your Horizon Insights workspace and see every signal, ticket and automation in one place.'), openPortal()))));
+    wrap.appendChild(h('section', { id: 'cta', style: { paddingTop: '30px' } }, h('div', { class: 'cta-card' }, h('div', { class: 'portal-art' }, h('div', { class: 'base' }), h('div', { class: 'ring' }), h('div', { class: 'frame' })), h('div', null, h('h2', null, 'Ready to step into the cockpit?'), h('p', null, 'Sign in to your Najm Insights workspace and see every signal, ticket and automation in one place.'), openPortal()))));
 
-    wrap.appendChild(h('footer', { class: 'pub-footer' }, brand(), h('div', { class: 'links' }, h('a', { href: '#capabilities', onClick: scrollTo('capabilities') }, 'Capabilities'), h('a', { href: '#workflows', onClick: scrollTo('workflows') }, 'Workflows'), h('a', { href: '#stack', onClick: scrollTo('stack') }, 'Integrations'), h('a', { href: '#/login' }, 'Open portal')), h('span', null, '© 2026 Horizon Insights by Horizon Ops — v2.0')));
+    wrap.appendChild(h('footer', { class: 'pub-footer' }, brand(), h('div', { class: 'links' }, h('a', { href: '#capabilities', onClick: scrollTo('capabilities') }, 'Capabilities'), h('a', { href: '#workflows', onClick: scrollTo('workflows') }, 'Workflows'), h('a', { href: '#stack', onClick: scrollTo('stack') }, 'Integrations'), h('a', { href: '#/login' }, 'Open portal')), h('span', null, '© 2026 Najm Insights by Najm Technology — v2.0')));
     root.appendChild(pg);
   };
 
@@ -127,7 +127,7 @@
     location.hash = ret && ret.indexOf('#/app') === 0 ? ret : '#/app?tab=dashboard';
   }
 
-  /* Keycloak-style SSO dialog (mock of sso.horizonops.sa realm devops-horizonops-sa) */
+  /* Keycloak-style SSO dialog (mock of sso.najm.sa realm devops-najm-sa) */
   function openSSO() {
     const id = h('input', { type: 'text', placeholder: 'ID Number', autocomplete: 'username' });
     const pw = h('input', { type: 'password', placeholder: 'Password', autocomplete: 'current-password' });
@@ -142,12 +142,12 @@
     const btn = h('button', { class: 'kc-btn', type: 'submit' }, 'Log in');
     const box = h('form', { class: 'kc', onSubmit: submit },
       h('button', { class: 'kc-x', type: 'button', onClick: function () { ov.remove(); } }, U.ic('x', 16)),
-      h('div', { class: 'kc-logo' }, U.raw('<svg width="26" height="26" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="30" r="22" stroke="currentColor" stroke-width="6" fill="none"/><path d="M6 44h52" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><path d="M18 44a14 14 0 0 1 28 0" fill="currentColor"/></svg>'), h('span', null, 'horizon')),
-      h('h2', null, 'Welcome to'), h('div', { class: 'realm' }, 'devops-horizonops-sa'),
+      h('div', { class: 'kc-logo' }, U.raw('<svg width="26" height="26" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>'), h('span', null, 'najm')),
+      h('h2', null, 'Welcome to'), h('div', { class: 'realm' }, 'devops-najm-sa'),
       err, id, pw,
       h('label', { class: 'rem' }, h('input', { type: 'checkbox' }), 'Remember me'),
       btn,
-      h('div', { class: 'kc-hint' }, 'Mock Keycloak · client horizon-insights · try ID 1049 with password ' + Auth.DEMO_PASSWORD));
+      h('div', { class: 'kc-hint' }, 'Mock Keycloak · client najm-insights · try ID 1049 with password ' + Auth.DEMO_PASSWORD));
     const ov = h('div', { class: 'overlay', onClick: function (e) { if (e.target === ov) ov.remove(); } }, box);
     document.getElementById('modal-root').appendChild(ov);
     setTimeout(function () { id.focus(); }, 50);
@@ -155,12 +155,12 @@
 
   function forgotPassword(e) {
     e.preventDefault();
-    const em = U.input({ type: 'email', placeholder: 'you@horizonops.sa' });
-    U.modal({ title: 'Reset password', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, 'Enter your Horizon Ops email and we will send a reset link (mock: no email is sent, the demo password stays ' + Auth.DEMO_PASSWORD + ').'), U.field('Email', em)), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Send reset link', { cls: 'btn-primary', icon: 'mail', onClick: function () { Auth.log('auth.reset-request', { username: em.value || 'unknown' }, 'info'); close(); U.toast('If the address exists, a reset link has been sent'); } })]; } });
+    const em = U.input({ type: 'email', placeholder: 'you@najm.sa' });
+    U.modal({ title: 'Reset password', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, 'Enter your Najm Technology email and we will send a reset link (mock: no email is sent, the demo password stays ' + Auth.DEMO_PASSWORD + ').'), U.field('Email', em)), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Send reset link', { cls: 'btn-primary', icon: 'mail', onClick: function () { Auth.log('auth.reset-request', { username: em.value || 'unknown' }, 'info'); close(); U.toast('If the address exists, a reset link has been sent'); } })]; } });
   }
 
   Pages.login = function (root) {
-    const email = U.input({ type: 'email', placeholder: 'you@horizonops.sa', cls: '', });
+    const email = U.input({ type: 'email', placeholder: 'you@najm.sa', cls: '', });
     email.setAttribute('autocomplete', 'username');
     const pwd = h('input', { class: 'input', type: 'password', placeholder: 'Enter your password', autocomplete: 'current-password', style: { paddingRight: '34px' } });
     const eye = h('button', { class: 'btn btn-ghost btn-icon', type: 'button', style: { position: 'absolute', right: '2px', top: '2px', height: '30px', width: '30px' }, title: 'Show password', onClick: function () { const show = pwd.type === 'password'; pwd.type = show ? 'text' : 'password'; U.clear(eye).appendChild(U.ic(show ? 'eyeoff' : 'eye', 14)); } }, U.ic('eye', 14));
@@ -187,23 +187,23 @@
     const demo = h('details', { class: 'demo-accounts' }, h('summary', null, 'Demo accounts (password ' + Auth.DEMO_PASSWORD + ' for all)'),
       h('table', null, Auth.users.map(function (u) { return h('tr', null, h('td', { class: 'u', title: 'Use this account', onClick: function () { email.value = u.email; pwd.value = Auth.DEMO_PASSWORD; check(); } }, u.username), h('td', null, Auth.roles[u.role] ? Auth.roles[u.role].label : u.role), h('td', { class: 'muted' }, 'SSO ID ' + u.idNumber), h('td', null, u.status === 'Active' ? '' : U.pill('Disabled', 'red'))); })));
     const form = h('form', { class: 'login-form', novalidate: true, onSubmit: function (e) { e.preventDefault(); doLogin(); } },
-      h('h2', null, 'Welcome back'), h('div', { class: 'sub' }, 'Sign in to your Horizon Insights workspace.'),
-      U.btn('Continue with Horizon SSO', { cls: 'btn-dark', icon: 'link', iconRight: 'arrowright', onClick: openSSO }),
-      h('div', { class: 'cap' }, 'Use your corporate Horizon Ops credentials'),
+      h('h2', null, 'Welcome back'), h('div', { class: 'sub' }, 'Sign in to your Najm Insights workspace.'),
+      U.btn('Continue with Najm SSO', { cls: 'btn-dark', icon: 'link', iconRight: 'arrowright', onClick: openSSO }),
+      h('div', { class: 'cap' }, 'Use your corporate Najm Technology credentials'),
       h('div', { class: 'divider' }, 'OR WITH EMAIL'),
       h('div', { class: 'col gap-12' },
         err,
         U.field('Email', email),
         h('div', { class: 'field' }, h('div', { class: 'row between' }, h('label', null, 'Password'), h('a', { href: '#', class: 'xs text-primary', onClick: forgotPassword }, 'Forgot password?')), h('div', { style: { position: 'relative' } }, pwd, eye)),
         signIn),
-      h('div', { class: 'links' }, h('a', { href: '#/welcome' }, '← Back to overview'), h('span', null, "Don't have access? Contact the Horizon Ops Technology team.")),
+      h('div', { class: 'links' }, h('a', { href: '#/welcome' }, '← Back to overview'), h('span', null, "Don't have access? Contact the Najm Technology team.")),
       demo);
     form.querySelector('.btn-dark').style.width = '100%';
 
     root.appendChild(h('div', { class: 'login' },
-      h('div', { class: 'left' }, h('div', { class: 'glow a', style: { left: '30%', top: '10%' } }), h('a', { href: '#/welcome', class: 'pub-brand', title: 'Horizon Ops — back to welcome page' }, U.raw(logoSvg)),
-        h('div', { class: 'mid' }, h('div', { class: 'lbl' }, 'HORIZON OPS · HORIZON INSIGHTS'), h('h1', null, 'All operations.', h('br'), 'One intelligent', h('br'), h('span', { class: 'accent' }, 'cockpit.'), h('span', { class: 'caret' }))),
-        h('div', null, h('div', { class: 'stats' }, h('div', null, h('b', null, '30+'), h('span', null, 'Integrations')), h('div', null, h('b', null, '24/7'), h('span', null, 'Monitoring')), h('div', null, h('b', null, '100%'), h('span', null, 'AI-powered RCA'))), h('div', { class: 'copy' }, '© 2026 Horizon Ops · horizonops.sa'))),
+      h('div', { class: 'left' }, h('div', { class: 'glow a', style: { left: '30%', top: '10%' } }), h('a', { href: '#/welcome', class: 'pub-brand', title: 'Najm Technology — back to welcome page' }, U.raw(logoSvg)),
+        h('div', { class: 'mid' }, h('div', { class: 'lbl' }, 'NAJM TECHNOLOGY · NAJM INSIGHTS'), h('h1', null, 'All operations.', h('br'), 'One intelligent', h('br'), h('span', { class: 'accent' }, 'cockpit.'), h('span', { class: 'caret' }))),
+        h('div', null, h('div', { class: 'stats' }, h('div', null, h('b', null, '30+'), h('span', null, 'Integrations')), h('div', null, h('b', null, '24/7'), h('span', null, 'Monitoring')), h('div', null, h('b', null, '100%'), h('span', null, 'AI-powered RCA'))), h('div', { class: 'copy' }, '© 2026 Najm Technology · najm.sa'))),
       h('main', { class: 'right' }, form)));
   };
 })();

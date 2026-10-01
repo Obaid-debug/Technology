@@ -6,7 +6,7 @@ window.Auth = (function () {
   const A = {};
   const KEY_SESSION = 'ti_session', KEY_USERS = 'ti_users', KEY_ROLES = 'ti_roles', KEY_AUDIT = 'ti_audit';
   const SESSION_HOURS = 8;
-  A.DEMO_PASSWORD = 'Horizon@2026';
+  A.DEMO_PASSWORD = 'Najm@2026';
 
   /* ---------- permission catalogue ---------- */
   A.PERMS = [
@@ -40,14 +40,14 @@ window.Auth = (function () {
     viewer: { label: 'Viewer', desc: 'Read-only access to monitoring pages.', perms: ['view:dashboard', 'view:observability', 'view:platform', 'view:tickets'], color: 'slate' }
   };
   const DEFAULT_USERS = [
-    { id: 'u1', username: 'oalasheer', name: 'Obaid Alasheer', email: 'oalasheer@horizonops.sa', idNumber: '1049', role: 'admin', status: 'Active', team: 'Horizon Ops', lastLogin: '2026-09-09 08:41' },
-    { id: 'u2', username: 'alaltamimi', name: 'Abdullah Altamimi', email: 'alaltamimi@horizonops.sa', idNumber: '1050', role: 'engineer', status: 'Active', team: 'Application Support', lastLogin: '2026-09-09 07:20' },
-    { id: 'u3', username: 'halsehli', name: 'Hamad Alsehli', email: 'halsehli@horizonops.sa', idNumber: '1051', role: 'engineer', status: 'Active', team: 'Application Support', lastLogin: '2026-09-08 16:02' },
-    { id: 'u4', username: 'mshemy', name: 'Mohammed Shemy', email: 'mshemy@horizonops.sa', idNumber: '1052', role: 'appowner', status: 'Active', team: 'AppOps', lastLogin: '2026-09-08 13:40' },
-    { id: 'u5', username: 'salqudyri', name: 'Saud Alqudyri', email: 'salqudyri@horizonops.sa', idNumber: '1053', role: 'executive', status: 'Active', team: 'Horizon Ops Management', lastLogin: '2026-09-06 09:10' },
-    { id: 'u6', username: 'falmarri', name: 'Faisal Almarri', email: 'falmarri@horizonops.sa', idNumber: '1054', role: 'engineer', status: 'Active', team: 'Platform Support', lastLogin: '2026-09-09 06:55' },
-    { id: 'u7', username: 'guest.viewer', name: 'Guest Viewer', email: 'guest.viewer@horizonops.sa', idNumber: '1099', role: 'viewer', status: 'Active', team: 'External', lastLogin: '—' },
-    { id: 'u8', username: 'zmoumenah', name: 'Ziad Moumenah', email: 'zmoumenah@horizonops.sa', idNumber: '1055', role: 'engineer', status: 'Disabled', team: 'Database Support', lastLogin: '2026-08-21 11:12' }
+    { id: 'u1', username: 'oalasheer', name: 'Obaid Alasheer', email: 'oalasheer@najm.sa', idNumber: '1049', role: 'admin', status: 'Active', team: 'Najm Technology', lastLogin: '2026-09-09 08:41' },
+    { id: 'u2', username: 'alaltamimi', name: 'Abdullah Altamimi', email: 'alaltamimi@najm.sa', idNumber: '1050', role: 'engineer', status: 'Active', team: 'Application Support', lastLogin: '2026-09-09 07:20' },
+    { id: 'u3', username: 'halsehli', name: 'Hamad Alsehli', email: 'halsehli@najm.sa', idNumber: '1051', role: 'engineer', status: 'Active', team: 'Application Support', lastLogin: '2026-09-08 16:02' },
+    { id: 'u4', username: 'mshemy', name: 'Mohammed Shemy', email: 'mshemy@najm.sa', idNumber: '1052', role: 'appowner', status: 'Active', team: 'AppOps', lastLogin: '2026-09-08 13:40' },
+    { id: 'u5', username: 'salqudyri', name: 'Saud Alqudyri', email: 'salqudyri@najm.sa', idNumber: '1053', role: 'executive', status: 'Active', team: 'Najm Technology Management', lastLogin: '2026-09-06 09:10' },
+    { id: 'u6', username: 'falmarri', name: 'Faisal Almarri', email: 'falmarri@najm.sa', idNumber: '1054', role: 'engineer', status: 'Active', team: 'Platform Support', lastLogin: '2026-09-09 06:55' },
+    { id: 'u7', username: 'guest.viewer', name: 'Guest Viewer', email: 'guest.viewer@najm.sa', idNumber: '1099', role: 'viewer', status: 'Active', team: 'External', lastLogin: '—' },
+    { id: 'u8', username: 'zmoumenah', name: 'Ziad Moumenah', email: 'zmoumenah@najm.sa', idNumber: '1055', role: 'engineer', status: 'Disabled', team: 'Database Support', lastLogin: '2026-08-21 11:12' }
   ];
 
   function load(key, def) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
@@ -55,7 +55,7 @@ window.Auth = (function () {
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
   // Store version: bump when seed identities change so stale local copies are reseeded.
-  const STORE_VERSION = 2;
+  const STORE_VERSION = 3;
   if (load('ti_store_v', 0) !== STORE_VERSION) { [KEY_USERS, KEY_ROLES, KEY_SESSION].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); save('ti_store_v', STORE_VERSION); }
   A.roles = load(KEY_ROLES, clone(DEFAULT_ROLES));
   A.users = load(KEY_USERS, clone(DEFAULT_USERS)).map(function (u) { if (!u.password) u.password = A.DEMO_PASSWORD; return u; });
@@ -99,7 +99,7 @@ window.Auth = (function () {
     const e = String(email || '').trim().toLowerCase();
     const u = A.users.find(function (x) { return x.email.toLowerCase() === e || x.username.toLowerCase() === e; });
     if (!u || u.password !== password) { A.log('auth.login', { username: e || 'unknown', text: 'invalid credentials' }, 'failure'); return { ok: false, error: 'Invalid email or password.' }; }
-    if (u.status !== 'Active') { A.log('auth.login', { username: u.username, text: 'account disabled' }, 'failure'); return { ok: false, error: 'Your account is disabled. Contact the Horizon Ops Technology team.' }; }
+    if (u.status !== 'Active') { A.log('auth.login', { username: u.username, text: 'account disabled' }, 'failure'); return { ok: false, error: 'Your account is disabled. Contact the Najm Technology team.' }; }
     A.startSession(u, 'password');
     return { ok: true, user: u };
   };

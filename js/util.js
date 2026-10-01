@@ -59,7 +59,7 @@
   /* ---------- components ---------- */
   U.sparkline = function (values, opts) {
     opts = opts || {};
-    const w = opts.w || 90, h = opts.h || 26, color = opts.color || '#6366f1';
+    const w = opts.w || 90, h = opts.h || 26, color = opts.color || '#0b4f8a';
     const min = Math.min.apply(null, values), max = Math.max.apply(null, values);
     const rng = max - min || 1;
     const pts = values.map(function (v, i) { return [(i / (values.length - 1)) * (w - 2) + 1, h - 2 - ((v - min) / rng) * (h - 4)]; });
@@ -334,7 +334,7 @@
       });
   };
 
-  U.footer = function () { return U.h('div', { class: 'footer' }, 'v1.0.1 • Developed by Horizon Ops Engineering'); };
+  U.footer = function () { return U.h('div', { class: 'footer' }, 'v1.0.1 • Developed by Najm Technology Engineering'); };
   U.kv = function (k, v) { return U.h('div', null, U.h('div', { class: 'xs muted', style: { letterSpacing: '.1em', textTransform: 'uppercase', fontWeight: 600 } }, k), U.h('div', { class: 'small' }, v)); };
   U.copy = function (text) { try { navigator.clipboard.writeText(text); U.toast('Copied to clipboard'); } catch (e) { U.toast('Copy not available', 'err'); } };
   U.download = function (name, content, type) {

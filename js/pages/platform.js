@@ -34,7 +34,7 @@
         holder.appendChild(c);
       } else {
         const c = U.card({ icon: 'activity', title: 'Integration Health Check', sub: 'Live status of OPM integrations' });
-        const ints = [['Absher SMS Gateway', 'Healthy', '212 ms'], ['MOI Yakeen', 'Healthy', '340 ms'], ['Muqeem Core DB', 'Healthy', '8 ms'], ['Payment Gateway (SADAD)', 'Degraded', '1.9 s'], ['Horizon Notification Platform', 'Healthy', '96 ms'], ['GDP Passport Service', 'Healthy', '480 ms']];
+        const ints = [['Absher SMS Gateway', 'Healthy', '212 ms'], ['MOI Yakeen', 'Healthy', '340 ms'], ['Muqeem Core DB', 'Healthy', '8 ms'], ['Payment Gateway (SADAD)', 'Degraded', '1.9 s'], ['Najm Notification Platform', 'Healthy', '96 ms'], ['GDP Passport Service', 'Healthy', '480 ms']];
         c.body.appendChild(U.table([{ key: 'n', label: 'Integration' }, { key: 's', label: 'Status', render: function (x) { return U.statusPill(x.s); } }, { key: 'l', label: 'Latency', align: 'right' }, { key: 'a', label: '', align: 'right', render: function (x) { return U.btn('Re-check', { cls: 'btn-xs', onClick: function () { U.toast(x.n + ' re-checked: OK'); } }); } }], ints.map(function (i) { return { n: i[0], s: i[1], l: i[2] }; })));
         holder.appendChild(c);
       }
@@ -80,7 +80,7 @@
         return [U.btn('Cancel', { onClick: close }), U.btn(v ? 'Save changes' : 'Create VM', { cls: 'btn-primary', onClick: function () {
           if (!f.name.value.trim()) { U.toast('VM Name is required', 'err'); return; }
           if (v) { v.name = f.name.value; v.ip = f.ip.value; v.service = f.svc.value; v.env = f.env.value; v.dc = f.dc.value; v.os = f.os.value; }
-          else DATA.vms.unshift({ id: DATA.vms.length + 1, name: f.name.value, ip: f.ip.value, service: f.svc.value, env: f.env.value, extraEnv: 0, power: 'Running', dc: f.dc.value, os: f.os.value, cpu: 4, ram: 16, disk: 200, cluster: 'vcs-1', fqdn: f.name.value.toLowerCase() + '.horizonops.sa' });
+          else DATA.vms.unshift({ id: DATA.vms.length + 1, name: f.name.value, ip: f.ip.value, service: f.svc.value, env: f.env.value, extraEnv: 0, power: 'Running', dc: f.dc.value, os: f.os.value, cpu: 4, ram: 16, disk: 200, cluster: 'vcs-1', fqdn: f.name.value.toLowerCase() + '.najm.sa' });
           close(); apply(); U.toast(v ? 'VM updated' : 'VM created');
         } })];
       } });
@@ -96,7 +96,7 @@
     c.body.appendChild(h('div', { class: 'form-grid c3' }, U.kv('IP Address', v.ip), U.kv('FQDN', v.fqdn), U.kv('Service', v.service), U.kv('Environment', v.env), U.kv('Data Center', v.dc), U.kv('Cluster', v.cluster), U.kv('Operating System', v.os), U.kv('Owner', 'Platform Support'), U.kv('Last patched', '2026-09-05')));
     page.appendChild(c);
     const m = U.card({ title: 'Utilisation (24h)', cls: 'mt-16' });
-    m.body.appendChild(h('div', { class: 'grid c3' }, ['CPU %', 'Memory %', 'Disk IO'].map(function (t, i) { const s = U.sparkline(U.series(v.name + t, 48, 40 + i * 10, 25), { w: 300, h: 70, color: ['#6366f1', '#0ea5e9', '#f59e0b'][i], area: true }); s.firstChild.style.width = '100%'; return h('div', null, h('div', { class: 'xs muted mb-8' }, t), s); })));
+    m.body.appendChild(h('div', { class: 'grid c3' }, ['CPU %', 'Memory %', 'Disk IO'].map(function (t, i) { const s = U.sparkline(U.series(v.name + t, 48, 40 + i * 10, 25), { w: 300, h: 70, color: ['#0b4f8a', '#0ea5e9', '#f59e0b'][i], area: true }); s.firstChild.style.width = '100%'; return h('div', null, h('div', { class: 'xs muted mb-8' }, t), s); })));
     page.appendChild(m);
   };
 
@@ -200,7 +200,7 @@
       const sel = U.select([{ value: '', label: 'Select target application' }].concat(DATA.services.map(function (s) { return { value: s, label: s }; })), { onChange: function (e) { run.disabled = !e.target.value; } });
       const run = U.btn('Run Healing', { cls: 'btn-primary', icon: 'play', disabled: true, perm: 'action:run-automation', onClick: function () {
         const app = sel.value; run.disabled = true;
-        const steps = id === 'portal' ? ['Probing https://' + app.toLowerCase().replace(/[^a-z0-9]+/g, '') + '.horizonops.sa (HTTP 503)', 'Checking upstream pods on prod2ocp4', 'Restarting pod ' + app.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-2 via AWX job #48211', 'Waiting for readiness probe', 'Portal responding HTTP 200 in 412 ms'] : id === 'cpu' ? ['Reading CPU on ' + app + ' hosts (94% avg)', 'Identifying top process: java (pid 21877)', 'Triggering thread dump + GC via AWX #48212', 'CPU back to 41%'] : id === 'ram' ? ['Reading memory on ' + app + ' hosts (91%)', 'Clearing page cache and restarting sidecar', 'Memory back to 62%'] : ['Scanning disks on ' + app + ' hosts (/var/log 93%)', 'Rotating and compressing logs older than 7 days', 'Freed 18.4 GB · /var/log at 47%'];
+        const steps = id === 'portal' ? ['Probing https://' + app.toLowerCase().replace(/[^a-z0-9]+/g, '') + '.najm.sa (HTTP 503)', 'Checking upstream pods on prod2ocp4', 'Restarting pod ' + app.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-2 via AWX job #48211', 'Waiting for readiness probe', 'Portal responding HTTP 200 in 412 ms'] : id === 'cpu' ? ['Reading CPU on ' + app + ' hosts (94% avg)', 'Identifying top process: java (pid 21877)', 'Triggering thread dump + GC via AWX #48212', 'CPU back to 41%'] : id === 'ram' ? ['Reading memory on ' + app + ' hosts (91%)', 'Clearing page cache and restarting sidecar', 'Memory back to 62%'] : ['Scanning disks on ' + app + ' hosts (/var/log 93%)', 'Rotating and compressing logs older than 7 days', 'Freed 18.4 GB · /var/log at 47%'];
         U.clear(result);
         const list = h('div', { class: 'col gap-8' }); result.appendChild(list);
         steps.forEach(function (s, i) { setTimeout(function () { list.appendChild(h('div', { class: 'step ' + (i === steps.length - 1 ? 'done' : 'done') }, h('span', { class: 'st' }, U.ic('check', 12)), s, h('span', { class: 'res' }, (0.4 + i * 0.7).toFixed(1) + ' s'))); if (i === steps.length - 1) { list.appendChild(h('div', { class: 'row mt-8' }, U.statusPill('Healthy'), h('span', { class: 'small' }, 'Healing completed for ' + app + ' · run summary saved'))); run.disabled = false; U.toast('Healing run completed'); } }, 700 * (i + 1)); });

@@ -1,7 +1,11 @@
-# Horizon Insights by Horizon Ops — local simulation
+# Najm Insights — Technology Division portal (prototype)
 
-A zero-dependency, front-end simulation of the Horizon Insights portal (horizon-insights.horizonops.sa).
-Every page, filter, tab, table and action works against local mock data — no backend, no build step.
+An internal prototype of an insight portal for the Najm Technology Division. It is a zero-dependency
+front-end: every page, filter, tab, table and action works against local mock data — no backend, no build step.
+
+> **Internal prototype — not an official Najm service.** Brand colours and the logo are placeholders
+> (see "Branding" below), sign-in is simulated in the browser, and all figures are mock data.
+> Keep this repository private and do not host it publicly.
 
 ## Run it
 
@@ -20,7 +24,7 @@ Then open http://localhost:8080/
 There is no real backend: `js/auth.js` is an in-browser identity provider and `js/api.js` a simulated
 `/api` gateway. Sessions, users, roles and the audit log are kept in `localStorage`.
 
-**Demo accounts** (password `Horizon@2026` for all; the login page lists them under "Demo accounts"):
+**Demo accounts** (password `Najm@2026` for all; the login page lists them under "Demo accounts"):
 
 | Username | SSO ID | Role | Access |
 |---|---|---|---|
@@ -32,7 +36,7 @@ There is no real backend: `js/auth.js` is an in-browser identity provider and `j
 | `zmoumenah` | 1055 | (disabled) | login is rejected |
 
 - **Email sign-in** validates against the user store (wrong password, disabled account, session expiry after 8 h).
-- **Continue with Horizon SSO** opens a Keycloak-style dialog (realm `devops-horizonops-sa`) that accepts the SSO ID number or username.
+- **Continue with Najm SSO** opens a Keycloak-style dialog (realm `devops-najm-sa`) that accepts the SSO ID number or username.
 - **Authorization**: sidebar groups are hidden per role, direct URLs to a forbidden page render a 403 with "Request access",
   and gated buttons (Deploy, New VM, Run Analysis, Submit update, …) show a lock and explain the missing permission.
 - **Administration › Access Management**: users (role, enable/disable, reset password, impersonate), the role × permission
@@ -52,7 +56,7 @@ There is no real backend: `js/auth.js` is an in-browser identity provider and `j
   - FinOps: Kubecost
   - Delivery: ArgoCD, Deployment Center, Environment Readiness, Thiqah Migration
   - Tickets & Services: HPSM, Jira, Ticket Center
-  - AI & Automations: Horizon Intelligence, Performance Test, Dependency Ref, Reports
+  - AI & Automations: Najm Intelligence, Performance Test, Dependency Ref, Reports
   - Executives: Executive Management (slide deck, GM summary, GM detail, AI prompt, team editors)
 
 ## Structure
@@ -71,3 +75,16 @@ SPEC.md             page-by-page spec captured from the original site
 
 To change mock data edit `js/data.js`; to add a page register `Pages['<tab-id>'] = function (page) { … }`
 in a module and add the tab to `DATA.nav`.
+
+## Branding
+
+All brand colours live in one place: the "Najm brand tokens" block at the top of `css/styles.css`
+(`--primary`, `--primary-2`, `--primary-50`, `--primary-100`, `--accent`, `--accent-soft`, `--ink*`).
+The current values are **placeholders** — replace them with the official Najm brand palette.
+Two chart colours in `js/` use the literal `#0b4f8a` (SVG attributes can't read CSS variables); update them too.
+
+The logo is a placeholder star in `assets/najm-logo.svg` and inline in `js/app.js`, `js/pages/public.js`
+and `js/pages/executive.js` — swap in the official mark from Najm's brand team.
+
+The mock users, applications and hostnames in `js/data.js` and `js/auth.js` still describe the original
+sample environment; replace them with Najm's teams, systems and services.

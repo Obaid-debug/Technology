@@ -73,7 +73,7 @@
     return h('div', { class: 'card', style: { maxWidth: '620px', margin: '60px auto' } }, h('div', { class: 'empty', style: { padding: '40px 24px' } },
       U.iconTile('lock', 'red', 20), h('div', { class: 't', style: { fontSize: '18px' } }, '403 · Access denied'),
       h('div', { class: 'd' }, 'Your role "' + (role ? role.label : '—') + '" does not include the permission "' + Auth.permLabel(perm) + '" required by this page.'),
-      h('div', { class: 'row mt-16' }, U.btn('Back to dashboard', { icon: 'arrowleft', onClick: function () { App.tab('dashboard'); } }), U.btn('Request access', { cls: 'btn-primary', icon: 'mail', onClick: function () { U.modal({ title: 'Request access', size: 'sm', body: h('div', { class: 'col gap-12' }, U.kv('Requested permission', Auth.permLabel(perm)), U.kv('Requester', u ? u.name + ' (' + u.email + ')' : ''), U.field('Justification', h('textarea', { class: 'textarea', placeholder: 'Why do you need this access?' }))), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Send request', { cls: 'btn-primary', onClick: function () { close(); Auth.log('authz.request', { text: 'requested ' + perm }, 'info'); U.toast('Access request sent to the Horizon Ops Technology team'); } })]; } }); } }))));
+      h('div', { class: 'row mt-16' }, U.btn('Back to dashboard', { icon: 'arrowleft', onClick: function () { App.tab('dashboard'); } }), U.btn('Request access', { cls: 'btn-primary', icon: 'mail', onClick: function () { U.modal({ title: 'Request access', size: 'sm', body: h('div', { class: 'col gap-12' }, U.kv('Requested permission', Auth.permLabel(perm)), U.kv('Requester', u ? u.name + ' (' + u.email + ')' : ''), U.field('Justification', h('textarea', { class: 'textarea', placeholder: 'Why do you need this access?' }))), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Send request', { cls: 'btn-primary', onClick: function () { close(); Auth.log('authz.request', { text: 'requested ' + perm }, 'info'); U.toast('Access request sent to the Najm Technology team'); } })]; } }); } }))));
   }
 
   /* ---------- Shell ---------- */
@@ -134,7 +134,7 @@
     } });
 
     return h('div', { class: 'topbar' },
-      h('div', { class: 'brand' }, U.raw('<svg class="logo" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="30" r="22" stroke="currentColor" stroke-width="5" fill="none"/><path d="M6 44h52" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M18 44a14 14 0 0 1 28 0" fill="currentColor"/></svg>'), h('div', null, h('div', { class: 't1' }, 'Horizon Insights'), h('div', { class: 't2' }, 'All your operations in one place'))),
+      h('div', { class: 'brand' }, U.raw('<svg class="logo" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>'), h('div', null, h('div', { class: 't1' }, 'Najm Insights'), h('div', { class: 't2' }, 'All your operations in one place'))),
       h('div', { class: 'right' },
         h('span', { class: 'live-pill' }, h('i'), 'LIVE'),
         h('label', { class: 'auto-refresh' }, U.toggle(App.state.autoRefresh, function (v) { App.state.autoRefresh = v; U.toast('Auto-refresh ' + (v ? 'enabled' : 'disabled')); }), 'Auto-refresh'),

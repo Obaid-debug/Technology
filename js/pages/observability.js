@@ -62,7 +62,7 @@
 
     function genLogs(service, tab) {
       const r = U.seeded(U.hash(service + tab)); const out = [];
-      const msgs = tab === 'Application' ? ['Request processed successfully in 42 ms', 'SocketTimeoutException: Read timed out calling YakeenClient.verify', 'Retrying request (attempt 2/3)', 'Cache miss for key session:9f2a', 'Validation failed: NationalAddress.buildingNumber is required', 'Scheduled job RenewIqamaSync completed: 1,204 rows', 'HTTP 500 from upstream billing-api', 'JWT token expired for user 1049…', 'Connection pool exhausted (98/100)', 'GC pause 412 ms'] : ['DENY tcp 10.188.2.44:51234 -> 10.200.1.9:443 rule FW-1042', 'ALLOW tcp 10.207.0.48:443 -> 10.240.16.57:8443', 'WAF blocked SQLi attempt on /api/v1/search', 'Rate limit exceeded for 185.12.44.9', 'DDoS scrubbing engaged: 2.1 Gbps SYN flood mitigated', 'Signature update applied (build 9142)', 'Geo-block hit: RU -> zawil.horizonops.sa'];
+      const msgs = tab === 'Application' ? ['Request processed successfully in 42 ms', 'SocketTimeoutException: Read timed out calling YakeenClient.verify', 'Retrying request (attempt 2/3)', 'Cache miss for key session:9f2a', 'Validation failed: NationalAddress.buildingNumber is required', 'Scheduled job RenewIqamaSync completed: 1,204 rows', 'HTTP 500 from upstream billing-api', 'JWT token expired for user 1049…', 'Connection pool exhausted (98/100)', 'GC pause 412 ms'] : ['DENY tcp 10.188.2.44:51234 -> 10.200.1.9:443 rule FW-1042', 'ALLOW tcp 10.207.0.48:443 -> 10.240.16.57:8443', 'WAF blocked SQLi attempt on /api/v1/search', 'Rate limit exceeded for 185.12.44.9', 'DDoS scrubbing engaged: 2.1 Gbps SYN flood mitigated', 'Signature update applied (build 9142)', 'Geo-block hit: RU -> zawil.najm.sa'];
       for (let i = 0; i < 25; i++) {
         const lv = r() > 0.8 ? 'ERROR' : (r() > 0.7 ? 'WARN' : 'INFO');
         const ts = '2026-09-09 ' + String(8 + Math.floor(r() * 9)).padStart(2, '0') + ':' + String(Math.floor(r() * 60)).padStart(2, '0') + ':' + String(Math.floor(r() * 60)).padStart(2, '0');
@@ -110,7 +110,7 @@
     function serviceSheet(r) {
       U.sheet({ title: r.service, sub: r.env + ' · ' + r.agent + ' · ' + r.type, body: h('div', { class: 'col gap-16' },
         U.kpis([{ label: 'LATENCY (p95)', value: fmtLat(r.latency) }, { label: 'ERROR RATE', value: r.error + '%' }, { label: 'THROUGHPUT', value: fmtTpm(r.tpm) }], 3),
-        chartCard('Latency (ms) — last 60 min', U.series(r.service + 'lat', 60, r.latency, r.latency * 0.4), '#6366f1'),
+        chartCard('Latency (ms) — last 60 min', U.series(r.service + 'lat', 60, r.latency, r.latency * 0.4), '#0b4f8a'),
         chartCard('Throughput (tpm)', U.series(r.service + 'tpm', 60, r.tpm, r.tpm * 0.3), '#0ea5e9'),
         chartCard('Errors / min', U.series(r.service + 'err', 60, r.error * 10 + 2, 6), '#ef4444'),
         h('div', { class: 'row' }, U.btn('Open in Kibana APM', { icon: 'external' }), U.btn('Run health check', { cls: 'btn-primary', icon: 'heartpulse', onClick: function () { U.toast('Health check queued for ' + r.service); } }))) });
@@ -147,7 +147,7 @@
       ['High', 'Latency p95 > 1s — tamt-tamm-platform', 'tamt-tamm-platform', 'prod-critical', '08:05', 'p95 1.34 s (rule: apm-latency)'],
       ['High', 'Connection pool saturation — token-service', 'token-service-3', 'Production', '14:02', '98/100 pooled connections held (rule: pg-pool)'],
       ['High', 'Kafka consumer lag — change-data-tracker', 'cdt-consumer-2', 'prod', '07:20', 'Lag 48k messages (rule: kafka-lag)'],
-      ['Medium', 'Certificate expiring in 14 days — wasel.horizonops.sa', 'wasel-lb', 'Production', '05:00', 'TLS cert expires 2026-09-23 (rule: cert-expiry)'],
+      ['Medium', 'Certificate expiring in 14 days — wasel.najm.sa', 'wasel-lb', 'Production', '05:00', 'TLS cert expires 2026-09-23 (rule: cert-expiry)'],
       ['Medium', 'JVM heap > 80% — MuqeemPortalGateway', 'muqeem-gw-1', 'Production-critical', '08:22', 'Old gen 84% (rule: jvm-heap)'],
       ['Medium', 'Slow query — Billing DB', 'billing-db-01', 'Production', '07:45', 'Query > 5s: OR-clause full scan (rule: db-slow-query)'],
       ['Medium', 'Retry storm — fursah-integration-service', 'fursah-int-2', 'prod', '06:12', '1,204 retries/min (rule: http-retries)'],
@@ -189,7 +189,7 @@
         const seed = U.hash(svc);
         const elk = U.card({ icon: 'activity', title: 'ELK Metrics', sub: svc + ' · last 7 days' });
         elk.body.appendChild(U.kpis([{ label: 'TOTAL REQUESTS', value: (1.2 + (seed % 30) / 10).toFixed(1) + 'M' }, { label: 'SUCCESS RATE', value: (99.2 + (seed % 8) / 10).toFixed(1) + '%' }, { label: 'AVG RESPONSE', value: (120 + seed % 200) + ' ms' }, { label: 'FAILED EVENTS', value: U.fmt(3000 + seed % 9000) }]));
-        const sp = U.sparkline(U.series(svc + 'req', 84, 60, 30), { w: 900, h: 120, color: '#6366f1', area: true }); sp.firstChild.style.width = '100%';
+        const sp = U.sparkline(U.series(svc + 'req', 84, 60, 30), { w: 900, h: 120, color: '#0b4f8a', area: true }); sp.firstChild.style.width = '100%';
         elk.body.appendChild(h('div', { class: 'xs muted mb-8' }, 'Requests per hour')); elk.body.appendChild(sp);
         const gr = U.card({ icon: 'barchart', title: 'Grafana Upstream Status Codes', sub: 'Stacked per hour (2xx / 4xx / 5xx)' });
         const r = U.seeded(seed); const bars = h('div', { class: 'bars' }); const tblRows = [];

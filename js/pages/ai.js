@@ -28,13 +28,13 @@
     run();
   }
 
-  /* ---------- Horizon Intelligence ---------- */
-  Pages['horizon-intelligence'] = function (page) {
+  /* ---------- Najm Intelligence ---------- */
+  Pages['najm-intelligence'] = function (page) {
     const modes = { full: 'All 5 steps: JIRA → Jenkins → Git Diff → ELK → AI', quick: 'Steps 1–3 + AI: skips ELK log fetch', mrf: 'MRF mode: correlate against Major Release Freeze rules', aura: 'AURA: autonomous root-cause agent with tool use', ops: 'OPS only: ELK errors + AI, no code context' };
     let mode = 'full';
     const hint = h('span', { class: 'xs muted', style: { marginLeft: '10px' } }, modes.full);
     const f = { product: U.select(['tamt', 'nfz', 'nmq', 'zaw', 'slm'], { value: 'tamt' }), branch: U.select(['tamt:ejaz-app:master', 'tamt:ejaz-app:develop', 'tamt:tamm-api:master'], { value: 'tamt:ejaz-app:master' }), ns: U.select(['tamm-platform', 'tamm-api', 'tamm-worker']), term: U.input({ value: 'Error' }), limit: U.input({ value: '100', type: 'number' }), start: U.input({ type: 'datetime-local', value: '2026-09-07T08:49' }), end: U.input({ type: 'datetime-local', value: '2026-09-09T08:49' }) };
-    const c = U.card({ icon: 'brain', title: 'Horizon Intelligence Pipeline', sub: 'Correlate changes, builds, code diffs, and runtime errors with AI-powered analysis' });
+    const c = U.card({ icon: 'brain', title: 'Najm Intelligence Pipeline', sub: 'Correlate changes, builds, code diffs, and runtime errors with AI-powered analysis' });
     c.body.appendChild(h('div', { class: 'row wrap' }, U.segTabs([{ id: 'full', label: 'Full Pipeline', icon: 'gitbranch' }, { id: 'quick', label: 'Quick Mode', icon: 'zap' }, { id: 'mrf', label: 'MRF Mode', icon: 'globe' }, { id: 'aura', label: 'AURA', icon: 'sparkles' }, { id: 'ops', label: 'OPS Only', icon: 'activity' }], 'full', function (id) { mode = id; hint.textContent = modes[id]; }), hint));
     c.body.appendChild(h('div', { class: 'form-grid c3' }, U.field('Product Code', f.product), U.field('Branch (Repository)', f.branch), U.field('OCP Namespace (Step 4)', f.ns), U.field('ELK Search Term (Step 4)', f.term), U.field('Error Pattern Limit', f.limit), U.field('ELK Start Date/Time', f.start), U.field('ELK End Date/Time', f.end)));
     const runBtn = U.btn('Run Analysis', { cls: 'btn-primary', icon: 'play', perm: 'action:run-automation', onClick: run });
@@ -65,7 +65,7 @@
   Pages['performance-test'] = function (page) {
     page.appendChild(U.segTabs([{ id: 'cpr', label: 'Code Performance Review', icon: 'gauge' }], 'cpr', function () {}));
     const f = { product: U.select(['TAMT', 'NFZ', 'NMQ', 'ZAW']), repo: U.select(['tamt:ejaz-app:master', 'tamt:tamm-api:master']) };
-    const c = U.card({ icon: 'gauge', title: 'Code Performance Review', sub: 'Clones the Full Horizon pipeline (JIRA → Jenkins → Git Diff → AI) without app logs and evaluates the latest code changes against PERF001–PERF006 rules.' });
+    const c = U.card({ icon: 'gauge', title: 'Code Performance Review', sub: 'Clones the Full Najm pipeline (JIRA → Jenkins → Git Diff → AI) without app logs and evaluates the latest code changes against PERF001–PERF006 rules.' });
     c.body.appendChild(h('div', { class: 'form-grid c2' }, U.field('Product Code', f.product), U.field('Repository (branch)', f.repo)));
     const runBtn = U.btn('Run Performance Review', { cls: 'btn-primary', icon: 'play', perm: 'action:run-automation', onClick: run });
     c.body.appendChild(h('div', { class: 'row mt-16' }, runBtn, U.btn('Reset', { icon: 'history', onClick: idle })));

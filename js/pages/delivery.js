@@ -133,7 +133,7 @@
       U.loading(out, 1400, function () {
         const r = U.seeded(11);
         const servers = ['tg-tmp-wv-01', 'tg-tmp-wv-02', 'tg-tmp-rv-01', 'pg-tmp-db-01', 'pg-tmp-db-02', 'dg-tmp-ap-01'].map(function (n) { return { host: n, ping: r() > 0.1 ? 'OK' : 'Unreachable', cpu: Math.floor(r() * 60) + '%', mem: Math.floor(r() * 70) + '%', disk: Math.floor(r() * 80) + '%', ports: r() > 0.15 ? 'OK' : '8443 closed' }; });
-        const ints = [['https://yakeen.horizonops.sa', 443], ['https://absher-gw.horizonops.sa', 443], ['sadad.gateway.local', 8443], ['kafka-prod.horizon.local', 9093], ['pgx-prod-01.horizon.local', 5432]].map(function (i) { const ok = r() > 0.2; return { url: i[0], port: i[1], reach: ok ? 'Reachable' : 'Timeout', latency: ok ? Math.floor(r() * 400) + ' ms' : '—' }; });
+        const ints = [['https://yakeen.najm.sa', 443], ['https://absher-gw.najm.sa', 443], ['sadad.gateway.local', 8443], ['kafka-prod.najm.local', 9093], ['pgx-prod-01.najm.local', 5432]].map(function (i) { const ok = r() > 0.2; return { url: i[0], port: i[1], reach: ok ? 'Reachable' : 'Timeout', latency: ok ? Math.floor(r() * 400) + ' ms' : '—' }; });
         const okS = servers.filter(function (s) { return s.ping === 'OK' && s.ports === 'OK'; }).length, okI = ints.filter(function (i) { return i.reach === 'Reachable'; }).length;
         const ready = okS === servers.length && okI === ints.length;
         const c1 = U.card({ title: 'Servers', sub: 'Sheet "Servers" · ' + servers.length + ' hosts', bodyCls: 'flush', actions: [U.pill(okS + '/' + servers.length + ' ready', okS === servers.length ? 'green' : 'amber')] });
