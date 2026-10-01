@@ -91,50 +91,41 @@ and `js/pages/executive.js` — swap in the official mark from Najm's brand team
 The mock users, applications and hostnames in `js/data.js` and `js/auth.js` still describe the original
 sample environment; replace them with Najm's teams, systems and services.
 
-## Shared database (Service Directory)
+## Data stored in GitHub
 
-The Service Directory (Applications Management › Service Directory) can store its data in a shared
-[Supabase](https://supabase.com) database so every user sees the same services and engineer assignments.
-The rest of the portal still uses the mock data.
+The portal has no server. Its editable data lives in files in this repository, under `data/`:
 
-- **Local mode (default):** `js/config.js` is empty, so edits are saved only in your own browser.
-  The page shows "Local mode · saved in this browser".
-- **Shared mode:** anyone with the site can read the directory; editing needs a database account.
-  Each change records who made it and when.
+| File | What | Who can read it |
+|---|---|---|
+| `data/services.js` | Service Directory: services, codes, primary/secondary engineers | Anyone (plain text) |
+| `data/staff-data.js` | Operations & Resilience staff records | Only people with the staff passphrase (AES-256 encrypted) |
 
-### Set it up (about 10 minutes)
+### Service Directory (`data/services.js`)
 
-1. Create a free project at https://supabase.com (pick a region close to Saudi Arabia, e.g. Frankfurt or Mumbai).
-2. In the project, open **SQL Editor › New query**, paste the whole of `supabase/setup.sql`, and click **Run**.
-   It creates the `services` and `engineers` tables, the security rules, and loads the current sample data.
-3. Open **Authentication › Sign In / Providers** and turn **off** "Allow new users to sign up",
-   so only people you add can edit.
-4. Open **Authentication › Users › Add user** and create an account (email + password) for each editor.
-5. Open **Project Settings › API** and copy the **Project URL** and the **anon public** key into `js/config.js`.
-   (The anon key is designed to be public: the row-level security rules in `setup.sql` stop anyone who is
-   not signed in from changing data.)
-6. Push the change. The Service Directory chip should now say "Shared database · read-only"; click
-   **Sign in to edit** and use an account from step 4.
+- **Edit directly on GitHub:** open `data/services.js`, click the pencil icon, change a line, and commit.
+  The live site updates in about a minute. Instructions are at the top of the file.
+- **Or edit in the portal:** changes are kept as a draft in your browser (a yellow bar shows how many).
+  Click **Download data file**, then upload it to the `data/` folder on GitHub and commit. Click **Discard** afterwards.
 
-Engineers are managed in Supabase (**Table Editor › engineers**). Never put the `service_role` key in this
-repository: it bypasses all security rules.
+### Staff pages (`data/staff-data.js`)
 
-> Data protection: this stores Najm service and staff assignments with an external provider.
-> Get approval from Najm IT / Information Security before loading real data.
+Staff records are personal data, so they are stored **encrypted** (AES-256-GCM; key from the passphrase via
+PBKDF2-SHA256, 600,000 iterations). The department pages ask for the passphrase and decrypt the data only in that
+browser tab; it is never saved. Pay grade is not stored.
 
-## Operations & Resilience pages (staff)
+To update staff (for example a new HR export):
+1. In the portal, open **Administration › Staff Data** (administrators only).
+2. Choose the HR Excel file. It is read in your browser and never uploaded.
+3. Enter the passphrase twice and click **Encrypt & download staff-data.js**.
+4. Upload `staff-data.js` to the `data/` folder on GitHub and commit.
 
-The **Operations & Resilience** menu has a Division Overview plus one page per department
-(IT Operations, IT Security, SRE & Resilience) using the CTO-approved structure. Each page shows
-headcount, sections and units, people managers, and a searchable staff table with CSV export.
+Share the passphrase privately; never put it in GitHub. Anyone who has it can read the staff data, and because the
+encrypted file is public, use a long passphrase (the page requires 12+ characters). To revoke access, re-encrypt
+with a new passphrase. `.gitignore` blocks Excel/CSV files from being committed.
 
-Staff records are personal data, so they are **never stored in this repository or the site code**:
+> Get approval from Najm IT / Information Security before publishing real staff data, even encrypted.
 
-- They live only in the shared Supabase database, in the `employees` table (`supabase/people.sql`).
-- Only signed-in users can read them; anonymous visitors of the site see a sign-in prompt.
-- Nobody can change them through the site; edit or re-import them in the Supabase dashboard.
-- Pay grade is not stored. `.gitignore` blocks Excel/CSV files and seed SQL from being committed.
+### Optional: Supabase instead of files
 
-To load staff: run `supabase/setup.sql`, then `supabase/people.sql`, then the private seed file
-generated from the HR sheet (kept outside Git), all in the Supabase SQL Editor.
-Access in the portal requires the `view:people` permission (Administrator, Executive, SRE / Engineer).
+`js/db.js` can also use a Supabase database (`supabase/setup.sql`, `supabase/people.sql`) when `js/config.js`
+holds a project URL and anon key. Leave `js/config.js` empty to use the GitHub files.

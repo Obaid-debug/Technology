@@ -155,11 +155,23 @@
     page.appendChild(U.pageHeader({ title: 'Service Directory', desc: desc, plain: true, actions: [U.input({ placeholder: 'Search services or engineers…', icon: 'search', wrapStyle: { width: '260px' }, onInput: function (e) { state.q = e.target.value.toLowerCase(); render(); } }), U.iconBtn('refresh', { title: 'Reload from database', onClick: load })] }));
     const holder = h('div');
     page.appendChild(h('div', { class: 'row between' }, h('div', { class: 'row gap-8' }, U.segTabs([{ id: 'service', label: 'Service View', icon: 'grid' }, { id: 'engineer', label: 'Engineer View', icon: 'list' }], 'service', function (id) { state.view = id; render(); }), dbChip), U.btn('Add Service', { cls: 'btn-primary', icon: 'plus', perm: 'action:manage-apps', onClick: function () { editService(); } })));
+    const draftBar = h('div');
+    page.appendChild(draftBar);
     page.appendChild(holder);
 
     function renderChip() {
-      U.clear(dbChip);
-      if (DB.mode === 'local') { dbChip.className = 'db-chip local'; dbChip.title = 'No shared database is configured (js/config.js). Changes are saved in this browser only.'; dbChip.append(U.ic('database', 12), 'Local mode · saved in this browser'); return; }
+      U.clear(dbChip); U.clear(draftBar);
+      if (DB.mode === 'github') {
+        const upd = (window.SERVICE_DIRECTORY && SERVICE_DIRECTORY.updated) || '?';
+        dbChip.className = 'db-chip on'; dbChip.title = 'Data comes from data/services.js in the GitHub repository.';
+        dbChip.append(U.ic('database', 12), 'GitHub data file · updated ' + upd + ' ', h('a', { href: DB.editUrl('data/services.js'), target: '_blank', rel: 'noopener' }, 'Edit on GitHub'));
+        const d = DB.draftInfo();
+        if (d) draftBar.appendChild(h('div', { class: 'draft-bar' + (d.stale ? ' stale' : '') }, U.ic(d.stale ? 'alert' : 'pencil', 15),
+          h('div', { class: 'grow' }, h('b', null, d.changes + ' unsaved change' + (d.changes === 1 ? '' : 's') + ' in this browser. '), d.stale ? 'The file on GitHub changed since you started; downloading will overwrite those changes.' : 'Other people won\'t see them until the updated file is uploaded to GitHub.'),
+          U.btn('Download data file', { cls: 'btn-primary', icon: 'download', onClick: function () { U.download('services.js', DB.draftFileText(), 'application/javascript'); U.modal({ title: 'Publish your changes', size: 'sm', body: h('div', { class: 'col gap-8 small' }, h('div', null, '1. Open the upload page on GitHub (button below).'), h('div', null, '2. Drag in the downloaded ', h('b', null, 'services.js'), ' file (it replaces data/services.js).'), h('div', null, '3. Click ', h('b', null, 'Commit changes'), '. The live site updates in about a minute.'), h('div', null, '4. Come back and click ', h('b', null, 'Discard'), ' on the draft bar to clear your local copy.')), footer: function (close) { return [U.btn('Close', { onClick: close }), h('a', { class: 'btn btn-primary', href: DB.uploadUrl('data'), target: '_blank', rel: 'noopener' }, 'Upload to GitHub')]; } }); } }),
+          U.btn('Discard', { icon: 'trash', onClick: function () { U.confirm('Discard your local changes?', 'The page will show the data file from GitHub again.', function () { DB.discardDraft(); load(); }); } })));
+        return;
+      }
       if (DB.user()) { dbChip.className = 'db-chip on'; dbChip.append(U.ic('database', 12), 'Shared database · ' + DB.user() + ' ', h('a', { href: 'javascript:void 0', onClick: function () { DB.signOut(); renderChip(); U.toast('Signed out of the shared database'); } }, 'Sign out')); return; }
       dbChip.className = 'db-chip ro'; dbChip.append(U.ic('database', 12), 'Shared database · read-only ', h('a', { href: 'javascript:void 0', onClick: function () { signIn(); } }, 'Sign in to edit'));
     }
@@ -186,7 +198,7 @@
     function render() {
       U.clear(holder); renderChip();
       desc.textContent = state.loading ? 'Loading…' : state.services.length + ' services • ' + state.engineers.length + ' engineers';
-      if (state.loading && !state.services.length) { holder.appendChild(U.emptyState('refresh', 'Loading services…', DB.mode === 'local' ? 'Reading from this browser.' : 'Reading from the shared database.')); return; }
+      if (state.loading && !state.services.length) { holder.appendChild(U.emptyState('refresh', 'Loading services…', DB.mode === 'github' ? 'Reading the data file.' : 'Reading from the shared database.')); return; }
       if (state.error) { holder.appendChild(h('div', null, U.emptyState('alert', 'Could not load the Service Directory', state.error, 'red'), h('div', { class: 'row', style: { justifyContent: 'center' } }, U.btn('Try again', { icon: 'refresh', onClick: load })))); return; }
       const svcs = state.services;
       if (state.view === 'engineer') {
@@ -201,7 +213,7 @@
       list.forEach(function (s) {
         const st = statusOf(s);
         grid.appendChild(h('div', { class: 'svc-card' },
-          h('div', { class: 'row between' }, h('div', { class: 'row grow', style: { minWidth: 0 } }, U.ic('grid', 14, 'text-primary'), h('span', { class: 'name truncate', title: s.name }, s.name)), h('div', { class: 'row gap-4' }, U.pill(st, st === 'No Engineer' ? 'solid-red' : st === 'Primary Active' ? 'green' : 'amber'), U.iconBtn('pencil', { cls: 'btn-ghost', size: 12, title: 'Edit', onClick: function () { if (canEdit('edit services')) editService(s); } }), U.iconBtn('trash', { cls: 'btn-ghost danger', size: 12, title: 'Delete', onClick: function () { if (!canEdit('delete services')) return; U.confirm('Remove ' + s.name + '?', 'The service will be removed from the directory for everyone.', function () { write(function () { return DB.deleteService(s.id); }, s.name + ' removed'); }); } }))),
+          h('div', { class: 'row between' }, h('div', { class: 'row grow', style: { minWidth: 0 } }, U.ic('grid', 14, 'text-primary'), h('span', { class: 'name truncate', title: s.name }, s.name)), h('div', { class: 'row gap-4' }, U.pill(st, st === 'No Engineer' ? 'solid-red' : st === 'Primary Active' ? 'green' : 'amber'), U.iconBtn('pencil', { cls: 'btn-ghost', size: 12, title: 'Edit', onClick: function () { if (canEdit('edit services')) editService(s); } }), U.iconBtn('trash', { cls: 'btn-ghost danger', size: 12, title: 'Delete', onClick: function () { if (!canEdit('delete services')) return; U.confirm('Remove ' + s.name + '?', DB.mode === 'github' ? 'The service will be removed from your draft until you publish the data file.' : 'The service will be removed from the directory for everyone.', function () { write(function () { return DB.deleteService(s.id); }, s.name + ' removed'); }); } }))),
           h('div', { class: 'code' }, s.code || ' '),
           h('div', { class: 'lab' }, 'Primary'), engSel(s.primary_engineer, function (e) { if (!canEdit('assign engineer')) { render(); return; } const v = e.target.value || null; write(function () { return DB.updateService(s.id, { primary_engineer: v }); }, 'Primary engineer updated for ' + s.name); }),
           h('div', { class: 'lab' }, 'Secondary'), engSel(s.secondary_engineer, function (e) { if (!canEdit('assign engineer')) { render(); return; } const v = e.target.value || null; write(function () { return DB.updateService(s.id, { secondary_engineer: v }); }, 'Secondary engineer updated for ' + s.name); }),

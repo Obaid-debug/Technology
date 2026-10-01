@@ -142,7 +142,8 @@ window.Auth = (function () {
   if (!DATA.nav.some(function (g) { return g.id === 'administration'; })) {
     DATA.nav.push({ id: 'administration', label: 'Administration', icon: 'settings', children: [
       { id: 'admin', label: 'Access Management', icon: 'lock' },
-      { id: 'mock-data', label: 'Mock API & Data', icon: 'database' } ] });
+      { id: 'mock-data', label: 'Mock API & Data', icon: 'database' },
+      { id: 'staff-data', label: 'Staff Data', icon: 'key' } ] });
   }
 
   return A;

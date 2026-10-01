@@ -40,7 +40,8 @@
       try { const all = await loadEmployees(force); U.clear(holder); build(all, function () { run(true); }); }
       catch (e) {
         U.clear(holder); cache = null;
-        if (e.notConfigured) { holder.appendChild(U.emptyState('database', 'Staff data needs the shared database', 'Employee records are personal data, so they are kept only in the shared Supabase database, never in the site code. Once an administrator connects it (js/config.js) and loads the staff sheet, signed-in users will see this page.')); return; }
+        if (e.notConfigured) { holder.appendChild(h('div', null, U.emptyState('database', 'No staff data published yet', 'Staff records are personal data, so they are stored only as an encrypted file (data/staff-data.js). An administrator can create it from the HR Excel sheet in Administration > Staff Data.'), Auth.can('view:admin') ? h('div', { class: 'row', style: { justifyContent: 'center' } }, U.btn('Open Staff Data', { cls: 'btn-primary', icon: 'upload', onClick: function () { App.tab('staff-data'); } })) : null)); return; }
+        if (e.needsUnlock) { holder.appendChild(h('div', null, U.emptyState('lock', 'Staff data is encrypted', 'Enter the staff passphrase to view this page. It is not saved, and the data is decrypted only in this browser tab.'), h('div', { class: 'row', style: { justifyContent: 'center' } }, U.btn('Unlock', { cls: 'btn-primary', icon: 'key', onClick: function () { DB.unlockDialog(function () { run(true); }); } })))); return; }
         if (e.needsSignIn) { holder.appendChild(h('div', null, U.emptyState('lock', 'Sign in to view staff', 'Staff records are only visible to signed-in users of the shared database.'), h('div', { class: 'row', style: { justifyContent: 'center' } }, U.btn('Sign in', { cls: 'btn-primary', icon: 'key', onClick: function () { DB.signInDialog(function () { run(true); }, 'Staff pages need a database account. Ask the portal administrator to create one for you.'); } })))); return; }
         holder.appendChild(h('div', null, U.emptyState('alert', 'Could not load staff', e.message, 'red'), h('div', { class: 'row', style: { justifyContent: 'center' } }, U.btn('Try again', { icon: 'refresh', onClick: function () { run(true); } }))));
       }
@@ -49,7 +50,8 @@
   }
 
   function signOutAction() {
-    if (DB.mode !== 'supabase' || !DB.user()) return null;
+    if (DB.mode === 'github') return DB.staffUnlocked() ? U.btn('Lock staff data', { icon: 'lock', onClick: function () { DB.lockStaff(); cache = null; location.reload(); } }) : null;
+    if (!DB.user()) return null;
     return U.btn('Sign out ' + DB.user(), { icon: 'logout', onClick: function () { DB.signOut(); cache = null; location.reload(); } });
   }
 
