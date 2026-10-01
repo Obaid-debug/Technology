@@ -87,6 +87,8 @@ window.DATA = (function () {
     ]
   };
   D.opsDivision.departments.forEach(function (dp) { dp.slug = slug(dp.name); });
+  // Show Operations & Resilience first in the left menu.
+  D.nav.sort(function (a, b) { return (b.id === 'ops-resilience') - (a.id === 'ops-resilience'); });
   // Department menu items open the org pages and expand into their sections and units.
   D.nav.forEach(function (g) { if (g.id !== 'ops-resilience') return; g.children.forEach(function (c) { const dp = D.opsDivision.departments.find(function (x) { return x.id === c.id; }); if (dp) { c.href = '#/app/org/' + dp.slug; c.org = dp; } }); });
 

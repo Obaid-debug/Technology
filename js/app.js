@@ -20,7 +20,7 @@
     return null;
   };
   App.findLookup = function (slug) {
-    const lk = DATA.nav[3].children[1];
+    const lk = DATA.nav.reduce(function (f, g) { return f || g.children.find(function (c) { return c.id === 'appops-lookups'; }); }, null);
     for (const sg of lk.subGroups) for (const c of sg.children) if (c.id === slug) return { subGroup: sg, item: c };
     return null;
   };
