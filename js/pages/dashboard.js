@@ -32,7 +32,7 @@
       const cmp = state.compare !== 'none';
       const mk = function (label, val, icon, seed, g, delta) {
         const k = U.kpi(label, sel ? val : '—', { icon: icon, g: g, sub: sel ? (cmp ? delta : null) : 'Select a service to load metrics', subCls: sel && cmp ? (delta.charAt(0) === '+' ? 'text-green' : 'text-red') : '' });
-        if (sel) k.appendChild(h('div', { style: { marginTop: '6px' } }, U.sparkline(U.series(seed + state.elk, 24, 50, 30), { w: 200, h: 26, color: g === 'g4' ? '#ef4444' : '#0b4f8a', area: true })));
+        if (sel) k.appendChild(h('div', { style: { marginTop: '6px' } }, U.sparkline(U.series(seed + state.elk, 24, 50, 30), { w: 200, h: 26, color: g === 'g4' ? '#ef4444' : '#33835c', area: true })));
         return k;
       };
       const seed = U.hash(state.elk);
@@ -59,7 +59,7 @@
           { key: 'service', label: 'Service', render: function (r) { return h('div', { class: 'health-row' }, h('div', { class: 'svc' }, r.service), h('div', { class: 'env' }, 'Production')); } },
           { key: 'status', label: 'Status', render: function (r) { return U.statusPill(r.status); } },
           { key: 'signal', label: 'Signal', render: function (r) { return h('span', { class: 'truncate muted', style: { maxWidth: '180px', display: 'inline-block' }, title: r.signal }, r.signal); } },
-          { key: 'trend', label: 'Trend (24h)', align: 'right', render: function (r) { return U.sparkline(U.series(r.service, 20, 50, 18), { w: 70, h: 22, color: r.status === 'Analyzing' ? '#0b4f8a' : '#38bdf8' }); } }
+          { key: 'trend', label: 'Trend (24h)', align: 'right', render: function (r) { return U.sparkline(U.series(r.service, 20, 50, 18), { w: 70, h: 22, color: r.status === 'Analyzing' ? '#33835c' : '#38bdf8' }); } }
         ], DATA.serviceHealth, { onRow: function (r) { Pages.healthDialog(r.service); } });
       });
     }
@@ -89,7 +89,7 @@
       if (aiBox.querySelector('.empty')) U.clear(aiBox);
       aiBox.appendChild(h('div', { class: 'ai-msg user' }, q));
       aiInput.value = ''; sendBtn.disabled = true;
-      const bot = h('div', { class: 'ai-msg bot' }, h('span', { class: 'typing' }, h('i', { style: { background: '#0b4f8a' } }), h('i', { style: { background: '#0b4f8a' } }), h('i', { style: { background: '#0b4f8a' } })));
+      const bot = h('div', { class: 'ai-msg bot' }, h('span', { class: 'typing' }, h('i', { style: { background: '#33835c' } }), h('i', { style: { background: '#33835c' } }), h('i', { style: { background: '#33835c' } })));
       aiBox.appendChild(bot); aiBox.scrollTop = aiBox.scrollHeight;
       const answer = aiAnswer(q);
       setTimeout(function () { let i = 0; const iv = setInterval(function () { i += 5; bot.innerHTML = answer.slice(0, i); if (i >= answer.length) { bot.innerHTML = answer; clearInterval(iv); } aiBox.scrollTop = aiBox.scrollHeight; }, 16); }, 500);

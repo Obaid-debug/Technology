@@ -110,7 +110,7 @@
     function serviceSheet(r) {
       U.sheet({ title: r.service, sub: r.env + ' · ' + r.agent + ' · ' + r.type, body: h('div', { class: 'col gap-16' },
         U.kpis([{ label: 'LATENCY (p95)', value: fmtLat(r.latency) }, { label: 'ERROR RATE', value: r.error + '%' }, { label: 'THROUGHPUT', value: fmtTpm(r.tpm) }], 3),
-        chartCard('Latency (ms) — last 60 min', U.series(r.service + 'lat', 60, r.latency, r.latency * 0.4), '#0b4f8a'),
+        chartCard('Latency (ms) — last 60 min', U.series(r.service + 'lat', 60, r.latency, r.latency * 0.4), '#33835c'),
         chartCard('Throughput (tpm)', U.series(r.service + 'tpm', 60, r.tpm, r.tpm * 0.3), '#0ea5e9'),
         chartCard('Errors / min', U.series(r.service + 'err', 60, r.error * 10 + 2, 6), '#ef4444'),
         h('div', { class: 'row' }, U.btn('Open in Kibana APM', { icon: 'external' }), U.btn('Run health check', { cls: 'btn-primary', icon: 'heartpulse', onClick: function () { U.toast('Health check queued for ' + r.service); } }))) });
@@ -189,7 +189,7 @@
         const seed = U.hash(svc);
         const elk = U.card({ icon: 'activity', title: 'ELK Metrics', sub: svc + ' · last 7 days' });
         elk.body.appendChild(U.kpis([{ label: 'TOTAL REQUESTS', value: (1.2 + (seed % 30) / 10).toFixed(1) + 'M' }, { label: 'SUCCESS RATE', value: (99.2 + (seed % 8) / 10).toFixed(1) + '%' }, { label: 'AVG RESPONSE', value: (120 + seed % 200) + ' ms' }, { label: 'FAILED EVENTS', value: U.fmt(3000 + seed % 9000) }]));
-        const sp = U.sparkline(U.series(svc + 'req', 84, 60, 30), { w: 900, h: 120, color: '#0b4f8a', area: true }); sp.firstChild.style.width = '100%';
+        const sp = U.sparkline(U.series(svc + 'req', 84, 60, 30), { w: 900, h: 120, color: '#33835c', area: true }); sp.firstChild.style.width = '100%';
         elk.body.appendChild(h('div', { class: 'xs muted mb-8' }, 'Requests per hour')); elk.body.appendChild(sp);
         const gr = U.card({ icon: 'barchart', title: 'Grafana Upstream Status Codes', sub: 'Stacked per hour (2xx / 4xx / 5xx)' });
         const r = U.seeded(seed); const bars = h('div', { class: 'bars' }); const tblRows = [];

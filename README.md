@@ -3,7 +3,7 @@
 An internal prototype of an insight portal for the Najm Technology Division. It is a zero-dependency
 front-end: every page, filter, tab, table and action works against local mock data — no backend, no build step.
 
-> **Internal prototype — not an official Najm service.** Brand colours and the logo are placeholders
+> **Internal prototype — not an official Najm service.** The logo is a placeholder
 > (see "Branding" below), sign-in is simulated in the browser, and all figures are mock data.
 > Keep this repository private and do not host it publicly.
 
@@ -80,8 +80,10 @@ in a module and add the tab to `DATA.nav`.
 
 All brand colours live in one place: the "Najm brand tokens" block at the top of `css/styles.css`
 (`--primary`, `--primary-2`, `--primary-50`, `--primary-100`, `--accent`, `--accent-soft`, `--ink*`).
-The current values are **placeholders** — replace them with the official Najm brand palette.
-Two chart colours in `js/` use the literal `#0b4f8a` (SVG attributes can't read CSS variables); update them too.
+Values come from najm.sa (primary green `#33835c`, gold `#e6c068`/`#cca447`, Najm neutrals); a few
+marked "derived" in the CSS were computed to fill gaps. Chart colours in `js/` use the literal `#33835c`
+(SVG attributes can't read CSS variables). Najm's site font is the licensed "DIN Next LT Arabic"; it is used
+if installed, otherwise IBM Plex Sans Arabic / Tajawal load from Google Fonts.
 
 The logo is a placeholder star in `assets/najm-logo.svg` and inline in `js/app.js`, `js/pages/public.js`
 and `js/pages/executive.js` — swap in the official mark from Najm's brand team.

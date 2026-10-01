@@ -59,7 +59,7 @@
   /* ---------- components ---------- */
   U.sparkline = function (values, opts) {
     opts = opts || {};
-    const w = opts.w || 90, h = opts.h || 26, color = opts.color || '#0b4f8a';
+    const w = opts.w || 90, h = opts.h || 26, color = opts.color || '#33835c';
     const min = Math.min.apply(null, values), max = Math.max.apply(null, values);
     const rng = max - min || 1;
     const pts = values.map(function (v, i) { return [(i / (values.length - 1)) * (w - 2) + 1, h - 2 - ((v - min) / rng) * (h - 4)]; });

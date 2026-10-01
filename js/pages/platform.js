@@ -96,7 +96,7 @@
     c.body.appendChild(h('div', { class: 'form-grid c3' }, U.kv('IP Address', v.ip), U.kv('FQDN', v.fqdn), U.kv('Service', v.service), U.kv('Environment', v.env), U.kv('Data Center', v.dc), U.kv('Cluster', v.cluster), U.kv('Operating System', v.os), U.kv('Owner', 'Platform Support'), U.kv('Last patched', '2026-09-05')));
     page.appendChild(c);
     const m = U.card({ title: 'Utilisation (24h)', cls: 'mt-16' });
-    m.body.appendChild(h('div', { class: 'grid c3' }, ['CPU %', 'Memory %', 'Disk IO'].map(function (t, i) { const s = U.sparkline(U.series(v.name + t, 48, 40 + i * 10, 25), { w: 300, h: 70, color: ['#0b4f8a', '#0ea5e9', '#f59e0b'][i], area: true }); s.firstChild.style.width = '100%'; return h('div', null, h('div', { class: 'xs muted mb-8' }, t), s); })));
+    m.body.appendChild(h('div', { class: 'grid c3' }, ['CPU %', 'Memory %', 'Disk IO'].map(function (t, i) { const s = U.sparkline(U.series(v.name + t, 48, 40 + i * 10, 25), { w: 300, h: 70, color: ['#33835c', '#0ea5e9', '#f59e0b'][i], area: true }); s.firstChild.style.width = '100%'; return h('div', null, h('div', { class: 'xs muted mb-8' }, t), s); })));
     page.appendChild(m);
   };
 
