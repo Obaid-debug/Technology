@@ -52,7 +52,7 @@
     const holder = h('div');
     const apply = function () { tbl.update(DATA.vms.filter(function (v) { return (state.dc === 'all' || v.dc === state.dc) && (state.env === 'all' || v.env === state.env) && (state.os === 'all' || v.os.indexOf(state.os) === 0) && (!state.q || (v.name + v.ip + v.service + v.cluster + v.fqdn).toLowerCase().indexOf(state.q) >= 0); })); };
     page.appendChild(U.filterBar([
-      U.select([{ value: 'all', label: 'All Data Center' }, 'HZN', 'NIC', 'GCP'], { onChange: function (e) { state.dc = e.target.value; apply(); } }),
+      U.select([{ value: 'all', label: 'All Data Center' }, 'NJM', 'NIC', 'GCP'], { onChange: function (e) { state.dc = e.target.value; apply(); } }),
       U.select([{ value: 'all', label: 'All Environment' }, 'Development', 'Testing', 'Staging', 'Production', 'DR'], { onChange: function (e) { state.env = e.target.value; apply(); } }),
       U.select([{ value: 'all', label: 'All OS Type' }, 'RHEL', 'Windows', 'Ubuntu', 'Oracle'], { onChange: function (e) { state.os = e.target.value; apply(); } }),
       U.btn('More filters', { onClick: function () { U.toast('Additional filters: cluster, power state, owner'); } }),
@@ -75,7 +75,7 @@
       U.modal({ title: 'Columns', sub: 'Choose which columns to display', size: 'sm', body: h('div', { class: 'col gap-4' }, all.map(function (c, i) { return h('label', { class: 'row small', style: { padding: '5px 0' } }, h('input', { class: 'checkbox', type: 'checkbox', checked: i < 6 }), c); })), footer: function (close) { return [U.btn('Apply', { cls: 'btn-primary', onClick: function () { close(); U.toast('Column preferences saved'); } })]; } });
     }
     function vmForm(v) {
-      const f = { name: U.input({ value: v ? v.name : '', placeholder: 'e.g. tg-app-wv-01' }), ip: U.input({ value: v ? v.ip : '', placeholder: '10.0.0.0' }), svc: U.select(['—'].concat(DATA.services), { value: v ? v.service : '—' }), env: U.select(['Development', 'Testing', 'Staging', 'Production', 'DR'], { value: v ? v.env : 'Development' }), dc: U.select(['HZN', 'NIC', 'GCP'], { value: v ? v.dc : 'HZN' }), os: U.select(['RHEL 8.9', 'RHEL 9.2', 'Windows Server 2019', 'Ubuntu 22.04', 'Oracle Linux 8'], { value: v ? v.os : 'RHEL 9.2' }) };
+      const f = { name: U.input({ value: v ? v.name : '', placeholder: 'e.g. tg-app-wv-01' }), ip: U.input({ value: v ? v.ip : '', placeholder: '10.0.0.0' }), svc: U.select(['—'].concat(DATA.services), { value: v ? v.service : '—' }), env: U.select(['Development', 'Testing', 'Staging', 'Production', 'DR'], { value: v ? v.env : 'Development' }), dc: U.select(['NJM', 'NIC', 'GCP'], { value: v ? v.dc : 'NJM' }), os: U.select(['RHEL 8.9', 'RHEL 9.2', 'Windows Server 2019', 'Ubuntu 22.04', 'Oracle Linux 8'], { value: v ? v.os : 'RHEL 9.2' }) };
       U.modal({ title: v ? 'Edit ' + v.name : 'New VM', body: h('div', { class: 'form-grid c2' }, U.field('VM Name', f.name, { req: true }), U.field('IP Address', f.ip, { req: true }), U.field('Service', f.svc), U.field('Environment', f.env), U.field('Data Center', f.dc), U.field('Operating System', f.os)), footer: function (close) {
         return [U.btn('Cancel', { onClick: close }), U.btn(v ? 'Save changes' : 'Create VM', { cls: 'btn-primary', onClick: function () {
           if (!f.name.value.trim()) { U.toast('VM Name is required', 'err'); return; }

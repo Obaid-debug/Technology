@@ -126,13 +126,13 @@ window.DATA = (function () {
   /* ---------- Virtual machines (CMDB) ---------- */
   D.vms = (function () {
     const out = []; const r = U.seeded(7);
-    const dcs = ['HZN', 'HZN', 'HZN', 'NIC', 'GCP'];
+    const dcs = ['NJM', 'NJM', 'NJM', 'NIC', 'GCP'];
     const envsV = ['Development', 'Testing', 'Production', 'Staging', 'DR'];
     const os = ['RHEL 8.9', 'RHEL 9.2', 'Windows Server 2019', 'Ubuntu 22.04', 'Oracle Linux 8'];
     for (let i = 1; i <= 4072; i++) {
       const prefix = i <= 120 ? 'AW-CLI02-' : (i <= 900 ? 'tg-' + ['bog', 'exg', 'tcs', 'bil', 'amn', 'tss', 'tmp'][i % 7] + '-' + ['rv', 'wv'][i % 2] + '-' : (i <= 2200 ? 'pg-' + ['bkp', 'gcp', 'db', 'app'][i % 4] + '-rv-' : 'dg-' + ['wsl', 'nfz', 'mqm', 'zaw'][i % 4] + '-' + ['rv', 'wv'][i % 2] + '-'));
       const name = prefix + String(i).padStart(3, '0');
-      out.push({ id: i, name: name, ip: '10.' + (188 + (i % 60)) + '.' + (i % 254) + '.' + ((i * 37) % 254), service: i <= 120 ? '—' : ['Wasel Portal', 'Nafath', 'Muqeem V3', 'Zawil', 'Billing', 'Khibrah', 'Tabadul - PCS', 'AMN', 'Backup Management'][i % 9], env: i <= 120 ? 'Development' : envsV[Math.floor(r() * envsV.length)], extraEnv: i <= 120 ? 4 : Math.floor(r() * 3), power: r() > 0.94 ? 'Stopped' : 'Running', dc: i <= 120 ? 'HZN' : dcs[Math.floor(r() * dcs.length)], os: os[Math.floor(r() * os.length)], cpu: [2, 4, 8, 16][Math.floor(r() * 4)], ram: [4, 8, 16, 32, 64][Math.floor(r() * 5)], disk: [100, 150, 200, 300, 450, 600][Math.floor(r() * 6)], cluster: 'vcs-' + (1 + (i % 6)), fqdn: name.toLowerCase() + '.najm.sa' });
+      out.push({ id: i, name: name, ip: '10.' + (188 + (i % 60)) + '.' + (i % 254) + '.' + ((i * 37) % 254), service: i <= 120 ? '—' : ['Wasel Portal', 'Nafath', 'Muqeem V3', 'Zawil', 'Billing', 'Khibrah', 'Tabadul - PCS', 'AMN', 'Backup Management'][i % 9], env: i <= 120 ? 'Development' : envsV[Math.floor(r() * envsV.length)], extraEnv: i <= 120 ? 4 : Math.floor(r() * 3), power: r() > 0.94 ? 'Stopped' : 'Running', dc: i <= 120 ? 'NJM' : dcs[Math.floor(r() * dcs.length)], os: os[Math.floor(r() * os.length)], cpu: [2, 4, 8, 16][Math.floor(r() * 4)], ram: [4, 8, 16, 32, 64][Math.floor(r() * 5)], disk: [100, 150, 200, 300, 450, 600][Math.floor(r() * 6)], cluster: 'vcs-' + (1 + (i % 6)), fqdn: name.toLowerCase() + '.najm.sa' });
     }
     return out;
   })();
@@ -202,8 +202,8 @@ window.DATA = (function () {
     'hosting-types': { title: 'Hosting Types', rows: ['Virtual Machine', 'OpenShift', 'GKE', 'Bare Metal', 'SaaS'] },
     'hosting': { title: 'Hosting', rows: ['Najm Data Center', 'NIC', 'GCP me-central2', 'Thiqah DC'] },
     'environments': { title: 'Environments', rows: ['Production', 'Staging', 'Testing', 'Development', 'DR'] },
-    'data-centers': { title: 'Data Centers', rows: ['HZN', 'NIC', 'GCP', 'Thiqah'] },
-    'data-center-environments': { title: 'Data Center Environments', rows: ['HZN · Production', 'HZN · Staging', 'NIC · Production', 'NIC · DR', 'GCP · Development'] },
+    'data-centers': { title: 'Data Centers', rows: ['NJM', 'NIC', 'GCP', 'Thiqah'] },
+    'data-center-environments': { title: 'Data Center Environments', rows: ['NJM · Production', 'NJM · Staging', 'NIC · Production', 'NIC · DR', 'GCP · Development'] },
     'operating-system-types': { title: 'Operating System Types', rows: ['Linux', 'Windows', 'Unix'] },
     'operating-systems': { title: 'Operating Systems', rows: ['RHEL 8.9', 'RHEL 9.2', 'Oracle Linux 8', 'Ubuntu 22.04', 'Windows Server 2019', 'Windows Server 2022'] },
     'component-types': { title: 'Component Types', rows: ['Web', 'API', 'Database', 'Cache', 'Queue', 'Batch', 'Integration'] },
@@ -352,7 +352,7 @@ window.DATA = (function () {
       issues: [['Jenkins queue saturation', 'DONE', null, 'Added 4 ephemeral agents.'], ['ArgoCD sync drift on tamm-platform', 'WIP', null, 'Manual edits in namespace; enforcing self-heal.'], ['Failed prod2ocp4 image pulls', 'DONE', null, 'Registry credentials renewed.'], ['Slow Bitbucket clones', 'WIP', null, 'Investigating LFS bandwidth limits.']] },
     { id: 'platform', name: 'Platform', full: 'Platform Support', tag: 'OpenShift · VMs · capacity', by: 'falmarri', when: '1d ago', icon: 'server', progress: 72, done: 13, total: 18, atRisk: 0,
       activities: [['prod2ocp4 worker expansion', 'DONE', 100, '6 new m1-10xlarge workers added (81 nodes).'], ['Portworx data nodes patching', 'DONE', 100, 'Rolling patch completed with zero downtime.'], ['VM inventory sync from AIP', 'WIP', 80, 'Nightly sync cached in portal (6,973 VMs).'], ['Ingress node tuning', 'WIP', 50, 'HAProxy maxconn raised on ingress workers.']],
-      projects: [['OCP 4.16 upgrade', 'WIP', 35, 'Staging cluster upgraded; production planned Q4.'], ['GreenLake NFS', 'WIP', 60, 'Migrating shared NFS to GreenLake.'], ['Healing Center automations', 'WIP', 40, 'Portal-down / CPU / RAM / disk healing checks.'], ['Device42 CMDB refresh', 'DONE', 100, 'Auto-discovery enabled for HZN DC.']],
+      projects: [['OCP 4.16 upgrade', 'WIP', 35, 'Staging cluster upgraded; production planned Q4.'], ['GreenLake NFS', 'WIP', 60, 'Migrating shared NFS to GreenLake.'], ['Healing Center automations', 'WIP', 40, 'Portal-down / CPU / RAM / disk healing checks.'], ['Device42 CMDB refresh', 'DONE', 100, 'Auto-discovery enabled for NJM DC.']],
       issues: [['ocp-prod-worker-07 memory', 'WIP', null, 'Sustained 87% memory; rebalancing pods.'], ['Stopped VMs cleanup', 'WIP', null, '792 stopped VMs pending owner confirmation.'], ['DR replication lag', 'DONE', null, 'Link issue between NIC and DR site resolved.']] },
     { id: 'performance', name: 'Performance', full: 'Performance Testing', tag: 'Load tests · SLO validation', by: 'tshudiyed', when: '2d ago', icon: 'gauge', progress: 50, done: 5, total: 10, atRisk: 1,
       activities: [['TAMM peak load test', 'DONE', 100, '3,000 TPS sustained for 30 min; p95 410 ms.'], ['Nafath auth stress test', 'WIP', 60, 'Targeting 5,000 concurrent logins.'], ['Muqeem V3 regression run', 'DONE', 100, 'No regressions against v3.4 baseline.']],
