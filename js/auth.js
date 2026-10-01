@@ -20,6 +20,7 @@ window.Auth = (function () {
     ['view:tickets', 'View Tickets & Services'],
     ['view:ai', 'View AI & Automations'],
     ['view:executive', 'View Executive Management'],
+    ['view:people', 'View Operations & Resilience staff pages'],
     ['view:admin', 'View Administration'],
     ['action:deploy', 'Deploy changes / approve releases'],
     ['action:manage-vms', 'Create, edit, delete VMs'],
@@ -30,13 +31,13 @@ window.Auth = (function () {
     ['action:manage-users', 'Manage users, roles & sessions'],
     ['action:ai-assistant', 'Use the AI assistant']
   ];
-  const GROUP_PERM = { dashboard: 'view:dashboard', observability: 'view:observability', 'business-operations': 'view:business-ops', 'platform-infra': 'view:platform', 'service-catalog': 'view:apps', finops: 'view:finops', delivery: 'view:delivery', tickets: 'view:tickets', 'ai-automations': 'view:ai', executive: 'view:executive', administration: 'view:admin' };
+  const GROUP_PERM = { dashboard: 'view:dashboard', observability: 'view:observability', 'business-operations': 'view:business-ops', 'platform-infra': 'view:platform', 'service-catalog': 'view:apps', finops: 'view:finops', delivery: 'view:delivery', tickets: 'view:tickets', 'ai-automations': 'view:ai', executive: 'view:executive', 'ops-resilience': 'view:people', administration: 'view:admin' };
 
   const DEFAULT_ROLES = {
     admin: { label: 'Administrator', desc: 'Full access to every module and to access management.', perms: ['*'], color: 'solid' },
-    engineer: { label: 'SRE / Engineer', desc: 'Operates the platform: observability, infrastructure, delivery and automations.', perms: ['view:dashboard', 'view:observability', 'view:business-ops', 'view:platform', 'view:apps', 'view:finops', 'view:delivery', 'view:tickets', 'view:ai', 'action:deploy', 'action:manage-vms', 'action:run-automation', 'action:ai-assistant'], color: 'blue' },
+    engineer: { label: 'SRE / Engineer', desc: 'Operates the platform: observability, infrastructure, delivery and automations.', perms: ['view:dashboard', 'view:observability', 'view:business-ops', 'view:platform', 'view:apps', 'view:finops', 'view:delivery', 'view:tickets', 'view:ai', 'view:people', 'action:deploy', 'action:manage-vms', 'action:run-automation', 'action:ai-assistant'], color: 'blue' },
     appowner: { label: 'Application Owner', desc: 'Owns applications in the AppOps catalog and follows their tickets and releases.', perms: ['view:dashboard', 'view:observability', 'view:apps', 'view:delivery', 'view:tickets', 'view:ai', 'action:manage-apps', 'action:manage-lookups', 'action:ai-assistant'], color: 'purple' },
-    executive: { label: 'Executive', desc: 'Reads the weekly executive brief and the high-level dashboards.', perms: ['view:dashboard', 'view:observability', 'view:executive', 'action:edit-exec', 'action:ai-assistant'], color: 'amber' },
+    executive: { label: 'Executive', desc: 'Reads the weekly executive brief and the high-level dashboards.', perms: ['view:dashboard', 'view:observability', 'view:executive', 'view:people', 'action:edit-exec', 'action:ai-assistant'], color: 'amber' },
     viewer: { label: 'Viewer', desc: 'Read-only access to monitoring pages.', perms: ['view:dashboard', 'view:observability', 'view:platform', 'view:tickets'], color: 'slate' }
   };
   const DEFAULT_USERS = [
@@ -55,7 +56,7 @@ window.Auth = (function () {
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
   // Store version: bump when seed identities change so stale local copies are reseeded.
-  const STORE_VERSION = 3;
+  const STORE_VERSION = 4;
   if (load('ti_store_v', 0) !== STORE_VERSION) { [KEY_USERS, KEY_ROLES, KEY_SESSION].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); save('ti_store_v', STORE_VERSION); }
   A.roles = load(KEY_ROLES, clone(DEFAULT_ROLES));
   A.users = load(KEY_USERS, clone(DEFAULT_USERS)).map(function (u) { if (!u.password) u.password = A.DEMO_PASSWORD; return u; });

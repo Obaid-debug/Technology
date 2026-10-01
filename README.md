@@ -121,3 +121,20 @@ repository: it bypasses all security rules.
 
 > Data protection: this stores Najm service and staff assignments with an external provider.
 > Get approval from Najm IT / Information Security before loading real data.
+
+## Operations & Resilience pages (staff)
+
+The **Operations & Resilience** menu has a Division Overview plus one page per department
+(IT Operations, IT Security, SRE & Resilience) using the CTO-approved structure. Each page shows
+headcount, sections and units, people managers, and a searchable staff table with CSV export.
+
+Staff records are personal data, so they are **never stored in this repository or the site code**:
+
+- They live only in the shared Supabase database, in the `employees` table (`supabase/people.sql`).
+- Only signed-in users can read them; anonymous visitors of the site see a sign-in prompt.
+- Nobody can change them through the site; edit or re-import them in the Supabase dashboard.
+- Pay grade is not stored. `.gitignore` blocks Excel/CSV files and seed SQL from being committed.
+
+To load staff: run `supabase/setup.sql`, then `supabase/people.sql`, then the private seed file
+generated from the HR sheet (kept outside Git), all in the Supabase SQL Editor.
+Access in the portal requires the `view:people` permission (Administrator, Executive, SRE / Engineer).

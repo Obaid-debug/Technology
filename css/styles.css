@@ -806,3 +806,20 @@ p { margin: 0; }
 .db-chip.on { border-color: var(--primary-100); background: var(--primary-50); color: var(--primary-2); }
 .db-chip.ro { border-color: #f1e2b8; background: #fbf6e8; color: #8a6d1f; }
 .db-chip.local { background: #f2f3f2; }
+
+/* Operations & Resilience pages */
+.dept-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.dept-stats b { display: block; font-size: 22px; line-height: 1.1; }
+.dept-stats span { font-size: 11px; color: var(--muted); }
+.split-bar { display: flex; gap: 2px; height: 8px; border-radius: 999px; overflow: hidden; background: var(--border-2); }
+.split-bar i { display: block; height: 100%; }
+.split-bar .perm { background: var(--primary); }
+.split-bar .out { background: #3c91bc; }
+.sec-list { margin-top: 12px; border-top: 1px solid var(--border-2); }
+.sec-list > div { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; font-size: 12.5px; border-bottom: 1px solid var(--border-2); }
+.unit-list { display: flex; flex-direction: column; gap: 4px; }
+.unit-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; padding: 7px 10px; border: 1px solid var(--border-2); border-radius: 8px; background: #fafbfa; font-size: 12.5px; text-align: left; color: var(--text); }
+.unit-row:hover { border-color: var(--primary-100); background: var(--primary-50); }
+.unit-row b { color: var(--primary); }
+.sec-lead { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); }
+.mt-16 { margin-top: 16px; }

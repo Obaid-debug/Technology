@@ -48,8 +48,25 @@ window.DATA = (function () {
       { id: 'performance-test', label: 'Performance Test', icon: 'activity' },
       { id: 'automation-dependency', label: 'Dependency Ref', icon: 'book' },
       { id: 'reports', label: 'Reports', icon: 'barchart' } ] },
-    { id: 'executive', label: 'Executives', icon: 'crown', children: [ { id: 'executive-management', label: 'Executive Management', icon: 'briefcase' } ] }
+    { id: 'executive', label: 'Executives', icon: 'crown', children: [ { id: 'executive-management', label: 'Executive Management', icon: 'briefcase' } ] },
+    { id: 'ops-resilience', label: 'Operations & Resilience', icon: 'building', children: [
+      { id: 'ops-overview', label: 'Division Overview', icon: 'dashboard' },
+      { id: 'dept-it-operations', label: 'IT Operations', icon: 'server' },
+      { id: 'dept-it-security', label: 'IT Security', icon: 'shield' },
+      { id: 'dept-sre-resilience', label: 'SRE & Resilience', icon: 'activity' } ] }
   ];
+
+  /* ---------- Operations & Resilience org structure ----------
+     Department names follow the CTO-approved "To Be" mapping. Staff records are
+     NOT stored here: they are read from the shared database (supabase/people.sql). */
+  D.opsDivision = {
+    name: 'Operations & Resilience',
+    departments: [
+      { id: 'dept-it-operations', name: 'IT Operations', icon: 'server', desc: 'Service management, infrastructure, and application & integration operations.' },
+      { id: 'dept-it-security', name: 'IT Security', icon: 'shield', desc: 'Security operations and identity & access management.' },
+      { id: 'dept-sre-resilience', name: 'SRE & Resilience', icon: 'activity', desc: 'Site reliability engineering and operational resilience.' }
+    ]
+  };
 
   /* ---------- Common service names ---------- */
   D.services = ['Nafath', 'Mojaz', 'Muqeem V3', 'yakeen-middleware', 'yakeen-engine', 'Wasel Portal', 'Zawil', 'TAMM', 'Salamah', 'Fursah', 'BillingApi', 'Digital Cards', 'pcs-demurrage', 'Shypr', 'change-data-tracker', 'Basher-Accident', 'Tamm_platform', 'fursah-core-service', 'Basher-portal-backend', 'Lezam', 'fingerprint', 'Saudi Post V2', 'Salamah-core', 'fursah-integration-service', 'NSP-Portal', 'Citizen Account', 'Bayan-API', 'SCE', 'Tawseel API', 'New Naql'];

@@ -103,5 +103,24 @@ window.DB = (function () {
   };
   DB.resetLocal = function () { drop(KEY_LOCAL); };
 
+  /* ---------- staff (Operations & Resilience) ----------
+     Staff records are personal data: they live only in the shared database,
+     readable by signed-in users (see supabase/people.sql). There is no local
+     fallback, so nothing about employees is ever bundled with the site. */
+  DB.listEmployees = async function () {
+    if (DB.mode === 'local') { const e = new Error('No shared database is configured.'); e.notConfigured = true; throw e; }
+    if (!session) { const e = new Error('Sign in to view staff.'); e.needsSignIn = true; throw e; }
+    try { return await rest('GET', 'employees?select=*&order=display_name.asc'); }
+    catch (e) { if (e.needsSignIn) DB.signOut(); throw e; }
+  };
+
+  /* ---------- shared sign-in dialog ---------- */
+  DB.signInDialog = function (then, reason) {
+    const h = U.h;
+    const f = { email: U.input({ type: 'email', placeholder: 'you@najm.sa' }), pw: U.input({ type: 'password', placeholder: 'Password' }) };
+    const err = h('div', { class: 'small text-red' });
+    U.modal({ title: 'Sign in to the shared database', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, reason || 'This needs a database account. Ask the portal administrator to create one for you.'), U.field('Email', f.email, { req: true }), U.field('Password', f.pw, { req: true }), err), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Sign in', { cls: 'btn-primary', onClick: async function () { err.textContent = ''; try { await DB.signIn(f.email.value.trim(), f.pw.value); close(); U.toast('Signed in as ' + DB.user()); if (then) then(); } catch (e) { err.textContent = e.message; } } })]; } });
+  };
+
   return DB;
 })();

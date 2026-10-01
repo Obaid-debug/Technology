@@ -164,11 +164,7 @@
       dbChip.className = 'db-chip ro'; dbChip.append(U.ic('database', 12), 'Shared database · read-only ', h('a', { href: 'javascript:void 0', onClick: function () { signIn(); } }, 'Sign in to edit'));
     }
 
-    function signIn(then) {
-      const f = { email: U.input({ type: 'email', placeholder: 'you@najm.sa' }), pw: U.input({ type: 'password', placeholder: 'Password' }) };
-      const err = h('div', { class: 'small text-red' });
-      U.modal({ title: 'Sign in to the shared database', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, 'Editing the Service Directory needs a database account. Ask the portal administrator to create one for you.'), U.field('Email', f.email, { req: true }), U.field('Password', f.pw, { req: true }), err), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Sign in', { cls: 'btn-primary', onClick: async function () { err.textContent = ''; try { await DB.signIn(f.email.value.trim(), f.pw.value); close(); renderChip(); U.toast('Signed in as ' + DB.user()); if (then) then(); } catch (e) { err.textContent = e.message; } } })]; } });
-    }
+    function signIn(then) { DB.signInDialog(function () { renderChip(); if (then) then(); }, 'Editing the Service Directory needs a database account. Ask the portal administrator to create one for you.'); }
 
     // Runs a write; on a permission error, asks the user to sign in and retries once.
     async function write(fn, okMsg) {
