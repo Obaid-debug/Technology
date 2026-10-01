@@ -53,7 +53,7 @@
   }
 
   function lockAction() {
-    if (DB.mode === 'github') return DB.staffUnlocked() ? U.btn('Lock staff data', { icon: 'lock', onClick: function () { DB.lockStaff(); cache = null; location.reload(); } }) : null;
+    if (DB.mode === 'github') return (DB.staffUnlocked() || DB.staffRemembered()) ? U.btn('Lock staff data', { icon: 'lock', title: 'Hide staff data and forget it on this device', onClick: function () { DB.lockStaff(); cache = null; location.reload(); } }) : null;
     if (!DB.user()) return null;
     return U.btn('Sign out ' + DB.user(), { icon: 'logout', onClick: function () { DB.signOut(); cache = null; location.reload(); } });
   }

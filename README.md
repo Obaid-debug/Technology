@@ -110,8 +110,10 @@ The portal has no server. Its editable data lives in files in this repository, u
 ### Staff pages (`data/staff-data.js`)
 
 Staff records are personal data, so they are stored **encrypted** (AES-256-GCM; key from the passphrase via
-PBKDF2-SHA256, 600,000 iterations). The department pages ask for the passphrase and decrypt the data only in that
-browser tab; it is never saved. Pay grade is not stored.
+PBKDF2-SHA256, 600,000 iterations). The department pages ask for the passphrase and decrypt the data in the browser.
+With **Remember on this device** (ticked by default) the browser keeps the derived key, not the passphrase, so the
+pages open directly next time; it stops working when a new staff file is published, and **Lock staff data** forgets it.
+Only tick it on your own computer. Pay grade is not stored.
 
 To update staff (for example a new HR export):
 1. In the portal, open **Administration › Staff Data** (administrators only).

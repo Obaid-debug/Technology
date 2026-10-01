@@ -122,26 +122,44 @@ window.DB = (function () {
   /* ================= Staff (personal data) ================= */
   const KDF_ITER = 600000;
   const b64 = { enc: function (buf) { let s = ''; new Uint8Array(buf).forEach(function (b) { s += String.fromCharCode(b); }); return btoa(s); }, dec: function (str) { const s = atob(str); const a = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; } };
-  async function deriveKey(pass, salt, iter) {
-    if (!(window.crypto && crypto.subtle)) throw new Error('This browser cannot decrypt staff data (Web Crypto unavailable). Open the portal over https or from a modern browser.');
-    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
-    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: salt, iterations: iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  function needCrypto() { if (!(window.crypto && crypto.subtle)) throw new Error('This browser cannot decrypt staff data (Web Crypto unavailable). Open the portal over https or from a modern browser.'); }
+  // Raw 256-bit key derived from the passphrase; kept raw so a device can remember it (never the passphrase).
+  async function deriveBits(pass, salt, iter) {
+    needCrypto();
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveBits']);
+    return new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: salt, iterations: iter, hash: 'SHA-256' }, base, 256));
   }
+  function aesKey(raw) { needCrypto(); return crypto.subtle.importKey('raw', raw, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']); }
+  async function deriveKey(pass, salt, iter) { return aesKey(await deriveBits(pass, salt, iter)); }
   let staff = null; // decrypted records, memory only
 
+  const KEY_STAFF = 'najm_staff_key'; // {salt, key}: remembered key for the current staff file on this device
   DB.staffFileUpdated = function () { return window.STAFF_DATA_ENC ? window.STAFF_DATA_ENC.updated : null; };
   DB.staffUnlocked = function () { return !!staff; };
-  DB.lockStaff = function () { staff = null; };
-  DB.unlockStaff = async function (pass) {
+  DB.staffRemembered = function () { const r = load(KEY_STAFF, null); return !!(r && window.STAFF_DATA_ENC && r.salt === window.STAFF_DATA_ENC.salt); };
+  DB.lockStaff = function () { staff = null; drop(KEY_STAFF); };
+
+  async function decryptWith(raw) {
+    const f = window.STAFF_DATA_ENC;
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64.dec(f.iv) }, await aesKey(raw), b64.dec(f.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+  DB.unlockStaff = async function (pass, remember) {
     const f = window.STAFF_DATA_ENC;
     if (!f) throw new Error('No staff data file (data/staff-data.js) has been published yet.');
-    const k = await deriveKey(pass, b64.dec(f.salt), f.iterations || KDF_ITER);
-    let plain;
-    try { plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64.dec(f.iv) }, k, b64.dec(f.data)); }
-    catch (e) { throw new Error('Wrong passphrase.'); }
-    staff = JSON.parse(new TextDecoder().decode(plain));
+    const raw = await deriveBits(pass, b64.dec(f.salt), f.iterations || KDF_ITER);
+    try { staff = await decryptWith(raw); } catch (e) { throw new Error('Wrong passphrase.'); }
+    if (remember) save(KEY_STAFF, { salt: f.salt, key: b64.enc(raw) }); else drop(KEY_STAFF);
     return staff.length;
   };
+  // Opens the staff data with a key this device remembered earlier, if it still fits the published file.
+  async function tryRemembered() {
+    const r = load(KEY_STAFF, null), f = window.STAFF_DATA_ENC;
+    if (!r || !f) return false;
+    if (r.salt !== f.salt) { drop(KEY_STAFF); return false; } // a new file was published
+    try { staff = await decryptWith(b64.dec(r.key)); return true; } catch (e) { drop(KEY_STAFF); return false; }
+  }
+
   // Produces the full text of data/staff-data.js for the given records.
   DB.encryptStaff = async function (records, pass) {
     const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
@@ -154,7 +172,7 @@ window.DB = (function () {
   DB.listEmployees = async function () {
     if (DB.mode === 'github') {
       if (!window.STAFF_DATA_ENC) { const e = new Error('No staff data has been published yet.'); e.notConfigured = true; throw e; }
-      if (!staff) { const e = new Error('Enter the staff passphrase to view staff.'); e.needsUnlock = true; throw e; }
+      if (!staff && !(await tryRemembered())) { const e = new Error('Enter the staff passphrase to view staff.'); e.needsUnlock = true; throw e; }
       return staff;
     }
     if (!session) { const e = new Error('Sign in to view staff.'); e.needsSignIn = true; throw e; }
@@ -172,9 +190,12 @@ window.DB = (function () {
   DB.unlockDialog = function (then) {
     const h = U.h;
     const pw = U.input({ type: 'password', placeholder: 'Staff passphrase' });
+    const rem = h('input', { type: 'checkbox', checked: true });
     const err = h('div', { class: 'small text-red' });
-    const go = async function (close, btn) { err.textContent = ''; btn.disabled = true; btn.textContent = 'Decrypting…'; try { const n = await DB.unlockStaff(pw.value); close(); U.toast('Staff data unlocked (' + n + ' people)'); if (then) then(); } catch (e) { err.textContent = e.message; btn.disabled = false; btn.textContent = 'Unlock'; } };
-    U.modal({ title: 'Unlock staff data', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, 'Staff records are stored encrypted. Enter the passphrase shared by the portal administrator. It is never saved; the data is decrypted only in this tab.'), U.field('Passphrase', pw, { req: true }), err), footer: function (close) { const b = U.btn('Unlock', { cls: 'btn-primary', icon: 'key', onClick: function () { go(close, b); } }); pw.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(close, b); }); return [U.btn('Cancel', { onClick: close }), b]; } });
+    const go = async function (close, btn) { err.textContent = ''; btn.disabled = true; btn.textContent = 'Decrypting…'; try { const n = await DB.unlockStaff(pw.value, rem.checked); close(); U.toast('Staff data unlocked (' + n + ' people)' + (rem.checked ? ' and remembered on this device' : '')); if (then) then(); } catch (e) { err.textContent = e.message; btn.disabled = false; btn.textContent = 'Unlock'; } };
+    U.modal({ title: 'Unlock staff data', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, 'Staff records are stored encrypted. Enter the passphrase shared by the portal administrator.'), U.field('Passphrase', pw, { req: true }),
+      h('label', { class: 'row gap-8 small', style: { cursor: 'pointer', alignItems: 'flex-start' } }, rem, h('span', null, h('b', null, 'Remember on this device'), h('br'), h('span', { class: 'muted' }, 'Staff pages open without the passphrase in this browser until you click Lock. Only tick this on your own computer.'))), err),
+      footer: function (close) { const b = U.btn('Unlock', { cls: 'btn-primary', icon: 'key', onClick: function () { go(close, b); } }); pw.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(close, b); }); return [U.btn('Cancel', { onClick: close }), b]; } });
     setTimeout(function () { pw.focus(); }, 50);
   };
 
