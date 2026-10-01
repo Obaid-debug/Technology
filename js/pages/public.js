@@ -41,7 +41,7 @@
     const mini = function (label, val, seed, color) { return h('div', { class: 'mini' }, h('div', { class: 'l' }, label), h('div', { class: 'v' }, val), U.sparkline(U.series(seed, 18, 50, 20), { w: 160, h: 34, color: color })); };
     const cockpit = h('div', { class: 'cockpit' },
       h('div', { class: 'h' }, h('span', { class: 'row gap-4' }, U.ic('activity', 13), 'Operations Cockpit'), h('span', { class: 'live' }, h('i'), 'Live')),
-      h('div', { class: 'grid2' }, mini('Active incidents', '14', 'inc', '#e6c068'), mini('Alerts raised', '87', 'alr', '#67e8f9'), mini('SLA compliance', '98.4%', 'sla', '#4ade80'), mini('Alerts (24H)', '132', 'a24', '#f87171')),
+      h('div', { class: 'grid2' }, mini('Active incidents', '14', 'inc', '#cca447'), mini('Alerts raised', '87', 'alr', '#3c91bc'), mini('SLA compliance', '98.4%', 'sla', '#33835c'), mini('Alerts (24H)', '132', 'a24', '#d15d5d')),
       h('div', { class: 'ai', onClick: openAiDemo }, h('span', { class: 'ic' }, U.ic('bot', 15)), h('div', null, h('div', { class: 't' }, 'AI Assistant'), h('div', { class: 'q' }, 'Why did the token service latency spike at 14:02?')), h('span', { class: 'arrow' }, U.ic('arrowright', 15))));
     wrap.appendChild(h('section', { class: 'hero' }, left, cockpit));
 

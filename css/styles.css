@@ -715,3 +715,87 @@ p { margin: 0; }
   .kpis.c4, .kpis.c3 { grid-template-columns: repeat(2, 1fr); }
   .grid.side, .grid.side-2, .grid.c2, .form-grid.c2, .form-grid.c3 { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   NAJM LIGHT LANDING — overrides the dark public theme above
+   to match najm.sa: white page, grey section bands, green CTAs,
+   16px cards with soft shadows, dark headings with green accent.
+   ============================================================ */
+.public { background: #fff; color: var(--text); }
+.public .glow { opacity: .35; }
+.public .glow.a { background: radial-gradient(circle, rgba(93,192,141,.35), transparent 70%); }
+.public .glow.b { background: radial-gradient(circle, rgba(230,192,104,.30), transparent 70%); }
+.public .glow.c { background: radial-gradient(circle, rgba(60,145,188,.18), transparent 70%); }
+.pub-nav { border-bottom: 1px solid var(--border); height: 72px; }
+.pub-nav .links { color: var(--muted); font-size: 14px; font-weight: 500; }
+.pub-nav .links a:hover { color: var(--primary); }
+.pub-brand .logo { color: var(--primary); }
+.pub-brand .t1 { color: var(--text); font-size: 15px; }
+.pub-brand .t2 { color: var(--muted); }
+.public .btn-grad { background: var(--primary); box-shadow: none; border-radius: 12px; padding-left: 18px; padding-right: 18px; }
+.public .btn-grad:hover { background: var(--primary-2); filter: none; }
+.public .btn-outline-dark { background: transparent; border: 1px solid rgba(177,179,179,.6); color: var(--text); border-radius: 12px; }
+.public .btn-outline-dark:hover { background: transparent; border-color: var(--primary); color: var(--primary); }
+.hero .tag { border-color: var(--primary-100); background: var(--primary-50); color: var(--primary); font-weight: 500; }
+.hero h1 { color: var(--text); }
+.hero h1 .accent, .section h2 .accent { color: var(--primary); }
+.caret { background: var(--primary); }
+.hero p.lead { color: #4a484b; font-size: 15.5px; }
+.hero .stats { border-top-color: var(--border); }
+.hero .stat .ic { color: var(--primary); }
+.hero .stat b { color: var(--text); }
+.hero .stat span { color: var(--muted); }
+.cockpit { background: #fff; border: 1px solid transparent; border-radius: 16px; box-shadow: 0 7px 21px rgba(0,0,0,.1), 0 0 0 1px rgba(177,179,179,.2); }
+.cockpit .h { color: var(--text); font-weight: 500; }
+.cockpit .live { color: var(--primary); }
+.cockpit .live i { background: var(--primary); box-shadow: none; }
+.mini { background: #f2f3f2; border-color: transparent; }
+.mini .l { color: var(--muted); }
+.mini .v { color: var(--text); }
+.cockpit .ai { background: var(--primary-50); border-color: var(--primary-100); }
+.cockpit .ai:hover { background: var(--primary-100); }
+.cockpit .ai .t { color: var(--muted); }
+.cockpit .ai .q { color: var(--text); }
+.cockpit .ai .ic { background: var(--primary); color: #fff; }
+.cockpit .ai .arrow { color: var(--primary); }
+.public .section { border-top: none; }
+.public .section .lbl { color: var(--primary); }
+.public .section h2 { color: var(--text); font-size: 36px; }
+.sec-head p, .cap p, .tl-step p { color: #4a484b; }
+/* full-width grey bands, like najm.sa's "beige" sections */
+.public #workflows, .public #cta { background: #f2f3f2; box-shadow: 0 0 0 100vmax #f2f3f2; clip-path: inset(0 -100vmax); }
+.cap { border-top-color: var(--border); }
+.cap .num { color: var(--accent); font-weight: 700; }
+.cap .ic { color: var(--primary); }
+.cap h4, .tl-step h4 { color: var(--text); }
+.timeline { border-left-color: var(--primary-100); }
+.tl-step::before { border-color: var(--primary); background: var(--primary); border-radius: 50%; width: 9px; height: 9px; left: -25px; }
+.tl-step .s { color: var(--primary); font-weight: 700; }
+.marquee .lg { color: var(--text); font-weight: 500; }
+.cta-card { background: var(--primary); border: none; border-radius: 20px; color: #fff; }
+.cta-card h2 { color: #fff; }
+.cta-card p { color: rgba(255,255,255,.85); }
+.cta-card .btn-grad { background: #fff; color: var(--primary); }
+.cta-card .btn-grad:hover { background: #f2f3f2; }
+.portal-art .frame { border-color: var(--accent-soft); box-shadow: 0 0 30px rgba(230,192,104,.6); background: linear-gradient(180deg, rgba(230,192,104,.45), rgba(255,255,255,.15)); }
+.portal-art .base { background: radial-gradient(ellipse, rgba(230,192,104,.7), transparent 70%); }
+.portal-art .ring { border-color: rgba(255,255,255,.5); }
+.pub-footer { border-top-color: var(--border); color: var(--muted); }
+.pub-footer .links a:hover { color: var(--primary); }
+
+/* login left panel in Najm green */
+.login .left { background: linear-gradient(160deg, var(--primary) 0%, var(--primary-2) 100%); }
+.login .left .glow.a { background: radial-gradient(circle, rgba(230,192,104,.35), transparent 70%); }
+.login .left .lbl, .login .stats span, .login .copy { color: rgba(255,255,255,.75); }
+.login .stats { border-top-color: rgba(255,255,255,.25); }
+.login .left .pub-brand .logo { color: #fff; }
+.login-form .btn-dark { background: var(--primary); border-color: var(--primary); border-radius: 12px; }
+.login-form .btn-dark:hover { background: var(--primary-2); }
+
+@media (max-width: 720px) {
+  .pub-nav .links { display: none; }
+  .hero h1 { font-size: 38px; }
+  .public .section h2 { font-size: 28px; }
+  .pub-footer { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .pub-footer .links { flex-wrap: wrap; }
+}
