@@ -57,16 +57,38 @@ window.DATA = (function () {
   ];
 
   /* ---------- Operations & Resilience org structure ----------
-     Department names follow the CTO-approved "To Be" mapping. Staff records are
-     NOT stored here: they are read from the shared database (supabase/people.sql). */
+     Department / section / unit names follow the CTO-approved "To Be" mapping.
+     `match` is the exact value used in the HR sheet; `name` is the display label.
+     Staff records are NOT stored here: they come from the encrypted data/staff-data.js. */
+  function slug(s) { return s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  function unit(match, name, icon) { return { match: match, name: name, icon: icon || 'users', slug: slug(name) }; }
+  function section(match, name, icon, units) { return { match: match, name: name, icon: icon, slug: slug(name), units: units }; }
   D.opsDivision = {
     name: 'Operations & Resilience',
     departments: [
-      { id: 'dept-it-operations', name: 'IT Operations', icon: 'server', desc: 'Service management, infrastructure, and application & integration operations.' },
-      { id: 'dept-it-security', name: 'IT Security', icon: 'shield', desc: 'Security operations and identity & access management.' },
-      { id: 'dept-sre-resilience', name: 'SRE & Resilience', icon: 'activity', desc: 'Site reliability engineering and operational resilience.' }
+      { id: 'dept-it-operations', name: 'IT Operations', icon: 'server', desc: 'Service management, infrastructure, and application & integration operations.', sections: [
+        section('IT Service Management', 'IT Service Management', 'ticket', [
+          unit('1st level support / service desk', 'Service Desk (1st Level Support)', 'users'),
+          unit('ITSM OPS', 'ITSM Operations', 'settings'),
+          unit('Asset mgmt', 'Asset Management', 'box') ]),
+        section('Infrastructure Operations', 'Infrastructure Operations', 'harddrive', [
+          unit('NW Ops', 'Network Operations', 'network'),
+          unit('systems/cloud ops', 'Systems & Cloud Operations', 'cloud'),
+          unit('DC ops', 'Data Center Operations', 'building'),
+          unit('DB operations', 'Database Operations', 'database') ]),
+        section('Application & Integration Operations', 'Application & Integration Operations', 'layers', [
+          unit('App operations', 'Application Operations', 'grid'),
+          unit('intg operations', 'Integration Operations', 'link') ]) ] },
+      { id: 'dept-it-security', name: 'IT Security', icon: 'shield', desc: 'Security operations and identity & access management.', sections: [
+        section('IT Security', 'IT Security', 'shield', [
+          unit('IAM', 'Identity & Access Management', 'key') ]) ] },
+      { id: 'dept-sre-resilience', name: 'SRE & Resilience', icon: 'activity', desc: 'Site reliability engineering and operational resilience.', sections: [
+        section('SRE & Resilience', 'SRE & Resilience', 'activity', []) ] }
     ]
   };
+  D.opsDivision.departments.forEach(function (dp) { dp.slug = slug(dp.name); });
+  // Department menu items open the org pages and expand into their sections and units.
+  D.nav.forEach(function (g) { if (g.id !== 'ops-resilience') return; g.children.forEach(function (c) { const dp = D.opsDivision.departments.find(function (x) { return x.id === c.id; }); if (dp) { c.href = '#/app/org/' + dp.slug; c.org = dp; } }); });
 
   /* ---------- Common service names ---------- */
   D.services = ['Nafath', 'Mojaz', 'Muqeem V3', 'yakeen-middleware', 'yakeen-engine', 'Wasel Portal', 'Zawil', 'TAMM', 'Salamah', 'Fursah', 'BillingApi', 'Digital Cards', 'pcs-demurrage', 'Shypr', 'change-data-tracker', 'Basher-Accident', 'Tamm_platform', 'fursah-core-service', 'Basher-portal-backend', 'Lezam', 'fingerprint', 'Saudi Post V2', 'Salamah-core', 'fursah-integration-service', 'NSP-Portal', 'Citizen Account', 'Bayan-API', 'SCE', 'Tawseel API', 'New Naql'];

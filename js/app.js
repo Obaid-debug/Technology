@@ -57,6 +57,14 @@
       if (r.segs[1] === 'applications' && r.segs[2]) return App.shell(root, { tab: 'appops-applications', crumbs: ['Applications Management', 'Applications', r.segs[2]] }, function (m) { return Pages.appDetail(m, r.segs[2]); });
       if (r.segs[1] === 'infrastructure' && r.segs[2] === 'virtual-machines' && r.segs[3]) return App.shell(root, { tab: 'virtual-machines', crumbs: ['Platform & Infrastructure', 'Virtual Machines', r.segs[3]] }, function (m) { return Pages.vmDetail(m, r.segs[3]); });
       if (r.segs[1] === 'infrastructure' && r.segs[2] === 'virtual-machines') return App.shell(root, { tab: 'virtual-machines' }, Pages['virtual-machines']);
+      if (r.segs[1] === 'org') {
+        const dp = DATA.opsDivision.departments.find(function (x) { return x.slug === r.segs[2]; });
+        const sc = dp && dp.sections.find(function (x) { return x.slug === r.segs[3]; });
+        const un = sc && sc.units.find(function (x) { return x.slug === r.segs[4]; });
+        if (!dp) return App.shell(root, { tab: 'ops-overview' }, function (m) { m.appendChild(U.emptyState('inbox', 'Page not found', 'Unknown department "' + r.segs[2] + '"')); });
+        const crumbs = ['Operations & Resilience', dp.name].concat(sc ? [sc.name] : []).concat(un ? [un.name] : []);
+        return App.shell(root, { tab: dp.id, orgPath: r.path, crumbs: crumbs }, function (m) { return Pages.orgScope(m, dp, sc || null, un || null); });
+      }
       if (r.segs[1] === 'lookup') { const slug = r.segs[2] || 'application-status'; const lk = App.findLookup(slug); return App.shell(root, { tab: 'appops-lookups', lookup: slug, crumbs: ['Applications Management', 'Lookup Management', lk ? lk.item.label : slug] }, function (m) { return Pages.lookup(m, slug); }); }
       const tab = r.query.tab || 'dashboard';
       const fn = Pages[tab];
@@ -187,8 +195,19 @@
         });
         kids.forEach(function (c) {
           const isActive = c.id === active;
-          const item = h('button', { class: 'nav-item sub' + (isActive ? ' active' : ''), onClick: function () { if (c.href) App.go(c.href); else App.tab(c.id); } }, h('span', { class: 'ni' }, U.ic(c.icon || 'circle', 12)), c.label, c.subGroups ? h('span', { style: { marginLeft: 'auto' } }, U.ic('chevronright', 12)) : null);
+          const item = h('button', { class: 'nav-item sub' + (isActive ? ' active' : ''), onClick: function () { if (c.href) App.go(c.href); else App.tab(c.id); } }, h('span', { class: 'ni' }, U.ic(c.icon || 'circle', 12)), c.label, (c.subGroups || c.org) ? h('span', { style: { marginLeft: 'auto' } }, U.ic(isActive && c.org ? 'chevrondown' : 'chevronright', 12)) : null);
           ch.appendChild(item);
+          if (c.org && (isActive || filter)) {
+            const here = (location.hash.split('?')[0] || '').replace(/^#\/?/, '');
+            c.org.sections.forEach(function (sc) {
+              const sp = 'app/org/' + c.org.slug + '/' + sc.slug;
+              ch.appendChild(h('button', { class: 'nav-item sub3 org-sec' + (here === sp ? ' active' : ''), onClick: function () { App.go('#/' + sp); } }, U.ic(sc.icon || 'layers', 11), sc.name));
+              sc.units.forEach(function (un) {
+                const up = sp + '/' + un.slug;
+                ch.appendChild(h('button', { class: 'nav-item sub4' + (here === up ? ' active' : ''), onClick: function () { App.go('#/' + up); } }, un.name));
+              });
+            });
+          }
           if (c.subGroups && (isActive || filter)) {
             c.subGroups.forEach(function (sg) {
               ch.appendChild(h('div', { class: 'nav-sub-group' }, sg.label));

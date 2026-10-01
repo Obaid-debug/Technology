@@ -826,3 +826,15 @@ p { margin: 0; }
 .draft-bar { display: flex; align-items: center; gap: 12px; margin: 12px 0 0; padding: 10px 14px; border-radius: 12px; border: 1px solid #f1e2b8; background: #fbf6e8; color: #6b5414; font-size: 12.5px; }
 .draft-bar.stale { border-color: #f2c4c4; background: #fdf0f0; color: #8a2b2b; }
 .draft-bar .grow { flex: 1; }
+/* org tree in the sidebar */
+.nav-item.org-sec { gap: 6px; font-weight: 600; color: var(--text); }
+.nav-item.sub4 { height: 24px; padding-left: 62px; font-size: 11.5px; color: var(--muted); }
+.nav-item.sub4:hover, .nav-item.sub4.active { color: var(--primary); }
+.nav-item.sub4.active { background: var(--primary-50); font-weight: 600; }
+.unit-row.static { cursor: default; background: transparent; }
+.unit-row.static:hover { border-color: var(--border-2); background: transparent; }
+.org-card .card-b { display: flex; flex-direction: column; }
+.nav-item.org-sec, .nav-item.sub4 { height: auto; min-height: 24px; padding-top: 4px; padding-bottom: 4px; line-height: 1.25; white-space: normal; text-align: left; align-items: center; }
+.nav-item.org-sec { margin-top: 4px; }
+.nav-item.org-sec { align-items: flex-start; }
+.nav-item.org-sec svg { flex: none; margin-top: 2px; }
