@@ -3,7 +3,7 @@
 An internal prototype of an insight portal for the Najm Technology Division. It is a zero-dependency
 front-end: every page, filter, tab, table and action works against local mock data — no backend, no build step.
 
-> **Internal prototype — not an official Najm service.** The logo is a placeholder
+> **Internal prototype — not an official Najm service.** The portal mark is not the official Najm logo
 > (see "Branding" below), sign-in is simulated in the browser, and all figures are mock data.
 > Keep this repository private and do not host it publicly.
 
@@ -85,8 +85,9 @@ marked "derived" in the CSS were computed to fill gaps. Chart colours in `js/` u
 (SVG attributes can't read CSS variables). Najm's site font is the licensed "DIN Next LT Arabic"; it is used
 if installed, otherwise IBM Plex Sans Arabic / Tajawal load from Google Fonts.
 
-The logo is a placeholder star in `assets/najm-logo.svg` and inline in `js/app.js`, `js/pages/public.js`
-and `js/pages/executive.js` — swap in the official mark from Najm's brand team.
+The portal mark (`assets/najm-logo.svg`, also inline in `js/app.js`, `js/pages/public.js` and
+`js/pages/executive.js`) is an original design in Najm's colours: a green tile with a grey base band and a white
+eight-pointed star (*najm* means star). It is not the official Najm logo.
 
 The mock users, applications and hostnames in `js/data.js` and `js/auth.js` still describe the original
 sample environment; replace them with Najm's teams, systems and services.

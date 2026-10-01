@@ -4,7 +4,7 @@
 (function () {
   const Pages = window.Pages = window.Pages || {};
 
-  const logoSvg = '<svg class="logo" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>';
+  const logoSvg = '<svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#33835c"/><path d="M0 50H64V52A12 12 0 0 1 52 64H12A12 12 0 0 1 0 52Z" fill="#c9cccb"/><polygon points="32.0,8.0 35.1,18.4 44.7,13.3 39.6,22.9 50.0,26.0 39.6,29.1 44.7,38.7 35.1,33.6 32.0,44.0 28.9,33.6 19.3,38.7 24.4,29.1 14.0,26.0 24.4,22.9 19.3,13.3 28.9,18.4" fill="#fff"/></svg>';
 
   function brand() { return h('a', { class: 'pub-brand', href: '#/welcome' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'Najm Technology'), h('div', { class: 't2' }, 'INSIGHT PORTAL'))); }
   function openPortal(extra) { return U.btn('Open portal', { cls: 'btn-grad ' + (extra || ''), iconRight: 'arrowright', onClick: function () { App.go('#/login'); } }); }
@@ -142,7 +142,7 @@
     const btn = h('button', { class: 'kc-btn', type: 'submit' }, 'Log in');
     const box = h('form', { class: 'kc', onSubmit: submit },
       h('button', { class: 'kc-x', type: 'button', onClick: function () { ov.remove(); } }, U.ic('x', 16)),
-      h('div', { class: 'kc-logo' }, U.raw('<svg width="26" height="26" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>'), h('span', null, 'najm')),
+      h('div', { class: 'kc-logo' }, U.raw('<svg width="26" height="26" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#33835c"/><path d="M0 50H64V52A12 12 0 0 1 52 64H12A12 12 0 0 1 0 52Z" fill="#c9cccb"/><polygon points="32.0,8.0 35.1,18.4 44.7,13.3 39.6,22.9 50.0,26.0 39.6,29.1 44.7,38.7 35.1,33.6 32.0,44.0 28.9,33.6 19.3,38.7 24.4,29.1 14.0,26.0 24.4,22.9 19.3,13.3 28.9,18.4" fill="#fff"/></svg>'), h('span', null, 'najm')),
       h('h2', null, 'Welcome to'), h('div', { class: 'realm' }, 'devops-najm-sa'),
       err, id, pw,
       h('label', { class: 'rem' }, h('input', { type: 'checkbox' }), 'Remember me'),

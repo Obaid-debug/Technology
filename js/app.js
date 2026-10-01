@@ -142,7 +142,7 @@
     } });
 
     return h('div', { class: 'topbar' },
-      h('div', { class: 'brand' }, U.raw('<svg class="logo" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>'), h('div', null, h('div', { class: 't1' }, 'Najm Technology'), h('div', { class: 't2' }, 'Insight Portal'))),
+      h('div', { class: 'brand' }, U.raw('<svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#33835c"/><path d="M0 50H64V52A12 12 0 0 1 52 64H12A12 12 0 0 1 0 52Z" fill="#c9cccb"/><polygon points="32.0,8.0 35.1,18.4 44.7,13.3 39.6,22.9 50.0,26.0 39.6,29.1 44.7,38.7 35.1,33.6 32.0,44.0 28.9,33.6 19.3,38.7 24.4,29.1 14.0,26.0 24.4,22.9 19.3,13.3 28.9,18.4" fill="#fff"/></svg>'), h('div', null, h('div', { class: 't1' }, 'Najm Technology'), h('div', { class: 't2' }, 'Insight Portal'))),
       h('div', { class: 'right' },
         h('span', { class: 'live-pill' }, h('i'), 'LIVE'),
         h('label', { class: 'auto-refresh' }, U.toggle(App.state.autoRefresh, function (v) { App.state.autoRefresh = v; U.toast('Auto-refresh ' + (v ? 'enabled' : 'disabled')); }), 'Auto-refresh'),

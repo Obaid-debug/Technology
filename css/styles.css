@@ -838,3 +838,10 @@ p { margin: 0; }
 .nav-item.org-sec { margin-top: 4px; }
 .nav-item.org-sec { align-items: flex-start; }
 .nav-item.org-sec svg { flex: none; margin-top: 2px; }
+
+/* portal mark: a full-colour tile, outlined on green backgrounds */
+.brand .logo, .pub-brand .logo { border-radius: 9px; }
+.login .left .pub-brand .logo { box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+.deck .logo svg { border-radius: 5px; }
+.deck .logo { width: auto; height: auto; }
+.deck .logo svg { flex: none; }
