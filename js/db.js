@@ -166,7 +166,7 @@ window.DB = (function () {
     const k = await deriveKey(pass, salt, KDF_ITER);
     const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, new TextEncoder().encode(JSON.stringify(records)));
     const obj = { v: 1, alg: 'AES-256-GCM', kdf: 'PBKDF2-SHA256', iterations: KDF_ITER, updated: new Date().toISOString().slice(0, 10), salt: b64.enc(salt), iv: b64.enc(iv), data: b64.enc(ct) };
-    return '/* Najm Insights staff data: ENCRYPTED (AES-256-GCM, key from passphrase via PBKDF2-SHA256).\n   Do not edit by hand. Regenerate it in the portal: Administration > Staff Data. */\nwindow.STAFF_DATA_ENC = ' + JSON.stringify(obj, null, 1) + ';\n';
+    return '/* Najm Technology staff data: ENCRYPTED (AES-256-GCM, key from passphrase via PBKDF2-SHA256).\n   Do not edit by hand. Regenerate it in the portal: Administration > Staff Data. */\nwindow.STAFF_DATA_ENC = ' + JSON.stringify(obj, null, 1) + ';\n';
   };
 
   DB.listEmployees = async function () {

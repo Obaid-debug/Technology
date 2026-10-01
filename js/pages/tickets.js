@@ -28,7 +28,7 @@
       });
     }
     function detail(t) {
-      U.modal({ title: t.id, sub: t.service + ' · ' + t.status, body: h('div', { class: 'col gap-12' }, U.kv('Title', t.title), h('div', { class: 'form-grid c3' }, U.kv('Priority', t.priority), U.kv('Assignment group', t.group), U.kv('Opened', t.opened)), U.kv('Journal', '2026-09-09 08:42 — Ticket auto-classified by Najm Insights (Zawil Login Failure workflow). Clarification requested from customer.')), footer: function (close) { return [U.btn('Close', { onClick: close }), U.btn('Open in HPSM', { cls: 'btn-primary', icon: 'external' })]; } });
+      U.modal({ title: t.id, sub: t.service + ' · ' + t.status, body: h('div', { class: 'col gap-12' }, U.kv('Title', t.title), h('div', { class: 'form-grid c3' }, U.kv('Priority', t.priority), U.kv('Assignment group', t.group), U.kv('Opened', t.opened)), U.kv('Journal', '2026-09-09 08:42 — Ticket auto-classified by the Najm Technology portal (Zawil Login Failure workflow). Clarification requested from customer.')), footer: function (close) { return [U.btn('Close', { onClick: close }), U.btn('Open in HPSM', { cls: 'btn-primary', icon: 'external' })]; } });
     }
   };
 

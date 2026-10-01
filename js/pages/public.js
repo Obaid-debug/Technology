@@ -6,7 +6,7 @@
 
   const logoSvg = '<svg class="logo" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>';
 
-  function brand() { return h('a', { class: 'pub-brand', href: '#/welcome' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'Najm Insights'), h('div', { class: 't2' }, 'BY NAJM TECHNOLOGY'))); }
+  function brand() { return h('a', { class: 'pub-brand', href: '#/welcome' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'Najm Technology'), h('div', { class: 't2' }, 'INSIGHT PORTAL'))); }
   function openPortal(extra) { return U.btn('Open portal', { cls: 'btn-grad ' + (extra || ''), iconRight: 'arrowright', onClick: function () { App.go('#/login'); } }); }
 
   const capabilities = [
@@ -32,7 +32,7 @@
     /* hero */
     const stats = [['box', '40+', 'Services monitored'], ['layers', '10+', 'Integrated systems'], ['clock', '24/7', 'Real-time insights'], ['shieldcheck', '99.9%', 'Platform uptime']];
     const left = h('div', null,
-      h('span', { class: 'tag' }, U.ic('sparkles', 12), 'v2.0 · Now powered by Najm Insights AI'),
+      h('span', { class: 'tag' }, U.ic('sparkles', 12), 'v2.0 · Now powered by Najm Technology AI'),
       h('h1', null, 'All operations.', h('br'), 'One intelligent', h('br'), h('span', { class: 'accent' }, 'cockpit.'), h('span', { class: 'caret' })),
       h('p', { class: 'lead' }, 'Unify observability, incidents, automation, and AI assistance in one operational cockpit. Investigate, automate and ship with confidence.'),
       h('div', { class: 'cta' }, openPortal(), U.btn('Explore capabilities', { cls: 'btn-outline-dark', onClick: scrollTo('capabilities') })),
@@ -59,9 +59,9 @@
     wrap.appendChild(h('section', { class: 'section', id: 'stack' }, h('div', { class: 'lbl' }, 'INTEGRATIONS'), h('h2', { style: { maxWidth: '520px' } }, 'Wired into the tools your teams already use.'), h('div', { class: 'marquee' }, track)));
 
     /* CTA */
-    wrap.appendChild(h('section', { id: 'cta', style: { paddingTop: '30px' } }, h('div', { class: 'cta-card' }, h('div', { class: 'portal-art' }, h('div', { class: 'base' }), h('div', { class: 'ring' }), h('div', { class: 'frame' })), h('div', null, h('h2', null, 'Ready to step into the cockpit?'), h('p', null, 'Sign in to your Najm Insights workspace and see every signal, ticket and automation in one place.'), openPortal()))));
+    wrap.appendChild(h('section', { id: 'cta', style: { paddingTop: '30px' } }, h('div', { class: 'cta-card' }, h('div', { class: 'portal-art' }, h('div', { class: 'base' }), h('div', { class: 'ring' }), h('div', { class: 'frame' })), h('div', null, h('h2', null, 'Ready to step into the cockpit?'), h('p', null, 'Sign in to the Najm Technology portal and see every signal, ticket and automation in one place.'), openPortal()))));
 
-    wrap.appendChild(h('footer', { class: 'pub-footer' }, brand(), h('div', { class: 'links' }, h('a', { href: '#capabilities', onClick: scrollTo('capabilities') }, 'Capabilities'), h('a', { href: '#workflows', onClick: scrollTo('workflows') }, 'Workflows'), h('a', { href: '#stack', onClick: scrollTo('stack') }, 'Integrations'), h('a', { href: '#/login' }, 'Open portal')), h('span', null, '© 2026 Najm Insights by Najm Technology — v2.0')));
+    wrap.appendChild(h('footer', { class: 'pub-footer' }, brand(), h('div', { class: 'links' }, h('a', { href: '#capabilities', onClick: scrollTo('capabilities') }, 'Capabilities'), h('a', { href: '#workflows', onClick: scrollTo('workflows') }, 'Workflows'), h('a', { href: '#stack', onClick: scrollTo('stack') }, 'Integrations'), h('a', { href: '#/login' }, 'Open portal')), h('span', null, '© 2026 Najm Technology — Insight Portal v2.0')));
     root.appendChild(pg);
   };
 
@@ -147,7 +147,7 @@
       err, id, pw,
       h('label', { class: 'rem' }, h('input', { type: 'checkbox' }), 'Remember me'),
       btn,
-      h('div', { class: 'kc-hint' }, 'Mock Keycloak · client najm-insights · try ID 1049 with password ' + Auth.DEMO_PASSWORD));
+      h('div', { class: 'kc-hint' }, 'Mock Keycloak · client najm-technology · try ID 1049 with password ' + Auth.DEMO_PASSWORD));
     const ov = h('div', { class: 'overlay', onClick: function (e) { if (e.target === ov) ov.remove(); } }, box);
     document.getElementById('modal-root').appendChild(ov);
     setTimeout(function () { id.focus(); }, 50);
@@ -187,7 +187,7 @@
     const demo = h('details', { class: 'demo-accounts' }, h('summary', null, 'Demo accounts (password ' + Auth.DEMO_PASSWORD + ' for all)'),
       h('table', null, Auth.users.map(function (u) { return h('tr', null, h('td', { class: 'u', title: 'Use this account', onClick: function () { email.value = u.email; pwd.value = Auth.DEMO_PASSWORD; check(); } }, u.username), h('td', null, Auth.roles[u.role] ? Auth.roles[u.role].label : u.role), h('td', { class: 'muted' }, 'SSO ID ' + u.idNumber), h('td', null, u.status === 'Active' ? '' : U.pill('Disabled', 'red'))); })));
     const form = h('form', { class: 'login-form', novalidate: true, onSubmit: function (e) { e.preventDefault(); doLogin(); } },
-      h('h2', null, 'Welcome back'), h('div', { class: 'sub' }, 'Sign in to your Najm Insights workspace.'),
+      h('h2', null, 'Welcome back'), h('div', { class: 'sub' }, 'Sign in to the Najm Technology portal.'),
       U.btn('Continue with Najm SSO', { cls: 'btn-dark', icon: 'link', iconRight: 'arrowright', onClick: openSSO }),
       h('div', { class: 'cap' }, 'Use your corporate Najm Technology credentials'),
       h('div', { class: 'divider' }, 'OR WITH EMAIL'),
@@ -202,7 +202,7 @@
 
     root.appendChild(h('div', { class: 'login' },
       h('div', { class: 'left' }, h('div', { class: 'glow a', style: { left: '30%', top: '10%' } }), h('a', { href: '#/welcome', class: 'pub-brand', title: 'Najm Technology — back to welcome page' }, U.raw(logoSvg)),
-        h('div', { class: 'mid' }, h('div', { class: 'lbl' }, 'NAJM TECHNOLOGY · NAJM INSIGHTS'), h('h1', null, 'All operations.', h('br'), 'One intelligent', h('br'), h('span', { class: 'accent' }, 'cockpit.'), h('span', { class: 'caret' }))),
+        h('div', { class: 'mid' }, h('div', { class: 'lbl' }, 'NAJM TECHNOLOGY · INSIGHT PORTAL'), h('h1', null, 'All operations.', h('br'), 'One intelligent', h('br'), h('span', { class: 'accent' }, 'cockpit.'), h('span', { class: 'caret' }))),
         h('div', null, h('div', { class: 'stats' }, h('div', null, h('b', null, '30+'), h('span', null, 'Integrations')), h('div', null, h('b', null, '24/7'), h('span', null, 'Monitoring')), h('div', null, h('b', null, '100%'), h('span', null, 'AI-powered RCA'))), h('div', { class: 'copy' }, '© 2026 Najm Technology · najm.sa'))),
       h('main', { class: 'right' }, form)));
   };

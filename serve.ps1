@@ -6,7 +6,7 @@ $mime = @{ '.html'='text/html; charset=utf-8'; '.css'='text/css; charset=utf-8';
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$Port/")
 $listener.Start()
-Write-Host "Najm Insights preview: http://localhost:$Port/  (Ctrl+C to stop)"
+Write-Host "Najm Technology preview: http://localhost:$Port/  (Ctrl+C to stop)"
 try {
   while ($listener.IsListening) {
     $ctx = $listener.GetContext()

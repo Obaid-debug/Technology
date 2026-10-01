@@ -142,7 +142,7 @@
     } });
 
     return h('div', { class: 'topbar' },
-      h('div', { class: 'brand' }, U.raw('<svg class="logo" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>'), h('div', null, h('div', { class: 't1' }, 'Najm Insights'), h('div', { class: 't2' }, 'All your operations in one place'))),
+      h('div', { class: 'brand' }, U.raw('<svg class="logo" viewBox="0 0 64 64" fill="none"><polygon points="32,4 40.2,22.7 60.5,24.7 45.3,38.3 49.6,58.3 32,48 14.4,58.3 18.7,38.3 3.5,24.7 23.8,22.7" fill="currentColor"/></svg>'), h('div', null, h('div', { class: 't1' }, 'Najm Technology'), h('div', { class: 't2' }, 'Insight Portal'))),
       h('div', { class: 'right' },
         h('span', { class: 'live-pill' }, h('i'), 'LIVE'),
         h('label', { class: 'auto-refresh' }, U.toggle(App.state.autoRefresh, function (v) { App.state.autoRefresh = v; U.toast('Auto-refresh ' + (v ? 'enabled' : 'disabled')); }), 'Auto-refresh'),

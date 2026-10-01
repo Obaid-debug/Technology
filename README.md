@@ -1,4 +1,4 @@
-# Najm Insights — Technology Division portal (prototype)
+# Najm Technology — Technology Division portal (prototype)
 
 An internal prototype of an insight portal for the Najm Technology Division. It is a zero-dependency
 front-end: every page, filter, tab, table and action works against local mock data — no backend, no build step.
