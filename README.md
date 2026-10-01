@@ -90,3 +90,34 @@ and `js/pages/executive.js` — swap in the official mark from Najm's brand team
 
 The mock users, applications and hostnames in `js/data.js` and `js/auth.js` still describe the original
 sample environment; replace them with Najm's teams, systems and services.
+
+## Shared database (Service Directory)
+
+The Service Directory (Applications Management › Service Directory) can store its data in a shared
+[Supabase](https://supabase.com) database so every user sees the same services and engineer assignments.
+The rest of the portal still uses the mock data.
+
+- **Local mode (default):** `js/config.js` is empty, so edits are saved only in your own browser.
+  The page shows "Local mode · saved in this browser".
+- **Shared mode:** anyone with the site can read the directory; editing needs a database account.
+  Each change records who made it and when.
+
+### Set it up (about 10 minutes)
+
+1. Create a free project at https://supabase.com (pick a region close to Saudi Arabia, e.g. Frankfurt or Mumbai).
+2. In the project, open **SQL Editor › New query**, paste the whole of `supabase/setup.sql`, and click **Run**.
+   It creates the `services` and `engineers` tables, the security rules, and loads the current sample data.
+3. Open **Authentication › Sign In / Providers** and turn **off** "Allow new users to sign up",
+   so only people you add can edit.
+4. Open **Authentication › Users › Add user** and create an account (email + password) for each editor.
+5. Open **Project Settings › API** and copy the **Project URL** and the **anon public** key into `js/config.js`.
+   (The anon key is designed to be public: the row-level security rules in `setup.sql` stop anyone who is
+   not signed in from changing data.)
+6. Push the change. The Service Directory chip should now say "Shared database · read-only"; click
+   **Sign in to edit** and use an account from step 4.
+
+Engineers are managed in Supabase (**Table Editor › engineers**). Never put the `service_role` key in this
+repository: it bypasses all security rules.
+
+> Data protection: this stores Najm service and staff assignments with an external provider.
+> Get approval from Najm IT / Information Security before loading real data.

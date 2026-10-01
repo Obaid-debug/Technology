@@ -146,39 +146,88 @@
     }
   };
 
-  /* ---------- Service directory ---------- */
+  /* ---------- Service directory (backed by js/db.js) ---------- */
   Pages['service-directory'] = function (page) {
-    const state = { q: '', view: 'service' };
-    const statusOf = function (s) { return s.primary ? 'Primary Active' : s.secondary ? 'Secondary Active' : 'No Engineer'; };
-    page.appendChild(U.pageHeader({ title: 'Service Directory', desc: DATA.directory.length + ' services • ' + DATA.engineers.length + ' engineers', plain: true, actions: [U.input({ placeholder: 'Search services or engineers…', icon: 'search', wrapStyle: { width: '260px' }, onInput: function (e) { state.q = e.target.value.toLowerCase(); render(); } }), U.iconBtn('refresh', { onClick: render })] }));
+    const state = { q: '', view: 'service', services: [], engineers: [], loading: true, error: null };
+    const statusOf = function (s) { return s.primary_engineer ? 'Primary Active' : s.secondary_engineer ? 'Secondary Active' : 'No Engineer'; };
+    const desc = h('span');
+    const dbChip = h('span', { class: 'db-chip' });
+    page.appendChild(U.pageHeader({ title: 'Service Directory', desc: desc, plain: true, actions: [U.input({ placeholder: 'Search services or engineers…', icon: 'search', wrapStyle: { width: '260px' }, onInput: function (e) { state.q = e.target.value.toLowerCase(); render(); } }), U.iconBtn('refresh', { title: 'Reload from database', onClick: load })] }));
     const holder = h('div');
-    page.appendChild(h('div', { class: 'row between' }, U.segTabs([{ id: 'service', label: 'Service View', icon: 'grid' }, { id: 'engineer', label: 'Engineer View', icon: 'list' }], 'service', function (id) { state.view = id; render(); }), U.btn('Add Service', { cls: 'btn-primary', icon: 'plus', perm: 'action:manage-apps', onClick: function () { addService(); } })));
+    page.appendChild(h('div', { class: 'row between' }, h('div', { class: 'row gap-8' }, U.segTabs([{ id: 'service', label: 'Service View', icon: 'grid' }, { id: 'engineer', label: 'Engineer View', icon: 'list' }], 'service', function (id) { state.view = id; render(); }), dbChip), U.btn('Add Service', { cls: 'btn-primary', icon: 'plus', perm: 'action:manage-apps', onClick: function () { editService(); } })));
     page.appendChild(holder);
-    function engSel(cur, onChange) { return U.select([{ value: '', label: '— None —' }].concat(DATA.engineers.map(function (e) { return { value: e, label: '● ' + e }; })), { value: cur, style: { height: '30px', fontSize: '12px' }, onChange: onChange }); }
+
+    function renderChip() {
+      U.clear(dbChip);
+      if (DB.mode === 'local') { dbChip.className = 'db-chip local'; dbChip.title = 'No shared database is configured (js/config.js). Changes are saved in this browser only.'; dbChip.append(U.ic('database', 12), 'Local mode · saved in this browser'); return; }
+      if (DB.user()) { dbChip.className = 'db-chip on'; dbChip.append(U.ic('database', 12), 'Shared database · ' + DB.user() + ' ', h('a', { href: 'javascript:void 0', onClick: function () { DB.signOut(); renderChip(); U.toast('Signed out of the shared database'); } }, 'Sign out')); return; }
+      dbChip.className = 'db-chip ro'; dbChip.append(U.ic('database', 12), 'Shared database · read-only ', h('a', { href: 'javascript:void 0', onClick: function () { signIn(); } }, 'Sign in to edit'));
+    }
+
+    function signIn(then) {
+      const f = { email: U.input({ type: 'email', placeholder: 'you@najm.sa' }), pw: U.input({ type: 'password', placeholder: 'Password' }) };
+      const err = h('div', { class: 'small text-red' });
+      U.modal({ title: 'Sign in to the shared database', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, 'Editing the Service Directory needs a database account. Ask the portal administrator to create one for you.'), U.field('Email', f.email, { req: true }), U.field('Password', f.pw, { req: true }), err), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Sign in', { cls: 'btn-primary', onClick: async function () { err.textContent = ''; try { await DB.signIn(f.email.value.trim(), f.pw.value); close(); renderChip(); U.toast('Signed in as ' + DB.user()); if (then) then(); } catch (e) { err.textContent = e.message; } } })]; } });
+    }
+
+    // Runs a write; on a permission error, asks the user to sign in and retries once.
+    async function write(fn, okMsg) {
+      if (!DB.canWrite()) { signIn(function () { write(fn, okMsg); }); return false; }
+      try { await fn(); if (okMsg) U.toast(okMsg); await load(); return true; }
+      catch (e) { if (e.needsSignIn) { DB.signOut(); renderChip(); signIn(function () { write(fn, okMsg); }); } else { U.toast(e.message, 'err'); await load(); } return false; }
+    }
+
+    async function load() {
+      state.loading = true; state.error = null; render();
+      try { const r = await Promise.all([DB.listServices(), DB.listEngineers()]); state.services = r[0]; state.engineers = r[1]; }
+      catch (e) { state.error = e.message; }
+      state.loading = false; render();
+    }
+
+    function engSel(cur, onChange) { return U.select([{ value: '', label: '— None —' }].concat(state.engineers.map(function (e) { return { value: e, label: '● ' + e }; })), { value: cur || '', style: { height: '30px', fontSize: '12px' }, onChange: onChange }); }
+    function canEdit(what) { return Auth.guard('action:manage-apps', null, what); }
+
     function render() {
-      U.clear(holder);
+      U.clear(holder); renderChip();
+      desc.textContent = state.loading ? 'Loading…' : state.services.length + ' services • ' + state.engineers.length + ' engineers';
+      if (state.loading && !state.services.length) { holder.appendChild(U.emptyState('refresh', 'Loading services…', DB.mode === 'local' ? 'Reading from this browser.' : 'Reading from the shared database.')); return; }
+      if (state.error) { holder.appendChild(h('div', null, U.emptyState('alert', 'Could not load the Service Directory', state.error, 'red'), h('div', { class: 'row', style: { justifyContent: 'center' } }, U.btn('Try again', { icon: 'refresh', onClick: load })))); return; }
+      const svcs = state.services;
       if (state.view === 'engineer') {
-        const rows = DATA.engineers.map(function (e) { const p = DATA.directory.filter(function (s) { return s.primary === e; }), s2 = DATA.directory.filter(function (s) { return s.secondary === e; }); return { eng: e, primary: p.length, secondary: s2.length, services: p.concat(s2).map(function (s) { return s.name; }) }; }).filter(function (r) { return !state.q || r.eng.indexOf(state.q) >= 0 || r.services.join(' ').toLowerCase().indexOf(state.q) >= 0; });
+        const rows = state.engineers.map(function (e) { const p = svcs.filter(function (s) { return s.primary_engineer === e; }), s2 = svcs.filter(function (s) { return s.secondary_engineer === e; }); return { eng: e, primary: p.length, secondary: s2.length, services: p.concat(s2).map(function (s) { return s.name; }) }; }).filter(function (r) { return !state.q || r.eng.indexOf(state.q) >= 0 || r.services.join(' ').toLowerCase().indexOf(state.q) >= 0; });
         const c = U.card({ title: 'Engineers', bodyCls: 'flush' });
         c.body.appendChild(U.table([{ key: 'eng', label: 'Engineer', render: function (r) { return h('span', { class: 'row' }, h('span', { class: 'avatar', style: { width: '24px', height: '24px', fontSize: '11px' } }, r.eng.charAt(0).toUpperCase()), h('b', null, r.eng)); } }, { key: 'primary', label: 'Primary', align: 'right', sortable: true }, { key: 'secondary', label: 'Secondary', align: 'right', sortable: true }, { key: 'services', label: 'Services', render: function (r) { return h('div', { class: 'row wrap gap-4' }, r.services.slice(0, 8).map(function (s) { return U.pill(s); }), r.services.length > 8 ? h('span', { class: 'xs muted' }, '+' + (r.services.length - 8)) : null); } }], rows, { sortKey: 'primary', sortDir: 'desc' }));
         holder.appendChild(c); return;
       }
+      const list = svcs.filter(function (s) { return !state.q || (s.name + ' ' + (s.code || '') + ' ' + (s.primary_engineer || '') + ' ' + (s.secondary_engineer || '')).toLowerCase().indexOf(state.q) >= 0; });
+      if (!list.length) { holder.appendChild(U.emptyState('search', state.q ? 'No matching services' : 'No services yet', state.q ? 'Try a different search.' : 'Use "Add Service" to create the first one.')); return; }
       const grid = h('div', { class: 'grid c4' });
-      DATA.directory.filter(function (s) { return !state.q || (s.name + ' ' + s.code + ' ' + s.primary + ' ' + s.secondary).toLowerCase().indexOf(state.q) >= 0; }).forEach(function (s) {
+      list.forEach(function (s) {
         const st = statusOf(s);
         grid.appendChild(h('div', { class: 'svc-card' },
-          h('div', { class: 'row between' }, h('div', { class: 'row grow', style: { minWidth: 0 } }, U.ic('grid', 14, 'text-primary'), h('span', { class: 'name truncate', title: s.name }, s.name)), h('div', { class: 'row gap-4' }, U.pill(st, st === 'No Engineer' ? 'solid-red' : st === 'Primary Active' ? 'green' : 'amber'), U.iconBtn('pencil', { cls: 'btn-ghost', size: 12, onClick: function () { addService(s); } }), U.iconBtn('trash', { cls: 'btn-ghost danger', size: 12, onClick: function () { U.confirm('Remove ' + s.name + '?', 'The service will be removed from the directory.', function () { DATA.directory.splice(DATA.directory.indexOf(s), 1); render(); }); } }))),
-          h('div', { class: 'code' }, s.code || ' '),
-          h('div', { class: 'lab' }, 'Primary'), engSel(s.primary, function (e) { if (!Auth.guard('action:manage-apps', null, 'assign engineer')) { render(); return; } s.primary = e.target.value; U.toast('Primary engineer updated for ' + s.name); render(); }),
-          h('div', { class: 'lab' }, 'Secondary'), engSel(s.secondary, function (e) { if (!Auth.guard('action:manage-apps', null, 'assign engineer')) { render(); return; } s.secondary = e.target.value; U.toast('Secondary engineer updated for ' + s.name); render(); })));
+          h('div', { class: 'row between' }, h('div', { class: 'row grow', style: { minWidth: 0 } }, U.ic('grid', 14, 'text-primary'), h('span', { class: 'name truncate', title: s.name }, s.name)), h('div', { class: 'row gap-4' }, U.pill(st, st === 'No Engineer' ? 'solid-red' : st === 'Primary Active' ? 'green' : 'amber'), U.iconBtn('pencil', { cls: 'btn-ghost', size: 12, title: 'Edit', onClick: function () { if (canEdit('edit services')) editService(s); } }), U.iconBtn('trash', { cls: 'btn-ghost danger', size: 12, title: 'Delete', onClick: function () { if (!canEdit('delete services')) return; U.confirm('Remove ' + s.name + '?', 'The service will be removed from the directory for everyone.', function () { write(function () { return DB.deleteService(s.id); }, s.name + ' removed'); }); } }))),
+          h('div', { class: 'code' }, s.code || ' '),
+          h('div', { class: 'lab' }, 'Primary'), engSel(s.primary_engineer, function (e) { if (!canEdit('assign engineer')) { render(); return; } const v = e.target.value || null; write(function () { return DB.updateService(s.id, { primary_engineer: v }); }, 'Primary engineer updated for ' + s.name); }),
+          h('div', { class: 'lab' }, 'Secondary'), engSel(s.secondary_engineer, function (e) { if (!canEdit('assign engineer')) { render(); return; } const v = e.target.value || null; write(function () { return DB.updateService(s.id, { secondary_engineer: v }); }, 'Secondary engineer updated for ' + s.name); }),
+          s.updated_at ? h('div', { class: 'xs muted', style: { marginTop: '6px' } }, 'Updated ' + new Date(s.updated_at).toLocaleString() + (s.updated_by ? ' · ' + s.updated_by : '')) : null));
       });
       holder.appendChild(grid);
     }
-    function addService(s) {
-      const f = { name: U.input({ value: s ? s.name : '', placeholder: 'Service name' }), code: U.input({ value: s ? s.code : '', placeholder: 'Short code (e.g. NFZ)' }), p: engSel(s ? s.primary : ''), s: engSel(s ? s.secondary : '') };
-      U.modal({ title: s ? 'Edit service' : 'Add Service', size: 'sm', body: h('div', { class: 'col gap-12' }, U.field('Name', f.name, { req: true }), U.field('Code', f.code), U.field('Primary engineer', f.p), U.field('Secondary engineer', f.s)), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Save', { cls: 'btn-primary', onClick: function () { if (!f.name.value.trim()) return; if (s) { s.name = f.name.value; s.code = f.code.value; s.primary = f.p.value; s.secondary = f.s.value; } else DATA.directory.unshift({ name: f.name.value, code: f.code.value, primary: f.p.value, secondary: f.s.value }); close(); render(); U.toast('Service saved'); } })]; } });
+
+    function editService(s) {
+      const f = { name: U.input({ value: s ? s.name : '', placeholder: 'Service name' }), code: U.input({ value: s ? s.code || '' : '', placeholder: 'Short code (e.g. NFZ)' }), p: engSel(s ? s.primary_engineer : ''), s: engSel(s ? s.secondary_engineer : '') };
+      const err = h('div', { class: 'small text-red' });
+      U.modal({ title: s ? 'Edit service' : 'Add Service', size: 'sm', body: h('div', { class: 'col gap-12' }, U.field('Name', f.name, { req: true }), U.field('Code', f.code), U.field('Primary engineer', f.p), U.field('Secondary engineer', f.s), err), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Save', { cls: 'btn-primary', onClick: function () {
+        const name = f.name.value.trim();
+        if (!name) { err.textContent = 'Name is required.'; return; }
+        if (state.services.some(function (x) { return x !== s && x.name.toLowerCase() === name.toLowerCase(); })) { err.textContent = 'A service with this name already exists.'; return; }
+        const row = { name: name, code: f.code.value.trim() || null, primary_engineer: f.p.value || null, secondary_engineer: f.s.value || null };
+        close();
+        write(function () { return s ? DB.updateService(s.id, row) : DB.addService(row); }, 'Service saved');
+      } })]; } });
     }
-    render();
+
+    load();
   };
 
   /* ---------- Najm management ---------- */
