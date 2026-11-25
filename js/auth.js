@@ -74,7 +74,7 @@ window.Auth = (function () {
   /* ---------- audit ---------- */
   A.log = function (event, detail, outcome) {
     const s = A.session();
-    A.audit.unshift({ ts: new Date().toISOString().slice(0, 19).replace('T', ' '), user: s ? s.username : (detail && detail.username) || 'anonymous', event: event, detail: typeof detail === 'string' ? detail : (detail && detail.text) || '', outcome: outcome || 'success', ip: '198.18.' + (30 + (A.audit.length % 9)) + '.' + (100 + (A.audit.length * 7) % 150) });
+    A.audit.unshift({ ts: new Date().toISOString().slice(0, 19).replace('T', ' '), user: s ? s.username : (detail && detail.username) || 'anonymous', event: event, detail: typeof detail === 'string' ? detail : (detail && detail.text) || '', outcome: outcome || 'success', ip: 'xxx.xxx.xxx.' + (100 + (A.audit.length * 7) % 150) });
     if (A.audit.length > 500) A.audit.length = 500;
     save(KEY_AUDIT, A.audit);
   };

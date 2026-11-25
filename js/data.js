@@ -177,19 +177,19 @@ window.DATA = (function () {
     for (let i = 1; i <= 4072; i++) {
       const prefix = i <= 120 ? 'vm-lab-' : (i <= 900 ? 'vm-' + ['alpha', 'bravo', 'delta', 'echo', 'kilo', 'lima', 'tango'][i % 7] + '-' + ['rv', 'wv'][i % 2] + '-' : (i <= 2200 ? 'vm-' + ['bkp', 'svc', 'db', 'app'][i % 4] + '-rv-' : 'vm-' + ['oscar', 'papa', 'romeo', 'sierra'][i % 4] + '-' + ['rv', 'wv'][i % 2] + '-'));
       const name = prefix + String(i).padStart(3, '0');
-      out.push({ id: i, name: name, ip: '198.' + (18 + (i % 2)) + '.' + (Math.floor(i / 2) % 250 + 1) + '.' + ((i * 37) % 250 + 2), service: i <= 120 ? '—' : ['Service S-178', 'Service S-102', 'Service S-097', 'Service S-186', 'Billing', 'Service S-072', 'A418 - A492', 'Service S-015', 'Backup Management'][i % 9], env: i <= 120 ? 'Development' : envsV[Math.floor(r() * envsV.length)], extraEnv: i <= 120 ? 4 : Math.floor(r() * 3), power: r() > 0.94 ? 'Stopped' : 'Running', dc: i <= 120 ? 'NJM' : dcs[Math.floor(r() * dcs.length)], os: os[Math.floor(r() * os.length)], cpu: [2, 4, 8, 16][Math.floor(r() * 4)], ram: [4, 8, 16, 32, 64][Math.floor(r() * 5)], disk: [100, 150, 200, 300, 450, 600][Math.floor(r() * 6)], cluster: 'vcs-' + (1 + (i % 6)), fqdn: name.toLowerCase() + '.example.com' });
+      out.push({ id: i, name: name, ip: 'xxx.xxx.xxx.' + ((i * 37) % 250 + 2), service: i <= 120 ? '—' : ['Service S-178', 'Service S-102', 'Service S-097', 'Service S-186', 'Billing', 'Service S-072', 'A418 - A492', 'Service S-015', 'Backup Management'][i % 9], env: i <= 120 ? 'Development' : envsV[Math.floor(r() * envsV.length)], extraEnv: i <= 120 ? 4 : Math.floor(r() * 3), power: r() > 0.94 ? 'Stopped' : 'Running', dc: i <= 120 ? 'NJM' : dcs[Math.floor(r() * dcs.length)], os: os[Math.floor(r() * os.length)], cpu: [2, 4, 8, 16][Math.floor(r() * 4)], ram: [4, 8, 16, 32, 64][Math.floor(r() * 5)], disk: [100, 150, 200, 300, 450, 600][Math.floor(r() * 6)], cluster: 'vcs-' + (1 + (i % 6)), fqdn: name.toLowerCase() + '.example.com' });
     }
     return out;
   })();
 
   D.vmInventory = (function () {
     const base = [
-      ['srv-001', '192.0.2.1', 'ON', 'Testing', 'Service S-070', 8, 32, 151], ['srv-002', '192.0.2.2', 'ON', 'Testing', 'Service S-072', 8, 32, 311], ['srv-003', '192.0.2.3', 'ON', '—', '—', 8, 32, 239], ['srv-004', '192.0.2.4', 'ON', 'Testing', 'A418 - A492', 8, 32, 101], ['srv-005', '192.0.2.5', 'OFF', '—', '—', 2, 4, 101], ['srv-006', '192.0.2.6', 'ON', '—', '—', 8, 32, 204], ['snapshot-manager-vm', '192.0.2.7', 'OFF', '—', '—', 4, 16, 290], ['bastion-host', '192.0.2.8', 'OFF', '—', '—', 2, 4, 10], ['srv-007', '192.0.2.9', 'ON', 'Testing', 'Billing', 8, 32, 600], ['srv-008', '192.0.2.10', 'OFF', 'Testing', 'Service S-015', 8, 32, 200], ['srv-009', '192.0.2.11', 'ON', '—', '—', 8, 32, 200], ['srv-010', '192.0.2.12', 'ON', '—', 'Service S-109', 24, 96, 300], ['srv-011', '192.0.2.13', 'ON', 'Testing', 'Service S-072', 8, 32, 450], ['srv-012', '192.0.2.14', 'OFF', '—', '—', 4, 16, 800], ['srv-013', '192.0.2.15', 'ON', '—', '—', 16, 64, 200], ['srv-014', '192.0.2.16', 'ON', '—', 'Backup Management', 16, 64, 22828], ['srv-015', '192.0.2.17', 'ON', 'Testing', 'Service S-153', 8, 32, 301], ['srv-016', '—', 'ON', 'Testing', 'A418 - A434 PTL', 4, 16, 250], ['srv-017', '192.0.2.18', 'ON', '—', 'Service S-178', 4, 8, 100], ['srv-018', '192.0.2.19', 'ON', 'Testing', 'Service S-153', 2, 8, 100]
+      ['srv-001', 'xxx.xxx.xxx.1', 'ON', 'Testing', 'Service S-070', 8, 32, 151], ['srv-002', 'xxx.xxx.xxx.2', 'ON', 'Testing', 'Service S-072', 8, 32, 311], ['srv-003', 'xxx.xxx.xxx.3', 'ON', '—', '—', 8, 32, 239], ['srv-004', 'xxx.xxx.xxx.4', 'ON', 'Testing', 'A418 - A492', 8, 32, 101], ['srv-005', 'xxx.xxx.xxx.5', 'OFF', '—', '—', 2, 4, 101], ['srv-006', 'xxx.xxx.xxx.6', 'ON', '—', '—', 8, 32, 204], ['snapshot-manager-vm', 'xxx.xxx.xxx.7', 'OFF', '—', '—', 4, 16, 290], ['bastion-host', 'xxx.xxx.xxx.8', 'OFF', '—', '—', 2, 4, 10], ['srv-007', 'xxx.xxx.xxx.9', 'ON', 'Testing', 'Billing', 8, 32, 600], ['srv-008', 'xxx.xxx.xxx.10', 'OFF', 'Testing', 'Service S-015', 8, 32, 200], ['srv-009', 'xxx.xxx.xxx.11', 'ON', '—', '—', 8, 32, 200], ['srv-010', 'xxx.xxx.xxx.12', 'ON', '—', 'Service S-109', 24, 96, 300], ['srv-011', 'xxx.xxx.xxx.13', 'ON', 'Testing', 'Service S-072', 8, 32, 450], ['srv-012', 'xxx.xxx.xxx.14', 'OFF', '—', '—', 4, 16, 800], ['srv-013', 'xxx.xxx.xxx.15', 'ON', '—', '—', 16, 64, 200], ['srv-014', 'xxx.xxx.xxx.16', 'ON', '—', 'Backup Management', 16, 64, 22828], ['srv-015', 'xxx.xxx.xxx.17', 'ON', 'Testing', 'Service S-153', 8, 32, 301], ['srv-016', '—', 'ON', 'Testing', 'A418 - A434 PTL', 4, 16, 250], ['srv-017', 'xxx.xxx.xxx.18', 'ON', '—', 'Service S-178', 4, 8, 100], ['srv-018', 'xxx.xxx.xxx.19', 'ON', 'Testing', 'Service S-153', 2, 8, 100]
     ].map(function (r) { return { name: r[0], ip: r[1], power: r[2], env: r[3], service: r[4], os: '—', cpu: r[5], ram: r[6], disk: r[7] }; });
     const r = U.seeded(99); const svcs = ['Service S-102', 'Service S-097', 'Service S-178', 'Service S-186', 'Service S-156', 'Service S-138', 'Billing', 'Service S-072', 'Service S-015', 'Service S-109', '—', '—'];
     for (let i = base.length; i < 6973; i++) {
       const p = ['vm', 'vm', 'lab', 'k8s'][Math.floor(r() * 4)];
-      base.push({ name: p + '-' + ['app', 'db', 'web', 'rv', 'wv', 'k8s'][Math.floor(r() * 6)] + '-' + String(i).padStart(4, '0'), ip: '198.' + (18 + Math.floor(r() * 2)) + '.' + (1 + Math.floor(r() * 250)) + '.' + (2 + Math.floor(r() * 250)), power: r() > 0.886 ? 'OFF' : 'ON', env: ['Testing', 'Production', 'Staging', '—'][Math.floor(r() * 4)], service: svcs[Math.floor(r() * svcs.length)], os: ['RHEL 8', 'RHEL 9', 'Windows 2019', '—'][Math.floor(r() * 4)], cpu: [2, 4, 8, 16][Math.floor(r() * 4)], ram: [4, 8, 16, 32, 64][Math.floor(r() * 5)], disk: [100, 200, 300, 500][Math.floor(r() * 4)] });
+      base.push({ name: p + '-' + ['app', 'db', 'web', 'rv', 'wv', 'k8s'][Math.floor(r() * 6)] + '-' + String(i).padStart(4, '0'), ip: 'xxx.xxx.xxx.' + (2 + Math.floor(r() * 250)), power: r() > 0.886 ? 'OFF' : 'ON', env: ['Testing', 'Production', 'Staging', '—'][Math.floor(r() * 4)], service: svcs[Math.floor(r() * svcs.length)], os: ['RHEL 8', 'RHEL 9', 'Windows 2019', '—'][Math.floor(r() * 4)], cpu: [2, 4, 8, 16][Math.floor(r() * 4)], ram: [4, 8, 16, 32, 64][Math.floor(r() * 5)], disk: [100, 200, 300, 500][Math.floor(r() * 4)] });
     }
     return base;
   })();
@@ -205,24 +205,24 @@ window.DATA = (function () {
   D.ocpNodes = (function () {
     const out = [];
     const mk = function (name, ip, role, cpu, mem, eph, taint) { out.push({ name: name, ip: ip, role: role, cpu: cpu, mem: mem, eph: eph, taint: taint, pods: 250, status: 'Ready' }); };
-    mk('srv-019', '192.0.2.20', 'Master', [31.5, 32], [61.6, 62.7], '149.4 Gi', 'node-role.kubernetes.io/master: NoSchedule');
-    mk('srv-020', '192.0.2.21', 'Master', [31.5, 32], [61.6, 62.7], '149.4 Gi', 'node-role.kubernetes.io/master: NoSchedule');
-    mk('srv-021', '192.0.2.22', 'Master', [31.5, 32], [61.6, 62.7], '149.4 Gi', 'node-role.kubernetes.io/master: NoSchedule');
-    mk('srv-022', '192.0.2.23', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/infra: NoSchedule');
-    mk('srv-023', '192.0.2.24', 'Worker', [39.5, 40], [93.1, 94.2], '159.4 Gi', null);
-    mk('srv-024', '192.0.2.25', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/ingress: NoSchedule');
-    mk('srv-025', '192.0.2.26', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/infra: NoSchedule');
-    mk('srv-026', '192.0.2.27', 'Worker', [39.5, 40], [93.1, 94.2], '159.4 Gi', null);
-    mk('srv-027', '192.0.2.28', 'Worker', [39.5, 40], [30.2, 31.3], '149.4 Gi', 'node-role.kubernetes.io/ingress: NoSchedule');
-    for (let i = 2; i <= 11; i++) mk('k8s-worker-' + i + '-m1-10xlarge-ksa-central-b3', '198.18.24.' + (20 + i * 3), 'Worker', [39.5, 40], [93.1, 94.2], '159.4 Gi', i % 3 === 0 ? 'node-role.kubernetes.io/portworx-data: NoSchedule' : null);
-    mk('srv-028', '192.0.2.29', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/infra: NoSchedule');
-    mk('srv-029', '192.0.2.30', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/ingress: NoSchedule');
-    [0, 2, 3, 5].forEach(function (i) { mk('k8s-worker-data-' + i + '-m1-2xlarge-ksa-central-b2', '198.18.24.' + (22 + i * 9), 'Worker', [31.5, 32], [61.6, 62.7], '149.4 Gi', i < 3 ? 'node-role.kubernetes.io/portworx-data: NoSchedule' : null); });
-    [1, 2, 3].forEach(function (i) { mk('srv-030' + i + '-worker', '198.18.24.' + (14 + i * 40), 'Worker', [39.5, 40], i === 1 ? [93.1, 94.2] : [61.6, 62.7], i === 1 ? '149.4 Gi' : '159.4 Gi', null); });
+    mk('srv-019', 'xxx.xxx.xxx.20', 'Master', [31.5, 32], [61.6, 62.7], '149.4 Gi', 'node-role.kubernetes.io/master: NoSchedule');
+    mk('srv-020', 'xxx.xxx.xxx.21', 'Master', [31.5, 32], [61.6, 62.7], '149.4 Gi', 'node-role.kubernetes.io/master: NoSchedule');
+    mk('srv-021', 'xxx.xxx.xxx.22', 'Master', [31.5, 32], [61.6, 62.7], '149.4 Gi', 'node-role.kubernetes.io/master: NoSchedule');
+    mk('srv-022', 'xxx.xxx.xxx.23', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/infra: NoSchedule');
+    mk('srv-023', 'xxx.xxx.xxx.24', 'Worker', [39.5, 40], [93.1, 94.2], '159.4 Gi', null);
+    mk('srv-024', 'xxx.xxx.xxx.25', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/ingress: NoSchedule');
+    mk('srv-025', 'xxx.xxx.xxx.26', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/infra: NoSchedule');
+    mk('srv-026', 'xxx.xxx.xxx.27', 'Worker', [39.5, 40], [93.1, 94.2], '159.4 Gi', null);
+    mk('srv-027', 'xxx.xxx.xxx.28', 'Worker', [39.5, 40], [30.2, 31.3], '149.4 Gi', 'node-role.kubernetes.io/ingress: NoSchedule');
+    for (let i = 2; i <= 11; i++) mk('k8s-worker-' + i + '-m1-10xlarge-ksa-central-b3', 'xxx.xxx.xxx.' + (20 + i * 3), 'Worker', [39.5, 40], [93.1, 94.2], '159.4 Gi', i % 3 === 0 ? 'node-role.kubernetes.io/portworx-data: NoSchedule' : null);
+    mk('srv-028', 'xxx.xxx.xxx.29', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/infra: NoSchedule');
+    mk('srv-029', 'xxx.xxx.xxx.30', 'Worker', [39.5, 40], [93.1, 94.2], '149.4 Gi', 'node-role.kubernetes.io/ingress: NoSchedule');
+    [0, 2, 3, 5].forEach(function (i) { mk('k8s-worker-data-' + i + '-m1-2xlarge-ksa-central-b2', 'xxx.xxx.xxx.' + (22 + i * 9), 'Worker', [31.5, 32], [61.6, 62.7], '149.4 Gi', i < 3 ? 'node-role.kubernetes.io/portworx-data: NoSchedule' : null); });
+    [1, 2, 3].forEach(function (i) { mk('srv-030' + i + '-worker', 'xxx.xxx.xxx.' + (14 + i * 40), 'Worker', [39.5, 40], i === 1 ? [93.1, 94.2] : [61.6, 62.7], i === 1 ? '149.4 Gi' : '159.4 Gi', null); });
     for (let i = 1; i <= 53; i++) {
       const tab = [1, 2, 3, 4, 5, 6, 7, 22, 23].indexOf(i) >= 0;
       const ing = [13, 14, 15].indexOf(i) >= 0;
-      mk('ocp-demo-01-worker-' + i, '198.18.24.' + (7 + ((i * 7) % 100)), 'Worker', i >= 48 && i % 2 === 0 ? [31.5, 32] : [39.5, 40], tab ? [117.1, 118.2] : [93.1, 94.2], i >= 37 ? '199.4 Gi' : '149.4 Gi', tab ? 'node-role.kubernetes.io/apps-a418: NoSchedule' : (ing ? 'node-role.kubernetes.io/ingress: NoSchedule' : null));
+      mk('ocp-demo-01-worker-' + i, 'xxx.xxx.xxx.' + (7 + ((i * 7) % 100)), 'Worker', i >= 48 && i % 2 === 0 ? [31.5, 32] : [39.5, 40], tab ? [117.1, 118.2] : [93.1, 94.2], i >= 37 ? '199.4 Gi' : '149.4 Gi', tab ? 'node-role.kubernetes.io/apps-a418: NoSchedule' : (ing ? 'node-role.kubernetes.io/ingress: NoSchedule' : null));
     }
     return out.slice(0, 81);
   })();
@@ -271,10 +271,10 @@ window.DATA = (function () {
       ['Service S-184', 'Enhancement', 'TKT-0005', 'Production', 'Application', 'OpenShift', 'Enhance demo data provider', 'cmp-007', true],
       ['A479 portal', 'Enhancement', 'TKT-0006', 'Production', 'Both', 'VM', 'تكامل تجريبي مع منصة شريك للتحقق من البيانات', 'cmp-008', true],
       ['A479 portal', 'Enhancement', 'TKT-0007', 'Staging', 'Both', 'VM', 'تكامل تجريبي مع منصة شريك للتحقق من البيانات', 'cmp-008', true],
-      ['A479 portal', 'Enhancement', 'TKT-0008', 'Production', 'Both', 'VM', 'إطلاق خدمة تجريبية جديدة', 'wsl-192.0.2.31', true],
-      ['A479 portal', 'Enhancement', 'TKT-0009', 'Staging', 'Both', 'VM', 'إطلاق خدمة تجريبية جديدة', 'wsl-192.0.2.31', true],
-      ['A479 portal', 'Enhancement', 'TKT-0010', 'Production', 'Both', 'VM', 'إضافة رمز خدمة تجريبي جديد', 'wsl-192.0.2.32', true],
-      ['A479 portal', 'Enhancement', 'TKT-0011', 'Staging', 'Both', 'VM', 'إضافة رمز خدمة تجريبي جديد', 'wsl-192.0.2.32', true],
+      ['A479 portal', 'Enhancement', 'TKT-0008', 'Production', 'Both', 'VM', 'إطلاق خدمة تجريبية جديدة', 'wsl-xxx.xxx.xxx.31', true],
+      ['A479 portal', 'Enhancement', 'TKT-0009', 'Staging', 'Both', 'VM', 'إطلاق خدمة تجريبية جديدة', 'wsl-xxx.xxx.xxx.31', true],
+      ['A479 portal', 'Enhancement', 'TKT-0010', 'Production', 'Both', 'VM', 'إضافة رمز خدمة تجريبي جديد', 'wsl-xxx.xxx.xxx.32', true],
+      ['A479 portal', 'Enhancement', 'TKT-0011', 'Staging', 'Both', 'VM', 'إضافة رمز خدمة تجريبي جديد', 'wsl-xxx.xxx.xxx.32', true],
       ['A479 portal', 'First Release', 'TKT-0012', 'Production', 'Both', 'VM', 'Subdomain notification for demo portal', 'cmp-011', true]
     ];
     const out = base.map(function (r) { return { service: r[0], cat: r[1], key: r[2], env: r[3], team: r[4], platform: r[5], title: r[6], version: r[7], docs: r[8] }; });

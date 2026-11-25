@@ -114,7 +114,7 @@
           const row = {
             id: ++id, project: p[0], code: p[2], criticality: p[3], owner: r() < 0.06 ? '' : p[4], dba: r() < 0.05 ? '' : DBAS[Math.floor(r() * DBAS.length)], dataClass: p[5],
             name: dbName, engine: p[1], version: v[0], patch: v[1], latestPatch: v[2], eol: !!v[3], eolNote: v[4] || '',
-            env: envId, host: host, ip: env.net + '.' + ((pi * 9 + k) % 240 + 11), ipType: prodLike ? eng.ipTypes[0] : eng.ipTypes[1], port: port, proxy: proxy,
+            env: envId, host: host, ip: 'xxx.xxx.xxx.' + ((pi * 9 + k) % 240 + 11), ipType: prodLike ? eng.ipTypes[0] : eng.ipTypes[1], port: port, proxy: proxy,
             endpoint: endpointFor(p[1], host, port, proxy, dbName, p[2]),
             role: envId === 'Production' ? 'Primary' : envId === 'DR' ? 'Standby' : 'Standalone', pair: null,
             sizeGB: size, allocGB: alloc, series: series,
@@ -132,7 +132,7 @@
       if (byEnv.Production && byEnv.DR) byEnv.Production.forEach(function (pr, i) { const dr = byEnv.DR[i]; if (dr) { pr.pair = dr.id; dr.pair = pr.id; pr.lagSec = dr.lagSec; } });
     });
     // two discovered databases that no rule could classify
-    [['ORA19TMP', 'Oracle', '198.19.70.21', 'x-ora-tmp-01'], ['mig_stage', 'PostgreSQL', '198.19.70.36', 'x-pg-mig-01']].forEach(function (d) {
+    [['ORA19TMP', 'Oracle', 'xxx.xxx.xxx.21', 'x-ora-tmp-01'], ['mig_stage', 'PostgreSQL', 'xxx.xxx.xxx.36', 'x-pg-mig-01']].forEach(function (d) {
       const eng = ENGINES[d[1]], v = eng.versions[0];
       rows.push({ id: ++id, project: '', code: '', criticality: '', owner: '', dba: '', dataClass: '', name: d[0], engine: d[1], version: v[0], patch: v[1], latestPatch: v[2], eol: false, eolNote: '',
         env: 'Unclassified', host: d[3], ip: d[2], ipType: 'Server IP', port: eng.port, proxy: 'Direct', endpoint: endpointFor(d[1], d[3], eng.port, 'Direct', d[0], 'x'), role: 'Standalone', pair: null,
@@ -155,10 +155,10 @@
     ['vCenter host mapping', 'VM, cluster and data center for each host', 'Daily 03:00', 34.0, 0, 'Failed', 'Authentication failed: service account password expired']
   ];
   const UNREGISTERED = [
-    ['p-pg-anl-02', '198.18.10.231', 'PostgreSQL 16.6', 'analytics_tmp', 'PostgreSQL collector', '2 days ago'],
-    ['s-mss-vval-02', '198.18.30.142', 'SQL Server 2022', 'VVAL_REPORTS', 'SQL Server CMS', '5 hours ago'],
-    ['d-my-ntfy-02', '198.18.60.232', 'MySQL 8.0.40', 'ntfy_load_test', 'MySQL collector', '1 day ago'],
-    ['t-mdb-moba-02', '198.18.50.212', 'MongoDB 7.0.15', 'moba_perf', 'MongoDB Ops Manager', '3 days ago']
+    ['p-pg-anl-02', 'xxx.xxx.xxx.231', 'PostgreSQL 16.6', 'analytics_tmp', 'PostgreSQL collector', '2 days ago'],
+    ['s-mss-vval-02', 'xxx.xxx.xxx.142', 'SQL Server 2022', 'VVAL_REPORTS', 'SQL Server CMS', '5 hours ago'],
+    ['d-my-ntfy-02', 'xxx.xxx.xxx.232', 'MySQL 8.0.40', 'ntfy_load_test', 'MySQL collector', '1 day ago'],
+    ['t-mdb-moba-02', 'xxx.xxx.xxx.212', 'MongoDB 7.0.15', 'moba_perf', 'MongoDB Ops Manager', '3 days ago']
   ];
 
   const S = window.DBINV = window.DBINV || { rows: null, lastSyncAt: Date.now() - 25 * 60000, imported: 0 };
@@ -298,7 +298,7 @@
       section('Ownership', 'manual', h('div', null, grid(U.kv('Project', x.project || '—'), U.kv('Owner team', x.owner || h('span', { class: 'text-red' }, 'Missing')), U.kv('DBA', x.dba || h('span', { class: 'text-red' }, 'Missing')), U.kv('Data class', x.dataClass || '—')),
         h('div', { class: 'row between mt-16' }, h('span', { class: 'xs ' + (x.confirmedDays > 90 ? 'text-amber' : 'muted') }, x.confirmedDays === null ? 'Never confirmed' : 'Last confirmed by owner ' + x.confirmedDays + ' days ago' + (x.confirmedDays > 90 ? ' — review due' : '')),
           U.btn('Confirm details', { cls: 'btn-sm', icon: 'check', perm: 'action:manage-dbs', onClick: function () { x.confirmedDays = 0; U.toast('Ownership confirmed for ' + x.name); } })))),
-      section('Environment & DR', 'inferred', grid(U.kv('Environment', x.env), U.kv('Rule', x.env === 'Unclassified' ? 'No rule matched — needs review' : 'Host prefix "' + x.host.charAt(0) + '-" and network ' + x.ip.split('.').slice(0, 3).join('.') + '.x'), U.kv(x.role === 'Standby' ? 'Primary' : 'DR standby', pair ? h('span', { class: 'link', onClick: function () { detail(pair, rerender); } }, pair.name) : '—'), U.kv(x.replTech + ' lag', pair || x.lagSec !== null ? h('span', { class: lagBad(x) ? 'text-red bold' : '' }, lagText(x.lagSec)) : '—'))),
+      section('Environment & DR', 'inferred', grid(U.kv('Environment', x.env), U.kv('Rule', x.env === 'Unclassified' ? 'No rule matched — needs review' : 'Host prefix "' + x.host.charAt(0) + '-" and the ' + x.env + ' network'), U.kv(x.role === 'Standby' ? 'Primary' : 'DR standby', pair ? h('span', { class: 'link', onClick: function () { detail(pair, rerender); } }, pair.name) : '—'), U.kv(x.replTech + ' lag', pair || x.lagSec !== null ? h('span', { class: lagBad(x) ? 'text-red bold' : '' }, lagText(x.lagSec)) : '—'))),
       section('Backup & recovery', 'auto', grid(U.kv('Last backup', backupCell(x)), U.kv('Policy', 'Every ' + (x.backupPolicyH >= 168 ? '7 days' : x.backupPolicyH + 'h') + ' · ' + x.backupTool), U.kv('Backup type', x.backupType), U.kv('Last restore test', x.restoreDays === null ? 'Not required' : h('span', { class: restoreBad(x) ? 'text-red bold' : '' }, x.restoreDays + ' days ago' + (restoreBad(x) ? ' (over 90)' : ''))))),
       section('Version & security', 'auto', grid(U.kv('Version', x.engine + ' ' + x.version), U.kv('Patch', patchBehind(x) ? h('span', { class: 'text-amber bold' }, x.patch + ' (latest ' + x.latestPatch + ')') : x.patch + (x.eol ? '' : ' (latest)')), U.kv('Support', x.eol ? h('span', { class: 'text-red bold' }, x.eolNote) : 'Supported'), U.kv('TLS certificate', h('span', { class: certBad(x) ? 'text-red bold' : '' }, 'Expires in ' + x.certDays + ' days')), U.kv('Privileged accounts', x.priv + (x.privUnused ? ' (' + x.privUnused + ' unused > 90 days)' : '')))),
       section('Storage', 'auto', h('div', null, grid(U.kv('Size', x.sizeGB + ' GB'), U.kv('Allocated', x.allocGB + ' GB (' + Math.round(x.sizeGB / x.allocGB * 100) + '% used)'), U.kv('Growth (12 months)', '+' + Math.round((x.series[11] - x.series[0]) / x.series[0] * 100) + '%'), U.kv('Full at current rate', fullIn === null ? '—' : h('span', { class: fullIn < 6 ? 'text-red bold' : '' }, 'in ~' + fullIn + ' months'))), h('div', { class: 'mt-16' }, growth))),
@@ -483,7 +483,7 @@
       name: U.input({ value: v.name || '', placeholder: 'e.g. CLMSPRD' }),
       engine: U.select(Object.keys(ENGINES), { value: v.engine && ENGINES[v.engine.split(' ')[0] === 'SQL' ? 'SQL Server' : v.engine.split(' ')[0]] ? (v.engine.indexOf('SQL Server') === 0 ? 'SQL Server' : v.engine.split(' ')[0]) : 'Oracle' }),
       env: U.select(ENVS.map(function (e) { return e.id; }).concat(['Unclassified']), { value: v.env || 'Development' }),
-      ip: U.input({ value: v.ip || '', placeholder: '198.18.10.25' }),
+      ip: U.input({ value: v.ip || '', placeholder: 'xxx.xxx.xxx.25' }),
       ipType: U.select(['Server IP', 'VIP', 'SCAN', 'AG Listener'], { value: v.ipType || 'Server IP' }),
       port: U.input({ value: v.port ? String(v.port) : '', placeholder: '1521' }),
       proxy: U.input({ value: v.proxy || '', placeholder: 'PgBouncer, AG Listener, Direct…' }),
@@ -512,7 +512,7 @@
   /* ---------- Excel template + import (real, in the browser) ---------- */
   const COLS = ['Project Name', 'Database Name', 'Database Type', 'IP (Type)', 'Port', 'Proxy / Connection'];
   function template() {
-    const ex = ['Claims Management', 'CLMSPRD', 'Oracle 19c', '198.18.10.11 (SCAN)', '1521', 'SCAN listener'];
+    const ex = ['Claims Management', 'CLMSPRD', 'Oracle 19c', 'xxx.xxx.xxx.11 (SCAN)', '1521', 'SCAN listener'];
     U.download('database-inventory-template.csv', COLS.join(',') + '\n' + ex.map(function (s) { return '"' + s + '"'; }).join(',') + '\n', 'text/csv');
   }
   function loadXlsx() {
@@ -573,7 +573,7 @@
       }).catch(function (e) { U.clear(result).appendChild(h('div', { class: 'small text-red mt-16' }, e.message)); });
     });
     const close = U.modal({ title: 'Import from Excel', sub: 'The file is read in your browser and is not uploaded anywhere', size: 'lg', body: h('div', null,
-      h('div', { class: 'dropzone', style: { cursor: 'pointer' }, onClick: function () { fileIn.click(); } }, U.ic('file', 22), h('div', { class: 't' }, 'Choose an .xlsx or .csv file'), h('div', { class: 'd' }, 'Columns: ' + COLS.join(', ')), h('div', { class: 'd' }, 'IP (Type) can be written as "198.18.10.5 (VIP)". Rows are matched to existing records by Database Name.')),
+      h('div', { class: 'dropzone', style: { cursor: 'pointer' }, onClick: function () { fileIn.click(); } }, U.ic('file', 22), h('div', { class: 't' }, 'Choose an .xlsx or .csv file'), h('div', { class: 'd' }, 'Columns: ' + COLS.join(', ')), h('div', { class: 'd' }, 'IP (Type) can be written as "xxx.xxx.xxx.5 (VIP)". Rows are matched to existing records by Database Name.')),
       fileIn, result),
     footer: function (c) { return [U.btn('Download template', { icon: 'download', onClick: template }), U.btn('Cancel', { onClick: c }), applyBtn]; } });
   }
