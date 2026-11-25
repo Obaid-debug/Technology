@@ -29,12 +29,12 @@
         const c = U.card({ icon: 'file', title: 'OPM Logs', sub: 'Business-operation log stream for the selected service' });
         c.body.appendChild(h('div', { class: 'form-grid c3' }, U.field('Service', U.select(['Service S-097', 'Service S-102', 'Service S-183'])), U.field('Level', U.select(['All', 'INFO', 'WARN', 'ERROR'])), U.field('Search', U.input({ placeholder: 'Search message…', icon: 'search' }))));
         const rows = []; const r = U.seeded(3);
-        for (let i = 0; i < 12; i++) rows.push({ ts: '2026-09-09 08:' + String(10 + i * 3).padStart(2, '0') + ':' + String(Math.floor(r() * 60)).padStart(2, '0'), level: r() > 0.8 ? 'ERROR' : 'INFO', op: ['RenewPermit', 'IssueDocument', 'TransferOwner', 'PrintPermit'][Math.floor(r() * 4)], msg: ['Transaction completed', 'Validation failed: sponsor mismatch', 'Callback to X024 succeeded', 'Timeout calling partner gateway'][Math.floor(r() * 4)] });
+        for (let i = 0; i < 12; i++) rows.push({ ts: '2026-09-09 08:' + String(10 + i * 3).padStart(2, '0') + ':' + String(Math.floor(r() * 60)).padStart(2, '0'), level: r() > 0.8 ? 'ERROR' : 'INFO', op: ['RenewPermit', 'IssueDocument', 'TransferOwner', 'PrintPermit'][Math.floor(r() * 4)], msg: ['Transaction completed', 'Validation failed: sponsor mismatch', 'Callback to A424 succeeded', 'Timeout calling partner gateway'][Math.floor(r() * 4)] });
         c.body.appendChild(h('div', { class: 'mt-16' }, U.table([{ key: 'ts', label: 'Timestamp', cls: 'mono' }, { key: 'level', label: 'Level', render: function (x) { return U.statusPill(x.level === 'ERROR' ? 'Error' : 'Info'); } }, { key: 'op', label: 'Operation' }, { key: 'msg', label: 'Message' }], rows, { cls: 'compact' })));
         holder.appendChild(c);
       } else {
         const c = U.card({ icon: 'activity', title: 'Integration Health Check', sub: 'Live status of OPM integrations' });
-        const ints = [['X024 SMS Gateway', 'Healthy', '212 ms'], ['Partner Service S-183', 'Healthy', '340 ms'], ['X036 Core DB', 'Healthy', '8 ms'], ['Service S-115 (Payments)', 'Degraded', '1.9 s'], ['Service S-045', 'Healthy', '96 ms'], ['GDP Passport Service', 'Healthy', '480 ms']];
+        const ints = [['A424 SMS Gateway', 'Healthy', '212 ms'], ['Partner Service S-183', 'Healthy', '340 ms'], ['A436 Core DB', 'Healthy', '8 ms'], ['Service S-115 (Payments)', 'Degraded', '1.9 s'], ['Service S-045', 'Healthy', '96 ms'], ['GDP Passport Service', 'Healthy', '480 ms']];
         c.body.appendChild(U.table([{ key: 'n', label: 'Integration' }, { key: 's', label: 'Status', render: function (x) { return U.statusPill(x.s); } }, { key: 'l', label: 'Latency', align: 'right' }, { key: 'a', label: '', align: 'right', render: function (x) { return U.btn('Re-check', { cls: 'btn-xs', onClick: function () { U.toast(x.n + ' re-checked: OK'); } }); } }], ints.map(function (i) { return { n: i[0], s: i[1], l: i[2] }; })));
         holder.appendChild(c);
       }
@@ -80,7 +80,7 @@
         return [U.btn('Cancel', { onClick: close }), U.btn(v ? 'Save changes' : 'Create VM', { cls: 'btn-primary', onClick: function () {
           if (!f.name.value.trim()) { U.toast('VM Name is required', 'err'); return; }
           if (v) { v.name = f.name.value; v.ip = f.ip.value; v.service = f.svc.value; v.env = f.env.value; v.dc = f.dc.value; v.os = f.os.value; }
-          else DATA.vms.unshift({ id: DATA.vms.length + 1, name: f.name.value, ip: f.ip.value, service: f.svc.value, env: f.env.value, extraEnv: 0, power: 'Running', dc: f.dc.value, os: f.os.value, cpu: 4, ram: 16, disk: 200, cluster: 'vcs-1', fqdn: f.name.value.toLowerCase() + '.najm.sa' });
+          else DATA.vms.unshift({ id: DATA.vms.length + 1, name: f.name.value, ip: f.ip.value, service: f.svc.value, env: f.env.value, extraEnv: 0, power: 'Running', dc: f.dc.value, os: f.os.value, cpu: 4, ram: 16, disk: 200, cluster: 'vcs-1', fqdn: f.name.value.toLowerCase() + '.example.com' });
           close(); apply(); U.toast(v ? 'VM updated' : 'VM created');
         } })];
       } });
@@ -146,7 +146,7 @@
   /* ---------- Device42 ---------- */
   Pages.device42 = function (page) {
     const results = h('div');
-    const input = U.input({ placeholder: 'Search Device42 (e.g., X090)…', icon: 'search', onInput: function () { btn.disabled = !input.input.value.trim(); }, onKeydown: function (e) { if (e.key === 'Enter' && input.input.value.trim()) search(); } });
+    const input = U.input({ placeholder: 'Search Device42 (e.g., A490)…', icon: 'search', onInput: function () { btn.disabled = !input.input.value.trim(); }, onKeydown: function (e) { if (e.key === 'Enter' && input.input.value.trim()) search(); } });
     const btn = U.btn('Search', { cls: 'btn-primary', disabled: true, onClick: search });
     const c = U.card({ icon: 'harddrive', title: 'Device42 Search' });
     c.body.appendChild(h('div', { class: 'filterbar', style: { marginBottom: '10px' } }, U.ic('filter', 15, 'lead'), input, btn));
@@ -168,7 +168,7 @@
   /* ---------- OCP Health ---------- */
   Pages['ocp-health'] = function (page) {
     const grid = h('div', { class: 'grid c2' });
-    const c = U.card({ title: 'OCP Cluster Health', icon: 'cloud', iconKind: 'red', actions: [U.select(['x1092ocp4', 'stgocp4'], { style: { width: '130px', height: '30px' } }), U.btn('Refresh', { cls: 'btn-sm', icon: 'refresh', onClick: function () { U.loading(grid, 700, function () { renderNodes(); return null; }); } })] });
+    const c = U.card({ title: 'OCP Cluster Health', icon: 'cloud', iconKind: 'red', actions: [U.select(['ocp-demo-01', 'stgocp4'], { style: { width: '130px', height: '30px' } }), U.btn('Refresh', { cls: 'btn-sm', icon: 'refresh', onClick: function () { U.loading(grid, 700, function () { renderNodes(); return null; }); } })] });
     c.body.appendChild(U.kpis([{ label: 'TOTAL NODES', value: '81', icon: 'server' }, { label: 'READY NODES', value: '81 / 81', icon: 'circlecheck' }, { label: 'MASTER NODES', value: '3', icon: 'server' }], 3));
     c.body.appendChild(grid);
     page.appendChild(c);
@@ -200,7 +200,7 @@
       const sel = U.select([{ value: '', label: 'Select target application' }].concat(DATA.services.map(function (s) { return { value: s, label: s }; })), { onChange: function (e) { run.disabled = !e.target.value; } });
       const run = U.btn('Run Healing', { cls: 'btn-primary', icon: 'play', disabled: true, perm: 'action:run-automation', onClick: function () {
         const app = sel.value; run.disabled = true;
-        const steps = id === 'portal' ? ['Probing https://' + app.toLowerCase().replace(/[^a-z0-9]+/g, '') + '.najm.sa (HTTP 503)', 'Checking upstream pods on x1092ocp4', 'Restarting pod ' + app.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-2 via AWX job #48211', 'Waiting for readiness probe', 'Portal responding HTTP 200 in 412 ms'] : id === 'cpu' ? ['Reading CPU on ' + app + ' hosts (94% avg)', 'Identifying top process: java (pid 21877)', 'Triggering thread dump + GC via AWX #48212', 'CPU back to 41%'] : id === 'ram' ? ['Reading memory on ' + app + ' hosts (91%)', 'Clearing page cache and restarting sidecar', 'Memory back to 62%'] : ['Scanning disks on ' + app + ' hosts (/var/log 93%)', 'Rotating and compressing logs older than 7 days', 'Freed 18.4 GB · /var/log at 47%'];
+        const steps = id === 'portal' ? ['Probing https://' + app.toLowerCase().replace(/[^a-z0-9]+/g, '') + '.example.com (HTTP 503)', 'Checking upstream pods on ocp-demo-01', 'Restarting pod ' + app.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-2 via AWX job #48211', 'Waiting for readiness probe', 'Portal responding HTTP 200 in 412 ms'] : id === 'cpu' ? ['Reading CPU on ' + app + ' hosts (94% avg)', 'Identifying top process: java (pid 21877)', 'Triggering thread dump + GC via AWX #48212', 'CPU back to 41%'] : id === 'ram' ? ['Reading memory on ' + app + ' hosts (91%)', 'Clearing page cache and restarting sidecar', 'Memory back to 62%'] : ['Scanning disks on ' + app + ' hosts (/var/log 93%)', 'Rotating and compressing logs older than 7 days', 'Freed 18.4 GB · /var/log at 47%'];
         U.clear(result);
         const list = h('div', { class: 'col gap-8' }); result.appendChild(list);
         steps.forEach(function (s, i) { setTimeout(function () { list.appendChild(h('div', { class: 'step ' + (i === steps.length - 1 ? 'done' : 'done') }, h('span', { class: 'st' }, U.ic('check', 12)), s, h('span', { class: 'res' }, (0.4 + i * 0.7).toFixed(1) + ' s'))); if (i === steps.length - 1) { list.appendChild(h('div', { class: 'row mt-8' }, U.statusPill('Healthy'), h('span', { class: 'small' }, 'Healing completed for ' + app + ' · run summary saved'))); run.disabled = false; U.toast('Healing run completed'); } }, 700 * (i + 1)); });

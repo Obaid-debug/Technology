@@ -16,7 +16,7 @@
       if (crumb) { const cur = crumb.querySelector('.cur'); if (cur) cur.textContent = state.tab; }
       U.clear(holder);
       const isApp = state.tab === 'Application';
-      const svcSel = U.select([{ value: '', label: 'Select service...' }].concat((isApp ? DATA.services : ['Perimeter FW', 'DMZ FW', 'Core FW', 'WAF-X109', 'WAF-DR', 'DDoS Scrubbing']).map(function (s) { return { value: s, label: s }; })), { value: state.service, onChange: function (e) { state.service = e.target.value; } });
+      const svcSel = U.select([{ value: '', label: 'Select service...' }].concat((isApp ? DATA.services : ['Perimeter FW', 'DMZ FW', 'Core FW', 'WAF-A509', 'WAF-DR', 'DDoS Scrubbing']).map(function (s) { return { value: s, label: s }; })), { value: state.service, onChange: function (e) { state.service = e.target.value; } });
       const results = h('div');
       const search = function () {
         if (!state.service) { U.toast('Select a service first', 'err'); return; }
@@ -62,7 +62,7 @@
 
     function genLogs(service, tab) {
       const r = U.seeded(U.hash(service + tab)); const out = [];
-      const msgs = tab === 'Application' ? ['Request processed successfully in 42 ms', 'SocketTimeoutException: Read timed out calling IdentityClientA.verify', 'Retrying request (attempt 2/3)', 'Cache miss for key session:9f2a', 'Validation failed: CustomerAddress.buildingNumber is required', 'Scheduled job RenewPermitSync completed: 1,204 rows', 'HTTP 500 from upstream billing-api', 'JWT token expired for user 1049…', 'Connection pool exhausted (98/100)', 'GC pause 412 ms'] : ['DENY tcp 192.0.2.33:51234 -> 192.0.2.34:443 rule FW-1042', 'ALLOW tcp 192.0.2.2:443 -> 192.0.2.5:8443', 'WAF blocked SQLi attempt on /api/v1/search', 'Rate limit exceeded for 192.0.2.35', 'DDoS scrubbing engaged: 2.1 Gbps SYN flood mitigated', 'Signature update applied (build 9142)', 'Geo-block hit: RU -> x081.najm.sa'];
+      const msgs = tab === 'Application' ? ['Request processed successfully in 42 ms', 'SocketTimeoutException: Read timed out calling IdentityClientA.verify', 'Retrying request (attempt 2/3)', 'Cache miss for key session:9f2a', 'Validation failed: CustomerAddress.buildingNumber is required', 'Scheduled job RenewPermitSync completed: 1,204 rows', 'HTTP 500 from upstream billing-api', 'JWT token expired for user 1049…', 'Connection pool exhausted (98/100)', 'GC pause 412 ms'] : ['DENY tcp 192.0.2.33:51234 -> 192.0.2.34:443 rule FW-1042', 'ALLOW tcp 192.0.2.2:443 -> 192.0.2.5:8443', 'WAF blocked SQLi attempt on /api/v1/search', 'Rate limit exceeded for 192.0.2.35', 'DDoS scrubbing engaged: 2.1 Gbps SYN flood mitigated', 'Signature update applied (build 9142)', 'Geo-block hit: RU -> a481.example.com'];
       for (let i = 0; i < 25; i++) {
         const lv = r() > 0.8 ? 'ERROR' : (r() > 0.7 ? 'WARN' : 'INFO');
         const ts = '2026-09-09 ' + String(8 + Math.floor(r() * 9)).padStart(2, '0') + ':' + String(Math.floor(r() * 60)).padStart(2, '0') + ':' + String(Math.floor(r() * 60)).padStart(2, '0');
@@ -86,7 +86,7 @@
     };
     page.appendChild(U.filterBar([
       U.select(['Last 1 hour', 'Last 6 hours', 'Last 24 hours', 'Last 7 days'], { onChange: function () { U.loading(tableHolder, 500, function () { return tbl; }); } }),
-      U.select([{ value: 'all', label: 'All environments' }].concat(['x109', 'x109-critical', 'Production-critical', 'production', 'Production', 'X018-X109-ocp'].map(function (e) { return { value: e, label: e }; })), { onChange: function (e) { state.env = e.target.value; apply(); } }),
+      U.select([{ value: 'all', label: 'All environments' }].concat(['a509', 'a509-critical', 'Production-critical', 'production', 'Production', 'A418-A509-ocp'].map(function (e) { return { value: e, label: e }; })), { onChange: function (e) { state.env = e.target.value; apply(); } }),
       U.select([{ value: 'all', label: 'All agents' }, 'java', 'dotnet', 'rum-js'], { onChange: function (e) { state.agent = e.target.value; apply(); } }),
       U.input({ placeholder: 'Search service…', icon: 'search', onInput: function (e) { state.q = e.target.value.toLowerCase(); apply(); } }),
       U.btn('Refresh', { cls: 'btn-primary', icon: 'refresh', onClick: function () { U.loading(tableHolder, 600, function () { return tbl; }); } })]));
@@ -140,18 +140,18 @@
     page.appendChild(card);
 
     const ALERTS = [
-      ['Critical', 'High error rate — X090-Portal', 'cmp-013', 'Production-critical', '08:12', 'Error rate 3.9% > 2% for 5m (rule: apm-error-rate)'],
-      ['Critical', 'Pod CrashLoopBackOff — x048-engine', 'cmp-014', 'x109-critical', '07:58', 'Container restarted 6 times in 10m (rule: ocp-pod-restarts)'],
+      ['Critical', 'High error rate — A490-Portal', 'cmp-013', 'Production-critical', '08:12', 'Error rate 3.9% > 2% for 5m (rule: apm-error-rate)'],
+      ['Critical', 'Pod CrashLoopBackOff — a448-engine', 'cmp-014', 'a509-critical', '07:58', 'Container restarted 6 times in 10m (rule: ocp-pod-restarts)'],
       ['Critical', 'Disk usage > 85% — srv-014', 'srv-014', 'Production', '06:40', '/backup at 91% (rule: vm-disk-usage)'],
-      ['High', 'CPU > 90% — srv-041', 'srv-041', 'x1092ocp4', '08:31', 'node_cpu 93% for 15m (rule: ocp-node-cpu)'],
-      ['High', 'Latency p95 > 1s — apx-x110-platform', 'apx-x110-platform', 'x109-critical', '08:05', 'p95 1.34 s (rule: apm-latency)'],
+      ['High', 'CPU > 90% — srv-041', 'srv-041', 'ocp-demo-01', '08:31', 'node_cpu 93% for 15m (rule: ocp-node-cpu)'],
+      ['High', 'Latency p95 > 1s — apx-a510-platform', 'apx-a510-platform', 'a509-critical', '08:05', 'p95 1.34 s (rule: apm-latency)'],
       ['High', 'Connection pool saturation — token-service', 'cmp-015', 'Production', '14:02', '98/100 pooled connections held (rule: pg-pool)'],
-      ['High', 'Kafka consumer lag — change-data-tracker', 'cmp-016', 'x109', '07:20', 'Lag 48k messages (rule: kafka-lag)'],
-      ['Medium', 'Certificate expiring in 14 days — x079.najm.sa', 'x079-lb', 'Production', '05:00', 'TLS cert expires 2026-09-23 (rule: cert-expiry)'],
+      ['High', 'Kafka consumer lag — change-data-tracker', 'cmp-016', 'a509', '07:20', 'Lag 48k messages (rule: kafka-lag)'],
+      ['Medium', 'Certificate expiring in 14 days — a479.example.com', 'a479-lb', 'Production', '05:00', 'TLS cert expires 2026-09-23 (rule: cert-expiry)'],
       ['Medium', 'JVM heap > 80% — PortalGatewayA', 'cmp-017', 'Production-critical', '08:22', 'Old gen 84% (rule: jvm-heap)'],
       ['Medium', 'Slow query — Billing DB', 'srv-042', 'Production', '07:45', 'Query > 5s: OR-clause full scan (rule: db-slow-query)'],
-      ['Medium', 'Retry storm — x030-integration-service', 'cmp-018', 'x109', '06:12', '1,204 retries/min (rule: http-retries)'],
-      ['Medium', 'Memory pressure — srv-043', 'srv-043', 'x1092ocp4', '08:40', 'Memory 87% (rule: ocp-node-memory)'],
+      ['Medium', 'Retry storm — a430-integration-service', 'cmp-018', 'a509', '06:12', '1,204 retries/min (rule: http-retries)'],
+      ['Medium', 'Memory pressure — srv-043', 'srv-043', 'ocp-demo-01', '08:40', 'Memory 87% (rule: ocp-node-memory)'],
       ['Low', 'Log volume anomaly — BillingApi', 'srv-044', 'Production', '04:30', 'Validation warnings +220% (rule: log-anomaly)'],
       ['Low', 'Synthetic check latency — Service S-102 login', 'synthetic-riyadh', 'Production', '03:15', '1.1 s vs 0.6 s baseline (rule: synthetic)']
     ];

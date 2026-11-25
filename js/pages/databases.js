@@ -68,7 +68,7 @@
 
   /* ================= mock inventory ================= */
   function endpointFor(engine, host, port, proxy, dbName, code) {
-    const dom = '.najm.local';
+    const dom = '.corp.example';
     if (engine === 'Oracle') return (proxy === 'SCAN listener' ? code.toLowerCase() + '-scan' : host) + dom + ':' + port + '/' + dbName + '_SVC';
     if (engine === 'SQL Server') return (proxy === 'AG Listener' ? code.toLowerCase() + '-ag-lsnr' : host) + dom + ',' + port;
     if (engine === 'PostgreSQL') return 'host=' + (proxy === 'PgBouncer' ? 'pgbouncer-' + code.toLowerCase() : host) + dom + ' port=' + port + ' dbname=' + dbName;

@@ -116,7 +116,7 @@ window.SERVICE_DIRECTORY = {
     {"id": 101, "name": "Service S-104", "code": "C029", "primary_engineer": "user07", "secondary_engineer": "user17"},
     {"id": 102, "name": "Service S-105", "code": null, "primary_engineer": "user07", "secondary_engineer": "user17"},
     {"id": 103, "name": "Service S-002", "code": "C030", "primary_engineer": "user06", "secondary_engineer": "user02"},
-    {"id": 104, "name": "New X096", "code": null, "primary_engineer": null, "secondary_engineer": null},
+    {"id": 104, "name": "New A496", "code": null, "primary_engineer": null, "secondary_engineer": null},
     {"id": 105, "name": "New Service S-183", "code": null, "primary_engineer": "user07", "secondary_engineer": "user17"},
     {"id": 106, "name": "Service S-106", "code": null, "primary_engineer": null, "secondary_engineer": null},
     {"id": 107, "name": "Service S-107", "code": null, "primary_engineer": "user06", "secondary_engineer": "user02"},

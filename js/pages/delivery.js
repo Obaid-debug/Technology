@@ -9,7 +9,7 @@
     const runs = [];
     page.appendChild(U.pageHeader({ icon: 'dollar', title: 'Kubecost — OpenShift Resource Rightsizer', desc: 'Select a cluster to start a rightsizing run. Every run is persisted in the database for trend analysis.', plain: true }));
     let cluster = 'stgocp4';
-    page.appendChild(U.segTabs([{ id: 'stgocp4', label: 'STG (stgocp4)', icon: 'server' }, { id: 'x1092ocp4', label: 'X1092 (x1092ocp4)', icon: 'shield' }], 'stgocp4', function (id) { cluster = id; runId.value = cluster + '-api-dryrun-curl-test-' + U.rint(100, 999); }));
+    page.appendChild(U.segTabs([{ id: 'stgocp4', label: 'STG (stgocp4)', icon: 'server' }, { id: 'ocp-demo-01', label: 'Production (ocp-demo-01)', icon: 'shield' }], 'stgocp4', function (id) { cluster = id; runId.value = cluster + '-api-dryrun-curl-test-' + U.rint(100, 999); }));
     const runId = U.input({ value: 'srv-031', cls: 'mono' });
     const f = { mode: U.select(['dry-run', 'apply']), lookback: U.select(['7', '14', '30', '60', '90'], { value: '30' }), inc: U.input({ value: 'apps-apx' }), exc: U.input({ placeholder: '(none)' }), req: U.input({ value: '20', type: 'number' }), lim: U.input({ value: '40', type: 'number' }), poll: U.input({ value: '120', type: 'number' }), max: U.input({ value: '240', type: 'number' }) };
     let dry = true, allowDec = false, reset = false;
@@ -38,7 +38,7 @@
       U.clear(report); const list = h('div', { class: 'col gap-8' }); report.appendChild(list);
       steps.forEach(function (s, i) { setTimeout(function () { list.appendChild(h('div', { class: 'step done' }, h('span', { class: 'st' }, U.ic('check', 12)), s)); if (i === steps.length - 1) finish(); }, 600 * (i + 1)); });
       function finish() {
-        const nsRows = ['apx-x110-platform', 'apx-x110-api', 'apx-x110-worker', 'apx-notification'].map(function (n, i) { const cur = 2000 + Math.floor(r() * 2000), rec = Math.floor(cur * (0.45 + r() * 0.3)); return { ns: n, cpuCur: cur + 'm', cpuRec: rec + 'm', memCur: (4 + Math.floor(r() * 6)) + 'Gi', memRec: (2 + Math.floor(r() * 3)) + 'Gi', usd: '$' + (120 + Math.floor(r() * 400)) }; });
+        const nsRows = ['apx-a510-platform', 'apx-a510-api', 'apx-a510-worker', 'apx-notification'].map(function (n, i) { const cur = 2000 + Math.floor(r() * 2000), rec = Math.floor(cur * (0.45 + r() * 0.3)); return { ns: n, cpuCur: cur + 'm', cpuRec: rec + 'm', memCur: (4 + Math.floor(r() * 6)) + 'Gi', memRec: (2 + Math.floor(r() * 3)) + 'Gi', usd: '$' + (120 + Math.floor(r() * 400)) }; });
         const total = nsRows.reduce(function (a, x) { return a + parseInt(x.usd.slice(1), 10); }, 0);
         list.appendChild(h('div', { class: 'mt-12' }, U.kpis([{ label: 'NAMESPACES', value: String(nsRows.length) }, { label: 'CPU SAVED', value: '38%' }, { label: 'MEMORY SAVED', value: '44%' }, { label: 'EST. MONTHLY SAVING', value: '$' + U.fmt(total), sub: 'Healthy', subCls: 'text-green' }]), U.table([{ key: 'ns', label: 'Namespace', cls: 'mono' }, { key: 'cpuCur', label: 'CPU request (cur)', align: 'right' }, { key: 'cpuRec', label: 'CPU request (rec)', align: 'right' }, { key: 'memCur', label: 'Mem limit (cur)', align: 'right' }, { key: 'memRec', label: 'Mem limit (rec)', align: 'right' }, { key: 'usd', label: 'Saving / mo', align: 'right' }], nsRows, { cls: 'compact' })));
         runs.unshift({ id: id, cluster: cluster, mode: dry ? 'dry-run' : 'apply', ns: nsRows.length, cpu: '38%', mem: '44%', usd: '$' + U.fmt(total), when: new Date().toISOString().slice(0, 16).replace('T', ' '), status: 'Completed' });
@@ -51,8 +51,8 @@
   Pages.argocd = function (page) {
     page.appendChild(U.pageHeader({ icon: 'gitbranch', label: 'DELIVERY', title: 'ArgoCD applications', desc: 'Applications load once a project and cluster are both selected.' }));
     const out = h('div');
-    const clusters = U.select([{ value: '', label: 'Select cluster' }, 'x1092ocp4', 'stgocp4', 'cmp-012'], { disabled: true, onChange: load });
-    const projects = U.select([{ value: '', label: 'Select project' }, 'x110', 'x037', 'x036', 'x081', 'x017', 'shared-services'], { onChange: function (e) { clusters.disabled = !e.target.value; clusters.value = ''; load(); } });
+    const clusters = U.select([{ value: '', label: 'Select cluster' }, 'ocp-demo-01', 'stgocp4', 'cmp-012'], { disabled: true, onChange: load });
+    const projects = U.select([{ value: '', label: 'Select project' }, 'a510', 'a437', 'a436', 'a481', 'a417', 'shared-services'], { onChange: function (e) { clusters.disabled = !e.target.value; clusters.value = ''; load(); } });
     page.appendChild(U.filterBar([U.ic('gitbranch', 15), projects, clusters], { noIcon: true }));
     const c = U.card({ icon: 'box', title: 'Applications' }); c.body.appendChild(out); page.appendChild(c);
     out.appendChild(U.emptyState('server', 'Pick a project and cluster', 'Select a project and cluster to view applications.'));
@@ -133,7 +133,7 @@
       U.loading(out, 1400, function () {
         const r = U.seeded(11);
         const servers = ['srv-032', 'srv-016', 'srv-033', 'srv-034', 'srv-035', 'srv-036'].map(function (n) { return { host: n, ping: r() > 0.1 ? 'OK' : 'Unreachable', cpu: Math.floor(r() * 60) + '%', mem: Math.floor(r() * 70) + '%', disk: Math.floor(r() * 80) + '%', ports: r() > 0.15 ? 'OK' : '8443 closed' }; });
-        const ints = [['https://x048.najm.sa', 443], ['https://x024-gw.najm.sa', 443], ['payments.gateway.local', 8443], ['kafka-x109.example.local', 9093], ['srv-037.example.local', 5432]].map(function (i) { const ok = r() > 0.2; return { url: i[0], port: i[1], reach: ok ? 'Reachable' : 'Timeout', latency: ok ? Math.floor(r() * 400) + ' ms' : '—' }; });
+        const ints = [['https://a448.example.com', 443], ['https://a424-gw.example.com', 443], ['payments.gateway.local', 8443], ['kafka-a509.example.local', 9093], ['srv-037.example.local', 5432]].map(function (i) { const ok = r() > 0.2; return { url: i[0], port: i[1], reach: ok ? 'Reachable' : 'Timeout', latency: ok ? Math.floor(r() * 400) + ' ms' : '—' }; });
         const okS = servers.filter(function (s) { return s.ping === 'OK' && s.ports === 'OK'; }).length, okI = ints.filter(function (i) { return i.reach === 'Reachable'; }).length;
         const ready = okS === servers.length && okI === ints.length;
         const c1 = U.card({ title: 'Servers', sub: 'Sheet "Servers" · ' + servers.length + ' hosts', bodyCls: 'flush', actions: [U.pill(okS + '/' + servers.length + ' ready', okS === servers.length ? 'green' : 'amber')] });
@@ -145,23 +145,23 @@
     }
   };
 
-  /* ---------- X049 migration ---------- */
-  Pages['x049-migration'] = function (page) {
+  /* ---------- A449 migration ---------- */
+  Pages['a449-migration'] = function (page) {
     const state = { expanded: {} };
-    page.appendChild(U.pageHeader({ icon: 'rocket', label: 'DELIVERY', title: 'X049 migration', desc: 'Live migration tracker — checklist progress synced across the team.' }));
+    page.appendChild(U.pageHeader({ icon: 'rocket', label: 'DELIVERY', title: 'A449 migration', desc: 'Live migration tracker — checklist progress synced across the team.' }));
     const kpiWrap = h('div'); page.appendChild(kpiWrap);
     const body = h('div');
-    page.appendChild(h('div', { class: 'row between mb-16' }, U.btn('Add Service', { cls: 'btn-primary', icon: 'plus', perm: 'action:deploy', onClick: function () { const n = U.input({ placeholder: 'Service name' }); U.modal({ title: 'Add service to migration', size: 'sm', body: U.field('Service', n, { req: true }), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Add', { cls: 'btn-primary', onClick: function () { if (!n.value.trim()) return; DATA.x049.push({ name: n.value, status: 'In Progress', steps: DATA.migSteps.map(function (s) { return { name: s[0], total: s[1], done: 0, items: Array.from({ length: s[1] }, function (_, i) { return { label: s[0] + ' task ' + (i + 1), done: false }; }) }; }) }); close(); render(); U.toast('Service added'); } })]; } }); } }), h('div', { class: 'row' }, U.btn('Expand all', { icon: 'chevronright', onClick: function () { const all = Object.keys(state.expanded).length < DATA.x049.length; DATA.x049.forEach(function (s) { state.expanded[s.name] = all; }); if (!all) state.expanded = {}; render(); } }), U.btn('Export', { icon: 'download', onClick: function () { U.download('x049-migration.csv', U.csv(DATA.x049.map(function (s) { return { service: s.name, status: s.status, progress: pct(s) + '%' }; })), 'text/csv'); } }), U.btn('Import', { icon: 'upload', onClick: function () { U.toast('Import: choose a tracker workbook'); } }))));
+    page.appendChild(h('div', { class: 'row between mb-16' }, U.btn('Add Service', { cls: 'btn-primary', icon: 'plus', perm: 'action:deploy', onClick: function () { const n = U.input({ placeholder: 'Service name' }); U.modal({ title: 'Add service to migration', size: 'sm', body: U.field('Service', n, { req: true }), footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn('Add', { cls: 'btn-primary', onClick: function () { if (!n.value.trim()) return; DATA.a449.push({ name: n.value, status: 'In Progress', steps: DATA.migSteps.map(function (s) { return { name: s[0], total: s[1], done: 0, items: Array.from({ length: s[1] }, function (_, i) { return { label: s[0] + ' task ' + (i + 1), done: false }; }) }; }) }); close(); render(); U.toast('Service added'); } })]; } }); } }), h('div', { class: 'row' }, U.btn('Expand all', { icon: 'chevronright', onClick: function () { const all = Object.keys(state.expanded).length < DATA.a449.length; DATA.a449.forEach(function (s) { state.expanded[s.name] = all; }); if (!all) state.expanded = {}; render(); } }), U.btn('Export', { icon: 'download', onClick: function () { U.download('a449-migration.csv', U.csv(DATA.a449.map(function (s) { return { service: s.name, status: s.status, progress: pct(s) + '%' }; })), 'text/csv'); } }), U.btn('Import', { icon: 'upload', onClick: function () { U.toast('Import: choose a tracker workbook'); } }))));
     const c = U.card({ icon: 'rocket', title: 'Services', bodyCls: 'flush' }); c.body.appendChild(body); page.appendChild(c);
     function pct(s) { const t = s.steps.reduce(function (a, x) { return a + x.total; }, 0), d = s.steps.reduce(function (a, x) { return a + x.items.filter(function (i) { return i.done; }).length; }, 0); return Math.round(d / t * 100); }
     function render() {
-      const done = DATA.x049.filter(function (s) { return pct(s) === 100; }).length, blocked = DATA.x049.filter(function (s) { return s.status === 'Blocked'; }).length;
-      const overall = Math.round(DATA.x049.reduce(function (a, s) { return a + pct(s); }, 0) / DATA.x049.length);
-      U.clear(kpiWrap).appendChild(U.kpis([{ label: 'OVERALL', value: overall + '%' }, { label: 'SERVICES', value: String(DATA.x049.length) }, { label: 'COMPLETED', value: String(done) }, { label: 'IN PROGRESS', value: String(DATA.x049.length - done - blocked) }, { label: 'BLOCKED', value: String(blocked) }], 5));
+      const done = DATA.a449.filter(function (s) { return pct(s) === 100; }).length, blocked = DATA.a449.filter(function (s) { return s.status === 'Blocked'; }).length;
+      const overall = Math.round(DATA.a449.reduce(function (a, s) { return a + pct(s); }, 0) / DATA.a449.length);
+      U.clear(kpiWrap).appendChild(U.kpis([{ label: 'OVERALL', value: overall + '%' }, { label: 'SERVICES', value: String(DATA.a449.length) }, { label: 'COMPLETED', value: String(done) }, { label: 'IN PROGRESS', value: String(DATA.a449.length - done - blocked) }, { label: 'BLOCKED', value: String(blocked) }], 5));
       U.clear(body);
       const tbl = h('table', { class: 'tbl' }, h('thead', null, h('tr', null, h('th', { style: { width: '32px' } }), h('th', null, 'Service'), h('th', null, 'Status'), h('th', { style: { width: '140px' } }, 'Progress'), h('th', null, 'Steps'), h('th'))));
       const tb = h('tbody'); tbl.appendChild(tb);
-      DATA.x049.forEach(function (s) {
+      DATA.a449.forEach(function (s) {
         const p = pct(s); const open = !!state.expanded[s.name];
         tb.appendChild(h('tr', null,
           h('td', null, U.iconBtn('chevronright', { cls: 'btn-ghost', size: 13, onClick: function () { state.expanded[s.name] = !open; render(); } })),
@@ -169,7 +169,7 @@
           h('td', null, U.select(['Completed', 'In Progress', 'Blocked', 'Not Started'], { value: p === 100 ? 'Completed' : s.status, style: { height: '28px', width: '130px' }, onChange: function (e) { s.status = e.target.value; render(); } })),
           h('td', null, h('div', { class: 'ta-right xs' }, p + '%'), U.progress(p, 'thin')),
           h('td', null, h('div', { class: 'row wrap gap-4' }, s.steps.map(function (st, i) { const d = st.items.filter(function (x) { return x.done; }).length; return h('span', { class: 'step-chip' + (d === st.total ? ' full' : '') }, (i + 1) + '. ' + st.name + ' ' + d + '/' + st.total); }))),
-          h('td', null, U.iconBtn('trash', { cls: 'btn-ghost danger', size: 13, onClick: function () { U.confirm('Remove ' + s.name + '?', 'The service will be removed from the tracker.', function () { DATA.x049.splice(DATA.x049.indexOf(s), 1); render(); }); } }))));
+          h('td', null, U.iconBtn('trash', { cls: 'btn-ghost danger', size: 13, onClick: function () { U.confirm('Remove ' + s.name + '?', 'The service will be removed from the tracker.', function () { DATA.a449.splice(DATA.a449.indexOf(s), 1); render(); }); } }))));
         if (open) {
           const det = h('div', { class: 'grid c3', style: { padding: '8px 0 12px' } });
           s.steps.forEach(function (st, i) { det.appendChild(h('div', { class: 'card', style: { boxShadow: 'none', padding: '10px 12px' } }, h('div', { class: 'xs bold mb-8' }, (i + 1) + '. ' + st.name), st.items.map(function (it) { return h('label', { class: 'row small', style: { padding: '2px 0' } }, h('input', { class: 'checkbox', type: 'checkbox', checked: it.done, onChange: function (e) { it.done = e.target.checked; render(); } }), it.label); }))); });

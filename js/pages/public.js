@@ -146,7 +146,7 @@
     location.hash = ret && ret.indexOf('#/app') === 0 ? ret : '#/app?tab=dashboard';
   }
 
-  /* Keycloak-style SSO dialog (mock of sso.najm.sa realm devops-najm-sa) */
+  /* Keycloak-style SSO dialog (mock of sso.example.com realm devops-demo) */
   function openSSO() {
     const id = h('input', { type: 'text', placeholder: 'ID Number', autocomplete: 'username' });
     const pw = h('input', { type: 'password', placeholder: 'Password', autocomplete: 'current-password' });
@@ -162,7 +162,7 @@
     const box = h('form', { class: 'kc', onSubmit: submit },
       h('button', { class: 'kc-x', type: 'button', onClick: function () { ov.remove(); } }, U.ic('x', 16)),
       h('div', { class: 'kc-logo' }, U.raw('<img src="assets/najm-icon.png" width="26" height="26" alt="Najm" style="border-radius:5px">'), h('span', null, 'najm')),
-      h('h2', null, 'Welcome to'), h('div', { class: 'realm' }, 'devops-najm-sa'),
+      h('h2', null, 'Welcome to'), h('div', { class: 'realm' }, 'devops-demo'),
       err, id, pw,
       h('label', { class: 'rem' }, h('input', { type: 'checkbox' }), 'Remember me'),
       btn,

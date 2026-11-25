@@ -36,7 +36,7 @@ There is no real backend: `js/auth.js` is an in-browser identity provider and `j
 | `user07` | 9007 | (disabled) | login is rejected |
 
 - **Email sign-in** validates against the user store (wrong password, disabled account, session expiry after 8 h).
-- **Continue with Najm SSO** opens a Keycloak-style dialog (realm `devops-najm-sa`) that accepts the SSO ID number or username.
+- **Continue with Najm SSO** opens a Keycloak-style dialog (realm `devops-demo`) that accepts the SSO ID number or username.
 - **Authorization**: sidebar groups are hidden per role, direct URLs to a forbidden page render a 403 with "Request access",
   and gated buttons (Deploy, New VM, Run Analysis, Submit update, …) show a lock and explain the missing permission.
 - **Administration › Access Management**: users (role, enable/disable, reset password, impersonate), the role × permission
@@ -54,7 +54,7 @@ There is no real backend: `js/auth.js` is an in-browser identity provider and `j
   - Platform & Infrastructure: Virtual Machines (+ detail), VMs Inventory, Device42, Database Inventory, OCP Health, Healing Center
   - Applications Management: Applications (+ detail, topology, 5-step wizard), Lookup Management (15 lookups), Service Directory, Ops Management
   - FinOps: Kubecost
-  - Delivery: ArgoCD, Deployment Center, Environment Readiness, X049 Migration
+  - Delivery: ArgoCD, Deployment Center, Environment Readiness, A449 Migration
   - Tickets & Services: HPSM, Jira, Ticket Center
   - AI & Automations: Najm Intelligence, Performance Test, Dependency Ref, Reports
   - Executives: Executive Management (slide deck, GM summary, GM detail, AI prompt, team editors)
