@@ -48,7 +48,9 @@ window.Auth = (function () {
     { id: 'u5', username: 'user05', name: 'Person 05', email: 'user05@example.com', idNumber: '9005', role: 'executive', status: 'Active', team: 'Najm Technology Management', lastLogin: '2026-09-06 09:10' },
     { id: 'u6', username: 'user06', name: 'Person 06', email: 'user06@example.com', idNumber: '9006', role: 'engineer', status: 'Active', team: 'Platform Support', lastLogin: '2026-09-09 06:55' },
     { id: 'u7', username: 'guest.viewer', name: 'Guest Viewer', email: 'guest.viewer@example.com', idNumber: '9099', role: 'viewer', status: 'Active', team: 'External', lastLogin: '—' },
-    { id: 'u8', username: 'user07', name: 'Person 07', email: 'user07@example.com', idNumber: '9007', role: 'engineer', status: 'Disabled', team: 'Database Support', lastLogin: '2026-08-21 11:12' }
+    { id: 'u8', username: 'user07', name: 'Person 07', email: 'user07@example.com', idNumber: '9007', role: 'engineer', status: 'Disabled', team: 'Database Support', lastLogin: '2026-08-21 11:12' },
+    // Separate administrator account with its own password; not listed among the demo accounts on the login page.
+    { id: 'u9', username: 'najm.admin', name: 'Portal Administrator', email: 'najm.admin@example.com', idNumber: '9100', role: 'admin', status: 'Active', team: 'Najm Technology', lastLogin: '—', password: 'NajmTech#2026!', hidden: true }
   ];
 
   function load(key, def) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
@@ -56,7 +58,7 @@ window.Auth = (function () {
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
   // Store version: bump when seed identities change so stale local copies are reseeded.
-  const STORE_VERSION = 4;
+  const STORE_VERSION = 5;
   if (load('ti_store_v', 0) !== STORE_VERSION) { [KEY_USERS, KEY_ROLES, KEY_SESSION].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); save('ti_store_v', STORE_VERSION); }
   A.roles = load(KEY_ROLES, clone(DEFAULT_ROLES));
   A.users = load(KEY_USERS, clone(DEFAULT_USERS)).map(function (u) { if (!u.password) u.password = A.DEMO_PASSWORD; return u; });
