@@ -206,13 +206,13 @@
     const demo = h('details', { class: 'demo-accounts' }, h('summary', null, 'Demo accounts (password ' + Auth.DEMO_PASSWORD + ' for all)'),
       h('table', null, Auth.users.filter(function (u) { return !u.hidden; }).map(function (u) { return h('tr', null, h('td', { class: 'u', title: 'Use this account', onClick: function () { email.value = u.email; pwd.value = Auth.DEMO_PASSWORD; check(); } }, u.username), h('td', null, Auth.roles[u.role] ? Auth.roles[u.role].label : u.role), h('td', { class: 'muted' }, 'SSO ID ' + u.idNumber), h('td', null, u.status === 'Active' ? '' : U.pill('Disabled', 'red'))); })));
     const form = h('form', { class: 'login-form', novalidate: true, onSubmit: function (e) { e.preventDefault(); doLogin(); } },
-      h('img', { class: 'login-logo', src: 'assets/najm-logo.png', alt: 'Najm' }), h('h2', null, 'Welcome back'), h('div', { class: 'sub' }, 'Sign in to TechOps 360.'),
+      h('img', { class: 'login-logo', src: 'assets/najm-logo.png', alt: 'Najm' }), h('h2', null, 'Welcome back'), h('div', { class: 'sub' }, 'Sign in to your operations cockpit.'),
       U.btn('Continue with Najm SSO', { cls: 'btn-dark', icon: 'link', iconRight: 'arrowright', onClick: openSSO }),
       h('div', { class: 'cap' }, 'Use your corporate Najm Technology credentials'),
       h('div', { class: 'divider' }, 'OR WITH EMAIL'),
       h('div', { class: 'col gap-12' },
         err,
-        U.field('Email', email),
+        U.field('Email or username', email),
         h('div', { class: 'field' }, h('div', { class: 'row between' }, h('label', null, 'Password'), h('a', { href: '#', class: 'xs text-primary', onClick: forgotPassword }, 'Forgot password?')), h('div', { style: { position: 'relative' } }, pwd, eye)),
         signIn),
       h('div', { class: 'links' }, h('a', { href: '#/welcome' }, '← Back to overview'), h('span', null, "Don't have access? Contact the Najm Technology team.")),
@@ -220,8 +220,8 @@
     form.querySelector('.btn-dark').style.width = '100%';
 
     root.appendChild(h('div', { class: 'login' },
-      h('div', { class: 'left' }, h('div', { class: 'glow a', style: { left: '30%', top: '10%' } }), h('a', { href: '#/welcome', class: 'pub-brand', title: 'TechOps 360 — back to welcome page' }, U.raw(logoSvg)),
-        h('div', { class: 'mid' }, h('div', { class: 'lbl' }, 'TECHOPS 360 · EVERY SYSTEM. ONE VIEW.'), h('h1', null, 'All operations.', h('br'), 'One intelligent', h('br'), h('span', { class: 'accent' }, 'cockpit.'), h('span', { class: 'caret' }))),
+      h('div', { class: 'left' }, h('div', { class: 'glow a', style: { left: '30%', top: '10%' } }), h('a', { href: '#/welcome', class: 'pub-brand', title: 'TechOps 360 — back to welcome page' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'TechOps 360'), h('div', { class: 't2' }, 'NAJM TECHNOLOGY'))),
+        h('div', { class: 'mid' }, h('div', { class: 'lbl' }, 'TECHOPS 360 · EVERY SYSTEM. ONE VIEW.'), h('h1', null, 'All operations. One intelligent ', h('span', { class: 'accent' }, 'cockpit.'))),
         h('div', null, h('div', { class: 'stats' }, h('div', null, h('b', null, '30+'), h('span', null, 'Integrations')), h('div', null, h('b', null, '24/7'), h('span', null, 'Monitoring')), h('div', null, h('b', null, '100%'), h('span', null, 'AI-powered RCA'))), h('div', { class: 'copy' }, '© 2026 Najm Technology · najm.sa'))),
       h('main', { class: 'right' }, form)));
   };

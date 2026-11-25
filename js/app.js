@@ -109,8 +109,9 @@
     const allowed = Auth.canTab(tab);
     const crumbs = allowed ? (opts.crumbs || (tab === 'dashboard' ? ['Dashboard'] : [meta.group.label, meta.item.label])) : ['Access denied'];
     const cb = h('div', { class: 'crumbbar' }, h('button', { class: 'btn btn-ghost btn-icon', title: 'Toggle Sidebar', onClick: function () { App.state.sidebarCollapsed = !App.state.sidebarCollapsed; body.classList.toggle('collapsed', App.state.sidebarCollapsed); } }, U.ic('panelleft', 15)));
+    cb.appendChild(h('span', { class: 'crumb-link', onClick: function () { App.tab('dashboard'); } }, 'Home'));
     crumbs.forEach(function (c, i) {
-      if (i) cb.appendChild(h('span', { class: 'sep' }, U.ic('chevronright', 13)));
+      cb.appendChild(h('span', { class: 'sep' }, U.ic('chevronright', 13)));
       cb.appendChild(h('span', { class: i === crumbs.length - 1 ? 'cur' : 'crumb-link' }, c));
     });
     main.appendChild(cb);
