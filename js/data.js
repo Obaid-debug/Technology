@@ -44,7 +44,7 @@ window.DATA = (function () {
     { id: 'tickets', label: 'Tickets & Services', icon: 'ticket', children: [
       { id: 'hpsm', label: 'HPSM', icon: 'file' },
       { id: 'jira', label: 'Jira', icon: 'zap' },
-      { id: 'tickets-center', label: 'Ticket Center', icon: 'ticket' } ] },
+      { id: 'tickets-center', label: 'IncSight', icon: 'ticket' } ] },
     { id: 'ai-automations', label: 'AI & Automations', icon: 'sparkles', children: [
       { id: 'ops-insights', label: 'Insights', icon: 'sparkles' },
       { id: 'auto-remediation', label: 'Auto-Remediation', icon: 'wand' },
