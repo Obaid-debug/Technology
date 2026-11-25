@@ -50,26 +50,5 @@
     render();
   };
 
-  /* ---------- Ticket center ---------- */
-  Pages['tickets-center'] = function (page) {
-    const out = h('div');
-    const sel = U.select([{ value: '', label: 'Select a service' }].concat(['Service S-102', 'Service S-097', 'Service S-186', 'Service S-156', 'Service S-138', 'Service S-178'].map(function (s) { return { value: s, label: s }; })), { onChange: function (e) { load(e.target.value); } });
-    page.appendChild(U.filterBar([sel]));
-    page.appendChild(out);
-    function load(svc) {
-      if (!svc) { U.clear(out); return; }
-      U.loading(out, 800, function () {
-        const rows = DATA.hpsm.filter(function (t) { return t.service === svc; });
-        const open = rows.filter(function (t) { return t.status !== 'Closed' && t.status !== 'Resolved'; }).length;
-        const r = U.seeded(U.hash(svc));
-        const cats = [['Login Failure', 6 + Math.floor(r() * 10)], ['OTP one time password issue', 3 + Math.floor(r() * 8)], ['Technical Error Message', 2 + Math.floor(r() * 9)], ['Service Down', 1 + Math.floor(r() * 4)], ['Report not Available', Math.floor(r() * 5)]];
-        const max = Math.max.apply(null, cats.map(function (c) { return c[1]; }));
-        const cc = U.card({ title: 'Ticket categories', sub: 'Last 30 days · ' + svc });
-        cats.forEach(function (c) { cc.body.appendChild(h('div', { class: 'hbar' }, h('span', { class: 'lb' }, c[0]), h('div', { class: 'tr' }, h('i', { style: { width: (c[1] / max * 100) + '%' } })), h('span', { class: 'vl' }, String(c[1])))); });
-        const tc = U.card({ title: 'Recent tickets', bodyCls: 'flush', cls: 'mt-16', actions: [U.btn('Classify with AI', { cls: 'btn-sm', icon: 'sparkles', onClick: function () { U.toast('AI classification queued for ' + rows.length + ' tickets'); } })] });
-        tc.body.appendChild(U.table([{ key: 'id', label: 'IM', cls: 'mono' }, { key: 'title', label: 'Title' }, { key: 'status', label: 'Status', render: function (t) { return U.pill(t.status, t.status === 'Open' ? 'red' : t.status === 'Work In Progress' ? 'blue' : t.status === 'Pending Customer' ? 'amber' : 'green'); } }, { key: 'group', label: 'Group', cls: 'mono' }, { key: 'opened', label: 'Opened', cls: 'mono' }], rows, { cls: 'compact' }));
-        return [U.kpis([{ label: 'OPEN TICKETS', value: String(open), sub: open > 4 ? 'Needs attention' : 'Healthy', subCls: open > 4 ? 'text-red' : 'text-green' }, { label: 'TOTAL (30D)', value: String(rows.length + 18) }, { label: 'AVG FIRST ACTION', value: (3 + r() * 4).toFixed(1) + ' min' }, { label: 'AUTOMATED', value: Math.floor(30 + r() * 40) + '%' }]), h('div', { class: 'grid side' }, cc, tc)];
-      });
-    }
-  };
+  /* Ticket Center moved to js/pages/incsight.js (IncSight). */
 })();

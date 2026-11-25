@@ -55,7 +55,7 @@ There is no real backend: `js/auth.js` is an in-browser identity provider and `j
   - Applications Management: Applications (+ detail, topology, 5-step wizard), Lookup Management (15 lookups), Service Directory, Ops Management
   - FinOps: Kubecost
   - Delivery: ArgoCD, Deployment Center, Environment Readiness, A449 Migration
-  - Tickets & Services: HPSM, Jira, Ticket Center
+  - Tickets & Services: HPSM, Jira, IncSight
   - AI & Automations: Najm Intelligence, Performance Test, Dependency Ref, Reports
   - Executives: Executive Management (slide deck, GM summary, GM detail, AI prompt, team editors)
 
@@ -131,6 +131,17 @@ with a new passphrase. `.gitignore` blocks Excel/CSV files from being committed.
 
 `js/db.js` can also use a Supabase database (`supabase/setup.sql`, `supabase/people.sql`) when `js/config.js`
 holds a project URL and anon key. Leave `js/config.js` empty to use the GitHub files.
+
+## IncSight
+
+`#/app?tab=tickets-center` (`js/pages/incsight.js`) replaces Ticket Center: Ivanti and Jira tickets in one view with
+six tabs — Overview (KPIs, daily opened vs resolved, by service, priority & state, weekly brief), SLA & breach watch
+(response / resolution vs target, tickets past 75% of their time, SLA by priority and by group), Backlog & ageing,
+Categories (reopen rate, problem candidates), All tickets (with detail sheet) and Sources.
+
+- Tickets are mock data. SLA targets are placeholders; On Hold / Pending Customer pause the resolution clock.
+- Production design: `supabase/incsight.sql` (tickets, ticket_events, sla_policies, sync runs, views the page maps to)
+  and `integrations/ivanti/` — a read-only Ivanti OData sync into PostgreSQL. See its README.
 
 ## Database Inventory
 
