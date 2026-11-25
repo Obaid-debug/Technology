@@ -1,0 +1,6 @@
+# Never commit staff data or HR exports
+*.xlsx
+*.xls
+*.csv
+supabase/*seed*.sql
+private/
