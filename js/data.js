@@ -21,6 +21,7 @@ window.DATA = (function () {
       { id: 'virtual-machines', label: 'Virtual Machines', icon: 'server', href: '#/app/infrastructure/virtual-machines' },
       { id: 'vms-inventory', label: 'VMs Inventory', icon: 'server' },
       { id: 'device42', label: 'Device42', icon: 'harddrive' },
+      { id: 'db-inventory', label: 'Database Inventory', icon: 'database' },
       { id: 'ocp-health', label: 'OCP Health', icon: 'server' },
       { id: 'healing-center', label: 'Healing Center', icon: 'heart' } ] },
     { id: 'service-catalog', label: 'Applications Management', icon: 'grid', children: [

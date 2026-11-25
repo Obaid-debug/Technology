@@ -25,6 +25,7 @@ window.Auth = (function () {
     ['view:admin', 'View Administration'],
     ['action:deploy', 'Deploy changes / approve releases'],
     ['action:manage-vms', 'Create, edit, delete VMs'],
+    ['action:manage-dbs', 'Edit the database inventory and run DB collectors'],
     ['action:manage-apps', 'Create, edit, delete applications & directory'],
     ['action:manage-lookups', 'Edit lookup tables'],
     ['action:run-automation', 'Run healing, pipelines, rightsizing'],
@@ -36,7 +37,7 @@ window.Auth = (function () {
 
   const DEFAULT_ROLES = {
     admin: { label: 'Administrator', desc: 'Full access to every module and to access management.', perms: ['*'], color: 'solid' },
-    engineer: { label: 'SRE / Engineer', desc: 'Operates the platform: observability, infrastructure, delivery and automations.', perms: ['view:dashboard', 'view:observability', 'view:business-ops', 'view:platform', 'view:apps', 'view:finops', 'view:delivery', 'view:tickets', 'view:ai', 'view:people', 'action:deploy', 'action:manage-vms', 'action:run-automation', 'action:ai-assistant'], color: 'blue' },
+    engineer: { label: 'SRE / Engineer', desc: 'Operates the platform: observability, infrastructure, delivery and automations.', perms: ['view:dashboard', 'view:observability', 'view:business-ops', 'view:platform', 'view:apps', 'view:finops', 'view:delivery', 'view:tickets', 'view:ai', 'view:people', 'action:deploy', 'action:manage-vms', 'action:manage-dbs', 'action:run-automation', 'action:ai-assistant'], color: 'blue' },
     appowner: { label: 'Application Owner', desc: 'Owns applications in the AppOps catalog and follows their tickets and releases.', perms: ['view:dashboard', 'view:observability', 'view:apps', 'view:delivery', 'view:tickets', 'view:ai', 'action:manage-apps', 'action:manage-lookups', 'action:ai-assistant'], color: 'purple' },
     executive: { label: 'Executive', desc: 'Reads the weekly executive brief and the high-level dashboards.', perms: ['view:dashboard', 'view:observability', 'view:executive', 'view:people', 'action:edit-exec', 'action:ai-assistant'], color: 'amber' },
     viewer: { label: 'Viewer', desc: 'Read-only access to monitoring pages.', perms: ['view:dashboard', 'view:observability', 'view:platform', 'view:tickets'], color: 'slate' }

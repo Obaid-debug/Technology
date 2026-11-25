@@ -51,7 +51,7 @@ There is no real backend: `js/auth.js` is an in-browser identity provider and `j
 - `#/app?tab=<id>` — the portal shell (top bar, collapsible sidebar, breadcrumbs) with all 29 pages:
   - Observability: Logs, APM, Alerts, All in One, Portal Usage, Services Health Check
   - Business Operations: OPM
-  - Platform & Infrastructure: Virtual Machines (+ detail), VMs Inventory, Device42, OCP Health, Healing Center
+  - Platform & Infrastructure: Virtual Machines (+ detail), VMs Inventory, Device42, Database Inventory, OCP Health, Healing Center
   - Applications Management: Applications (+ detail, topology, 5-step wizard), Lookup Management (15 lookups), Service Directory, Ops Management
   - FinOps: Kubecost
   - Delivery: ArgoCD, Deployment Center, Environment Readiness, X049 Migration
@@ -131,6 +131,20 @@ with a new passphrase. `.gitignore` blocks Excel/CSV files from being committed.
 
 `js/db.js` can also use a Supabase database (`supabase/setup.sql`, `supabase/people.sql`) when `js/config.js`
 holds a project URL and anon key. Leave `js/config.js` empty to use the GitHub files.
+
+## Database Inventory
+
+`#/app?tab=db-inventory` (`js/pages/databases.js`) is the DBA reference: every database with Project Name, Database Name,
+Database Type, IP (Type), Port and Proxy / Connection, plus five tabs — Inventory, By project (Prod/DR drift),
+Backup & DR, Lifecycle & security (EOL, patches, certificates, privileged accounts) and Data quality & sync
+(collectors, databases found but not registered, not seen for 7+ days, missing owner/DBA).
+
+- Records and collectors are mock data. **Import Excel** is real: it reads the DBA sheet in the browser, matches rows by
+  Database Name and sets the environment from the IP network. **Download template** (in the import dialog) gives the expected columns.
+- Editing needs the `action:manage-dbs` permission (Administrator, SRE / Engineer).
+- The production design is in `supabase/db-inventory.sql` (PostgreSQL): every column is owned by either a collector,
+  a rule or a person, `last_seen_at` and `collector_runs` keep it fresh, `change_log` records every change, and
+  `v_database_inventory` / `v_inventory_issues` are what the page reads. No credentials are stored.
 
 ## Design system
 
