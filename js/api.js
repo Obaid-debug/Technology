@@ -6,8 +6,8 @@
 window.MockAPI = (function () {
   const M = {};
   const KEY_LOG = 'ti_api_log', KEY_SETTINGS = 'ti_settings';
-  function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
-  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function load(k, d) { try { const v = sessionStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function save(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
   M.settings = load(KEY_SETTINGS, { latency: 1, failRate: 0, offline: false });
   M.saveSettings = function () { save(KEY_SETTINGS, M.settings); };

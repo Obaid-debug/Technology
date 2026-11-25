@@ -1,6 +1,7 @@
 /* ------------------------------------------------------------
    Mock identity, sessions, roles & permissions (no backend).
-   Persists overrides in localStorage so admin changes survive reloads.
+   Nothing is cached across browser sessions: accounts and roles always come from this file,
+   and the sign-in session and audit log live in sessionStorage (cleared when the tab closes).
    ------------------------------------------------------------ */
 window.Auth = (function () {
   const A = {};
@@ -53,19 +54,21 @@ window.Auth = (function () {
     { id: 'u9', username: 'najm.admin', name: 'Portal Administrator', email: 'najm.admin@example.com', idNumber: '9100', role: 'admin', status: 'Active', team: 'Najm Technology', lastLogin: '—', password: 'NajmTech#2026!', hidden: true }
   ];
 
-  function load(key, def) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
-  function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
+  function load(key, def) { try { const v = sessionStorage.getItem(key); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
+  function save(key, v) { try { sessionStorage.setItem(key, JSON.stringify(v)); } catch (e) {} }
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
   // Store version: bump when seed identities change so stale local copies are reseeded.
   const STORE_VERSION = 5;
-  if (load('ti_store_v', 0) !== STORE_VERSION) { [KEY_USERS, KEY_ROLES, KEY_SESSION].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); save('ti_store_v', STORE_VERSION); }
-  A.roles = load(KEY_ROLES, clone(DEFAULT_ROLES));
-  A.users = load(KEY_USERS, clone(DEFAULT_USERS)).map(function (u) { if (!u.password) u.password = A.DEMO_PASSWORD; return u; });
+  if (load('ti_store_v', 0) !== STORE_VERSION) { [KEY_USERS, KEY_ROLES, KEY_SESSION].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }); save('ti_store_v', STORE_VERSION); }
+  // Earlier versions kept accounts, roles and sessions in localStorage; remove those copies.
+  try { ['ti_session', 'ti_users', 'ti_roles', 'ti_audit', 'ti_auth', 'ti_api_log', 'ti_settings', 'ti_store_v', 'najm_staff_key', 'najm_directory_draft', 'najm_db_session', 'najm_directory_local'].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}
+  A.roles = clone(DEFAULT_ROLES);
+  A.users = clone(DEFAULT_USERS).map(function (u) { if (!u.password) u.password = A.DEMO_PASSWORD; return u; });
   A.audit = load(KEY_AUDIT, []);
-  A.saveUsers = function () { save(KEY_USERS, A.users); };
-  A.saveRoles = function () { save(KEY_ROLES, A.roles); };
-  A.resetAll = function () { [KEY_SESSION, KEY_USERS, KEY_ROLES, KEY_AUDIT, 'ti_auth', 'ti_api_log', 'ti_settings', 'ti_store_v'].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); };
+  A.saveUsers = function () {}; // admin edits apply to this tab only; accounts always come from DEFAULT_USERS
+  A.saveRoles = function () {};
+  A.resetAll = function () { [KEY_SESSION, KEY_USERS, KEY_ROLES, KEY_AUDIT, 'ti_auth', 'ti_api_log', 'ti_settings', 'ti_store_v'].forEach(function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }); };
 
   /* ---------- audit ---------- */
   A.log = function (event, detail, outcome) {
@@ -79,7 +82,7 @@ window.Auth = (function () {
   A.session = function () {
     const s = load(KEY_SESSION, null);
     if (!s) return null;
-    if (Date.now() > s.expiresAt) { try { localStorage.removeItem(KEY_SESSION); } catch (e) {} A.log('session.expired', { username: s.username }, 'info'); return null; }
+    if (Date.now() > s.expiresAt) { try { sessionStorage.removeItem(KEY_SESSION); } catch (e) {} A.log('session.expired', { username: s.username }, 'info'); return null; }
     return s;
   };
   A.user = function () { const s = A.session(); return s ? A.users.find(function (u) { return u.id === s.userId; }) || null : null; };
@@ -94,7 +97,7 @@ window.Auth = (function () {
   };
   A.touch = function () { const s = load(KEY_SESSION, null); if (s) { s.lastActive = Date.now(); save(KEY_SESSION, s); } };
   A.extend = function () { const s = load(KEY_SESSION, null); if (s) { s.expiresAt = Date.now() + SESSION_HOURS * 3600 * 1000; save(KEY_SESSION, s); A.log('session.extended', '', 'success'); } };
-  A.logout = function (reason) { const s = A.session(); if (s) A.log('auth.logout', reason || '', 'success'); try { localStorage.removeItem(KEY_SESSION); localStorage.removeItem('ti_auth'); } catch (e) {} };
+  A.logout = function (reason) { const s = A.session(); if (s) A.log('auth.logout', reason || '', 'success'); try { sessionStorage.removeItem(KEY_SESSION); sessionStorage.removeItem('ti_auth'); } catch (e) {} };
   A.remainingMs = function () { const s = A.session(); return s ? s.expiresAt - Date.now() : 0; };
 
   /* ---------- authentication ---------- */

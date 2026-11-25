@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Do not cache this page: it must always load the latest portal. -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
   <title>Najm Technology | Insight Portal</title>
   <meta name="description" content="Najm Technology - Comprehensive operational dashboard for monitoring service performance, error analytics, response times, and SLA tracking with real-time insights">
@@ -12,34 +16,52 @@
   <script>try { if (localStorage.getItem("najm_theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}</script>
   <link rel="icon" href="assets/najm-icon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/najm-icon.png">
-  <link rel="stylesheet" href="css/styles.css?v=202611250949">
+  <script>
+    // Load the stylesheet with a fresh timestamp so the browser never reuses an old copy.
+    (function () { var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "css/styles.css?t=" + Date.now(); document.head.appendChild(l); })();
+  </script>
 </head>
 <body>
   <div id="root"></div>
   <div id="toasts" class="toasts"></div>
   <div id="modal-root"></div>
-
-  <script src="js/icons.js?v=202611250949"></script>
-  <script src="js/util.js?v=202611250949"></script>
-  <script src="js/data.js?v=202611250949"></script>
-  <script src="data/services.js?v=202611250949"></script>
-  <script src="data/staff-data.js?v=202611250949" onerror="this.remove()"></script>
-  <script src="js/config.js?v=202611250949"></script>
-  <script src="js/db.js?v=202611250949"></script>
-  <script src="js/auth.js?v=202611250949"></script>
-  <script src="js/api.js?v=202611250949"></script>
-  <script src="js/pages/public.js?v=202611250949"></script>
-  <script src="js/pages/admin.js?v=202611250949"></script>
-  <script src="js/pages/dashboard.js?v=202611250949"></script>
-  <script src="js/pages/observability.js?v=202611250949"></script>
-  <script src="js/pages/platform.js?v=202611250949"></script>
-  <script src="js/pages/apps.js?v=202611250949"></script>
-  <script src="js/pages/delivery.js?v=202611250949"></script>
-  <script src="js/pages/tickets.js?v=202611250949"></script>
-  <script src="js/pages/ai.js?v=202611250949"></script>
-  <script src="js/pages/people.js?v=202611250949"></script>
-  <script src="js/pages/staffdata.js?v=202611250949"></script>
-  <script src="js/pages/executive.js?v=202611250949"></script>
-  <script src="js/app.js?v=202611250949"></script>
+  <script>
+    /* Loads every portal script with a fresh timestamp, in order, so browsers and
+       proxies never serve an old copy. The list must stay in this order. */
+    (function () {
+      var t = Date.now();
+      var files = [
+        'js/icons.js',
+        'js/util.js',
+        'js/data.js',
+        'data/services.js',
+        'data/staff-data.js',
+        'js/config.js',
+        'js/db.js',
+        'js/auth.js',
+        'js/api.js',
+        'js/pages/public.js',
+        'js/pages/admin.js',
+        'js/pages/dashboard.js',
+        'js/pages/observability.js',
+        'js/pages/platform.js',
+        'js/pages/apps.js',
+        'js/pages/delivery.js',
+        'js/pages/tickets.js',
+        'js/pages/ai.js',
+        'js/pages/people.js',
+        'js/pages/staffdata.js',
+        'js/pages/executive.js',
+        'js/app.js'
+      ];
+      files.forEach(function (src) {
+        var s = document.createElement('script');
+        s.src = src + '?t=' + t;
+        s.async = false;                 // keep execution order
+        if (src === 'data/staff-data.js') s.onerror = function () { s.remove(); };  // optional file
+        document.body.appendChild(s);
+      });
+    })();
+  </script>
 </body>
 </html>

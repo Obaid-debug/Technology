@@ -23,9 +23,9 @@ window.DB = (function () {
   DB.editUrl = function (path) { return 'https://github.com/' + DB.repo.owner + '/' + DB.repo.name + '/edit/' + DB.repo.branch + '/' + path; };
   DB.uploadUrl = function (dir) { return 'https://github.com/' + DB.repo.owner + '/' + DB.repo.name + '/upload/' + DB.repo.branch + '/' + dir; };
 
-  function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
-  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-  function drop(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function load(k, d) { try { const v = sessionStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function save(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function drop(k) { try { sessionStorage.removeItem(k); } catch (e) {} }
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function who() { return (window.Auth && Auth.user() && Auth.user().username) || null; }
 
@@ -193,9 +193,9 @@ window.DB = (function () {
     const pw = U.input({ type: 'password', placeholder: 'Staff passphrase' });
     const rem = h('input', { type: 'checkbox', checked: true });
     const err = h('div', { class: 'small text-red' });
-    const go = async function (close, btn) { err.textContent = ''; btn.disabled = true; btn.textContent = 'Decrypting…'; try { const n = await DB.unlockStaff(pw.value, rem.checked); close(); U.toast('Staff data unlocked (' + n + ' people)' + (rem.checked ? ' and remembered on this device' : '')); if (then) then(); } catch (e) { err.textContent = e.message; btn.disabled = false; btn.textContent = 'Unlock'; } };
+    const go = async function (close, btn) { err.textContent = ''; btn.disabled = true; btn.textContent = 'Decrypting…'; try { const n = await DB.unlockStaff(pw.value, rem.checked); close(); U.toast('Staff data unlocked (' + n + ' people)' + (rem.checked ? '' : '')); if (then) then(); } catch (e) { err.textContent = e.message; btn.disabled = false; btn.textContent = 'Unlock'; } };
     U.modal({ title: 'Unlock staff data', size: 'sm', body: h('div', { class: 'col gap-12' }, h('p', { class: 'small muted' }, 'Staff records are stored encrypted. Enter the passphrase shared by the portal administrator.'), U.field('Passphrase', pw, { req: true }),
-      h('label', { class: 'row gap-8 small', style: { cursor: 'pointer', alignItems: 'flex-start' } }, rem, h('span', null, h('b', null, 'Remember on this device'), h('br'), h('span', { class: 'muted' }, 'Staff pages open without the passphrase in this browser until you click Lock. Only tick this on your own computer.'))), err),
+      h('label', { class: 'row gap-8 small', style: { cursor: 'pointer', alignItems: 'flex-start' } }, rem, h('span', null, h('b', null, 'Keep unlocked in this tab'), h('br'), h('span', { class: 'muted' }, 'Staff pages stay open until you click Lock or close the tab. Nothing is kept after that.'))), err),
       footer: function (close) { const b = U.btn('Unlock', { cls: 'btn-primary', icon: 'key', onClick: function () { go(close, b); } }); pw.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(close, b); }); return [U.btn('Cancel', { onClick: close }), b]; } });
     setTimeout(function () { pw.focus(); }, 50);
   };
