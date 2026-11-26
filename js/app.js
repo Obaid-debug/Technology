@@ -179,62 +179,103 @@
     } });
   };
 
+  /* Sidebar: search on top, menu grouped into labelled sections with icon
+     tiles and live badges, and a pinned user card at the bottom. */
+  const NAV_SECTIONS = [['Operations', ['ops-resilience', 'observability', 'business-operations']], ['Platform', ['platform-infra', 'service-catalog', 'finops', 'delivery']], ['Service & AI', ['tickets', 'ai-automations']], ['Management', ['executive', 'administration']]];
+  function navBadges() {
+    const R = window.REMEDIATION_STATE, out = {};
+    if (R) {
+      const open = R.insights.filter(function (i) { return !R.dismissed[i.id] && !R.remediated[i.id]; }).length;
+      out['ops-insights'] = [String(open), 'gold']; out['ai-automations'] = [String(open), 'gold'];
+      if (R.approvals.length) out['auto-remediation'] = [String(R.approvals.length), 'amber'];
+    }
+    out['release-calendar'] = ['New', 'mint'];
+    return out;
+  }
   function sidebar(active, lookupSlug) {
-    const sb = h('div', { class: 'sidebar' });
-    const list = h('div');
-    const dash = h('button', { class: 'nav-item' + (active === 'dashboard' ? ' active' : ''), onClick: function () { App.tab('dashboard'); } }, h('span', { class: 'ni' }, U.ic('dashboard', 13)), 'Dashboard');
-    sb.appendChild(dash);
-    const search = U.input({ placeholder: 'Search…', icon: 'search', wrapCls: 'nav-search', onInput: function (e) { build(e.target.value.trim().toLowerCase()); } });
-    search.input.style.height = '30px';
-    sb.appendChild(search);
+    const sb = h('div', { class: 'sidebar sb2' });
+    const badges = navBadges();
+    const badge = function (id) { const b = badges[id]; return b ? h('span', { class: 'nb ' + b[1] }, b[0]) : null; };
+    const list = h('div', { class: 'sb-list' });
+    const search = U.input({ placeholder: 'Search menu', icon: 'search', wrapCls: 'nav-search', onInput: function (e) { build(e.target.value.trim().toLowerCase()); } });
+    search.appendChild(h('kbd', { class: 'sb-kbd', title: 'Press / to search' }, '/'));
+    sb.appendChild(h('div', { class: 'sb-top' }, search));
     sb.appendChild(list);
+
+    function groupEl(g, filter) {
+      const kids = g.children.filter(function (c) { return !filter || c.label.toLowerCase().indexOf(filter) >= 0 || g.label.toLowerCase().indexOf(filter) >= 0; });
+      if (filter && !kids.length) return null;
+      const open = filter ? true : App.state.openGroup === g.id;
+      const hasActive = g.children.some(function (c) { return c.id === active; });
+      const btn = h('button', { class: 'nav-group-btn' + (open ? ' open' : '') + (hasActive ? ' has-active' : ''), title: g.label }, h('span', { class: 'gi' }, U.ic(g.icon, 15)), h('span', { class: 'lbl' }, g.label), badge(g.id), U.ic('chevronright', 13, 'chev'));
+      const ch = h('div', { class: 'nav-children' + (open ? ' open' : '') });
+      btn.addEventListener('click', function () {
+        const isOpen = ch.classList.contains('open');
+        list.querySelectorAll('.nav-children').forEach(function (x) { x.classList.remove('open'); });
+        list.querySelectorAll('.nav-group-btn').forEach(function (x) { x.classList.remove('open'); });
+        if (!isOpen) { ch.classList.add('open'); btn.classList.add('open'); App.state.openGroup = g.id; } else App.state.openGroup = null;
+      });
+      kids.forEach(function (c) {
+        const isActive = c.id === active;
+        const item = h('button', { class: 'nav-item sub' + (isActive ? ' active' : ''), title: c.label, onClick: function () { if (c.href) App.go(c.href); else App.tab(c.id); } }, h('span', { class: 'ni' }, U.ic(c.icon || 'circle', 12)), h('span', { class: 'lbl' }, c.label), badge(c.id), (c.subGroups || c.org) ? h('span', { class: 'sub-chev' }, U.ic(isActive && c.org ? 'chevrondown' : 'chevronright', 11)) : null);
+        ch.appendChild(item);
+        if (c.org && (isActive || filter)) {
+          const here = (location.hash.split('?')[0] || '').replace(/^#\/?/, '');
+          c.org.sections.forEach(function (sc) {
+            const sp = 'app/org/' + c.org.slug + '/' + sc.slug;
+            ch.appendChild(h('button', { class: 'nav-item sub3 org-sec' + (here === sp ? ' active' : ''), onClick: function () { App.go('#/' + sp); } }, U.ic(sc.icon || 'layers', 11), sc.name));
+            sc.units.forEach(function (un) {
+              const up = sp + '/' + un.slug;
+              ch.appendChild(h('button', { class: 'nav-item sub4' + (here === up ? ' active' : ''), onClick: function () { App.go('#/' + up); } }, un.name));
+            });
+          });
+        }
+        if (c.subGroups && (isActive || filter)) {
+          c.subGroups.forEach(function (sg) {
+            ch.appendChild(h('div', { class: 'nav-sub-group' }, sg.label));
+            sg.children.forEach(function (l) {
+              ch.appendChild(h('button', { class: 'nav-item sub3' + (l.id === lookupSlug ? ' active' : ''), onClick: function () { App.go('#/app/lookup/' + l.id); } }, l.label));
+            });
+          });
+        }
+      });
+      return h('div', { class: 'nav-group' }, btn, ch);
+    }
 
     function build(filter) {
       U.clear(list);
-      DATA.nav.forEach(function (g) {
-        if (!Auth.canGroup(g.id)) return; // hide groups the role cannot access
-        const kids = g.children.filter(function (c) { return !filter || c.label.toLowerCase().indexOf(filter) >= 0 || g.label.toLowerCase().indexOf(filter) >= 0; });
-        if (filter && !kids.length) return;
-        const open = filter ? true : App.state.openGroup === g.id;
-        const btn = h('button', { class: 'nav-group-btn' + (open ? ' open' : '') }, U.ic(g.icon, 14), h('span', { class: 'lbl' }, g.label), U.ic('chevronright', 13, 'chev'));
-        const ch = h('div', { class: 'nav-children' + (open ? ' open' : '') });
-        btn.addEventListener('click', function () {
-          const isOpen = ch.classList.contains('open');
-          list.querySelectorAll('.nav-children').forEach(function (x) { x.classList.remove('open'); });
-          list.querySelectorAll('.nav-group-btn').forEach(function (x) { x.classList.remove('open'); });
-          if (!isOpen) { ch.classList.add('open'); btn.classList.add('open'); App.state.openGroup = g.id; } else App.state.openGroup = null;
-        });
-        kids.forEach(function (c) {
-          const isActive = c.id === active;
-          const item = h('button', { class: 'nav-item sub' + (isActive ? ' active' : ''), onClick: function () { if (c.href) App.go(c.href); else App.tab(c.id); } }, h('span', { class: 'ni' }, U.ic(c.icon || 'circle', 12)), c.label, (c.subGroups || c.org) ? h('span', { style: { marginLeft: 'auto' } }, U.ic(isActive && c.org ? 'chevrondown' : 'chevronright', 12)) : null);
-          ch.appendChild(item);
-          if (c.org && (isActive || filter)) {
-            const here = (location.hash.split('?')[0] || '').replace(/^#\/?/, '');
-            c.org.sections.forEach(function (sc) {
-              const sp = 'app/org/' + c.org.slug + '/' + sc.slug;
-              ch.appendChild(h('button', { class: 'nav-item sub3 org-sec' + (here === sp ? ' active' : ''), onClick: function () { App.go('#/' + sp); } }, U.ic(sc.icon || 'layers', 11), sc.name));
-              sc.units.forEach(function (un) {
-                const up = sp + '/' + un.slug;
-                ch.appendChild(h('button', { class: 'nav-item sub4' + (here === up ? ' active' : ''), onClick: function () { App.go('#/' + up); } }, un.name));
-              });
-            });
-          }
-          if (c.subGroups && (isActive || filter)) {
-            c.subGroups.forEach(function (sg) {
-              ch.appendChild(h('div', { class: 'nav-sub-group' }, sg.label));
-              sg.children.forEach(function (l) {
-                ch.appendChild(h('button', { class: 'nav-item sub3' + (l.id === lookupSlug ? ' active' : ''), onClick: function () { App.go('#/app/lookup/' + l.id); } }, l.label));
-              });
-            });
-          }
-        });
-        list.appendChild(h('div', { class: 'nav-group' }, btn, ch));
+      if (!filter || 'dashboard overview'.indexOf(filter) >= 0) {
+        list.appendChild(h('div', { class: 'sb-sec' }, 'Overview'));
+        list.appendChild(h('button', { class: 'nav-item sb-dash' + (active === 'dashboard' ? ' active' : ''), onClick: function () { App.tab('dashboard'); } }, h('span', { class: 'gi' }, U.ic('dashboard', 15)), h('span', { class: 'lbl' }, 'Dashboard')));
+      }
+      const groups = DATA.nav.filter(function (g) { return Auth.canGroup(g.id); });
+      const placed = {};
+      NAV_SECTIONS.forEach(function (sec) {
+        const els = sec[1].map(function (id) { placed[id] = 1; const g = groups.find(function (x) { return x.id === id; }); return g ? groupEl(g, filter) : null; }).filter(Boolean);
+        if (!els.length) return;
+        list.appendChild(h('div', { class: 'sb-sec' }, sec[0]));
+        els.forEach(function (e) { list.appendChild(e); });
       });
+      const rest = groups.filter(function (g) { return !placed[g.id]; }).map(function (g) { return groupEl(g, filter); }).filter(Boolean);
+      if (rest.length) { list.appendChild(h('div', { class: 'sb-sec' }, 'More')); rest.forEach(function (e) { list.appendChild(e); }); }
+      if (!list.children.length) list.appendChild(h('div', { class: 'sb-empty' }, 'No matching pages'));
     }
     build('');
-    const role = Auth.role();
-    sb.appendChild(h('div', { class: 'xs muted', style: { padding: '14px 10px 6px', borderTop: '1px solid var(--border-2)', marginTop: '10px' } }, 'Signed in as ', h('b', null, (Auth.user() || {}).username || '—'), h('div', { class: 'mt-8' }, U.pill(role ? role.label : '—', role ? role.color : ''))));
+
+    const u = Auth.user() || {}, role = Auth.role();
+    const initials = (u.name || u.username || '?').split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase();
+    sb.appendChild(h('div', { class: 'sb-foot' },
+      h('div', { class: 'sb-user' }, h('span', { class: 'sb-av' }, initials),
+        h('div', { class: 'sb-who' }, h('b', null, u.username || '—'), U.pill(role ? role.label : '—', role ? role.color : '')),
+        h('button', { class: 'sb-out', title: 'Sign out', onClick: function () { App.logout(); } }, U.ic('logout', 15)))));
     return sb;
+  }
+  if (!window.__sbKeys) {
+    window.__sbKeys = true;
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== '/' || /input|textarea|select/i.test((document.activeElement || {}).tagName || '')) return;
+      const i = document.querySelector('.sidebar .nav-search input'); if (i) { e.preventDefault(); i.focus(); }
+    });
   }
 
   /* session watchdog: sign out when the mock session expires while the tab is open */
