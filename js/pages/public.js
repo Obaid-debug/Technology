@@ -21,66 +21,116 @@
   ];
   const integrations = [['ELK', '#22d3ee'], ['Grafana', '#f97316'], ['OpenShift', '#ef4444'], ['HPSM', '#f59e0b'], ['Jira', '#3b82f6'], ['Bitbucket', '#2563eb'], ['CloudBees', '#a855f7'], ['AWX / Ansible', '#ef4444'], ['ArgoCD', '#fb923c'], ['Device42', '#e2e8f0'], ['Oracle', '#dc2626'], ['PostgreSQL', '#60a5fa']];
 
-  /* Landing page: a green hero panel (after the Najm logo slab) with the cockpit preview
-     overlapping its lower edge, a capability tile grid, a dark workflow band and a green close. */
+  /* Landing page: OpsBridge, "every signal, one bridge". Hero with a live bridge
+     diagram (sources -> OpsBridge -> outcomes), numbers strip, how it works,
+     modules, product preview, teams, trust and a closing call to action. */
   Pages.welcome = function (root) {
     document.body.className = 'public-body';
-    const link = function (label, id) { return h('a', { href: '#' + id, onClick: scrollTo(id) }, label); };
-    const portalBtn = function (cls) { return h('a', { class: 'lp-btn ' + (cls || ''), href: '#/login' }, 'Open portal', U.ic('arrowright', 16)); };
-    const badge = function (n) { return h('span', { class: 'lp-num' }, String(n).padStart(2, '0')); };
-    const tile = function (name, cls) { return h('span', { class: 'lp-tile ' + (cls || '') }, U.ic(name, 22)); };
-    const pg = h('div', { class: 'lp' });
+    const go = function (id) { return function (e) { e.preventDefault(); const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth' }); }; };
+    const link = function (label, id) { return h('a', { href: '#' + id, onClick: go(id) }, label); };
+    const btn = function (label, cls, href, icon) { return h('a', { class: 'ob-btn ' + (cls || ''), href: href || '#/login' }, label, icon === false ? null : U.ic(icon || 'arrowright', 16)); };
+    const pg = h('div', { class: 'ob' });
 
-    /* hero */
-    pg.appendChild(h('header', { class: 'lp-hero' },
-      h('nav', { class: 'lp-nav', 'aria-label': 'Main' }, brand(),
-        h('div', { class: 'lp-links' }, link('Capabilities', 'capabilities'), link('Workflows', 'workflows'), link('Integrations', 'stack'), portalBtn())),
-      h('div', { class: 'lp-hero-in' },
-        h('span', { class: 'lp-tag' }, U.ic('sparkles', 14), 'v2.0 · Now powered by Najm Technology AI'),
-        h('h1', null, 'All operations.', h('br'), 'One intelligent ', h('span', { class: 'accent' }, 'cockpit.')),
-        h('p', { class: 'lp-lead' }, 'Unify observability, incidents, automation, and AI assistance in one operational cockpit. Investigate, automate and ship with confidence.'),
-        h('div', { class: 'lp-cta' }, portalBtn('lg'), h('a', { class: 'lp-btn lg outline', href: '#capabilities', onClick: scrollTo('capabilities') }, 'Explore capabilities')))));
+    /* ---------- nav + hero ---------- */
+    const sources = [['activity', 'Monitoring', 'ELK · Grafana'], ['ticket', 'Tickets', 'HPSM · Jira'], ['server', 'Infrastructure', 'VMs · OpenShift'], ['rocket', 'Releases', 'ArgoCD · CAB']];
+    const outcomes = [['sparkles', 'Insights', 'AI findings'], ['wand', 'Auto-fix', 'Playbooks'], ['barchart', 'Reports', 'Exec brief']];
+    const node = function (n, side) { return h('div', { class: 'ob-node ' + side }, h('span', { class: 'ic' }, U.ic(n[0], 16)), h('div', null, h('b', null, n[1]), h('small', null, n[2]))); };
+    const bridgeSvg = '<svg class="ob-lines" viewBox="0 0 600 360" preserveAspectRatio="none" aria-hidden="true">' +
+      [45, 135, 225, 315].map(function (y, i) { return '<path class="ln in d' + i + '" d="M0 ' + y + ' C 150 ' + y + ', 170 180, 300 180"/>'; }).join('') +
+      [75, 180, 285].map(function (y, i) { return '<path class="ln out d' + i + '" d="M300 180 C 430 180, 450 ' + y + ', 600 ' + y + '"/>'; }).join('') + '</svg>';
+    pg.appendChild(h('header', { class: 'ob-hero' },
+      h('div', { class: 'ob-glow g1' }), h('div', { class: 'ob-glow g2' }), h('div', { class: 'ob-grid-bg' }),
+      h('nav', { class: 'ob-nav ob-wrap', 'aria-label': 'Main' }, brand(),
+        h('div', { class: 'ob-links' }, link('How it works', 'how'), link('Modules', 'modules'), link('Teams', 'teams'), link('Security', 'trust')),
+        btn('Sign in', 'sm light')),
+      h('div', { class: 'ob-wrap ob-hero-in' },
+        h('div', { class: 'ob-hero-tx' },
+          h('span', { class: 'ob-tag' }, h('i'), 'Najm Technology · Operations platform'),
+          h('h1', null, 'Every signal.', h('br'), h('span', null, 'One bridge.')),
+          h('p', null, 'OpsBridge connects monitoring, tickets, infrastructure and releases across the Technology Division, and turns them into clear insights and automatic fixes.'),
+          h('div', { class: 'ob-cta' }, btn('Sign in to OpsBridge', 'lg gold'), h('a', { class: 'ob-btn lg ghost', href: '#how', onClick: go('how') }, 'See how it works')),
+          h('div', { class: 'ob-proof' }, [['188', 'services monitored'], ['143', 'issues auto-fixed this month'], ['24 min', 'mean time to resolve']].map(function (x) { return h('div', null, h('b', null, x[0]), h('span', null, x[1])); }))),
+        h('div', { class: 'ob-bridge', 'aria-label': 'Sources flow through OpsBridge into insights, fixes and reports' },
+          U.raw(bridgeSvg),
+          h('div', { class: 'ob-col left' }, sources.map(function (n) { return node(n, 'src'); })),
+          h('div', { class: 'ob-core' }, U.raw('<span class="ring360"><img class="logo" src="assets/najm-icon.png" alt=""></span>'), h('b', null, 'OpsBridge'), h('small', null, 'correlate · decide · act')),
+          h('div', { class: 'ob-col right' }, outcomes.map(function (n) { return node(n, 'out'); }))))));
 
-    /* cockpit preview */
-    const mini = function (label, val, seed, color) { return h('div', { class: 'lp-mini' }, h('div', { class: 'l' }, label), h('div', { class: 'v' }, val), U.sparkline(U.series(seed, 18, 50, 20), { w: 160, h: 34, color: color })); };
-    pg.appendChild(h('section', { class: 'lp-wrap lp-cockpit', 'aria-label': 'Operations cockpit preview' }, h('div', { class: 'lp-card' },
-      h('div', { class: 'row between' }, h('span', { class: 'lp-card-t' }, U.ic('activity', 18), 'Operations cockpit'), h('span', { class: 'lp-live' }, h('i'), 'Live')),
-      h('div', { class: 'lp-minis' }, mini('Active incidents', '14', 'inc', '#cca447'), mini('Alerts raised', '87', 'alr', '#3c91bc'), mini('SLA compliance', '98.4%', 'sla', '#33835c'), mini('Alerts (24h)', '132', 'a24', '#d15d5d')),
-      h('button', { class: 'lp-ai', type: 'button', onClick: openAiDemo }, tile('bot', 'solid'), h('span', { class: 'tx' }, h('span', { class: 't' }, 'AI Assistant'), h('span', { class: 'q' }, 'Why did the token service latency spike at 14:02?')), U.ic('arrowright', 20)))));
+    /* ---------- numbers strip ---------- */
+    pg.appendChild(h('section', { class: 'ob-wrap ob-strip', 'aria-label': 'OpsBridge at a glance' }, [
+      ['gauge', '96.5%', 'Auto-fix success rate'], ['clock', '87 h', 'Engineer time saved / month'], ['rocket', '41', 'Releases planned in November'], ['shieldcheck', '27', 'Incidents prevented / month']
+    ].map(function (x) { return h('div', { class: 'ob-stat' }, h('span', { class: 'ic' }, U.ic(x[0], 18)), h('div', null, h('b', null, x[1]), h('span', null, x[2]))); })));
 
-    /* figures */
-    const stats = [['box', '40+', 'Services monitored'], ['layers', '10+', 'Integrated systems'], ['clock', '24/7', 'Real-time insights'], ['shieldcheck', '99.9%', 'Platform uptime']];
-    pg.appendChild(h('section', { class: 'lp-wrap lp-stats', 'aria-label': 'Platform at a glance' }, stats.map(function (s) { return h('div', { class: 'lp-stat' }, tile(s[0]), h('div', null, h('b', null, s[1]), h('span', null, s[2]))); })));
+    /* ---------- how it works ---------- */
+    const steps = [
+      ['link', 'Connect', 'Plug in the tools you already run: ELK, Grafana, OpenShift, HPSM, Jira, ArgoCD and the CMDB. No re-platforming.'],
+      ['eye', 'See', 'One live view of every service, server, ticket and release, with health, owners and history side by side.'],
+      ['brain', 'Understand', 'AI correlates the signals, finds the likely root cause and ranks what matters before it becomes an incident.'],
+      ['wand', 'Act', 'Approved playbooks fix known problems automatically, inside guardrails, with a full audit trail and the ticket updated.']
+    ];
+    pg.appendChild(h('section', { class: 'ob-wrap ob-sec', id: 'how' },
+      h('div', { class: 'ob-head' }, h('span', { class: 'ob-eyebrow' }, 'How it works'), h('h2', null, 'From raw signal to resolved, ', h('em', null, 'in four steps.'))),
+      h('ol', { class: 'ob-steps' }, steps.map(function (st, i) { return h('li', null, h('div', { class: 'n' }, String(i + 1).padStart(2, '0')), h('span', { class: 'ic' }, U.ic(st[0], 20)), h('h3', null, st[1]), h('p', null, st[2])); }))));
 
-    /* capabilities: two featured tiles, then the rest */
-    const c0 = capabilities[0], c1 = capabilities[1];
-    const bars = [[42, 'a'], [58, 'a'], [50, 'a'], [72, 'b'], [64, 'a'], [88, 'c'], [70, 'a'], [94, 'c'], [80, 'b'], [66, 'a'], [84, 'c'], [76, 'a']];
-    const tiles = [
-      h('article', { class: 'lp-cap wide' }, h('div', { class: 'tx' }, h('div', { class: 'row gap-12' }, tile(c0[1]), badge(1)), h('h3', null, c0[0]), h('p', null, c0[2])), h('div', { class: 'lp-bars', 'aria-hidden': 'true' }, bars.map(function (b) { return h('i', { class: b[1], style: { height: b[0] + '%' } }); }))),
-      h('article', { class: 'lp-cap wide ink' }, h('div', { class: 'row gap-12' }, tile(c1[1], 'solid'), badge(2)), h('h3', null, c1[0]), h('p', null, c1[2]), h('button', { class: 'lp-ask', type: 'button', onClick: openAiDemo }, U.ic('search', 18), 'Why did the token service latency spike at 14:02?'))
-    ].concat(capabilities.slice(2).map(function (c, i) { return h('article', { class: 'lp-cap' }, h('div', { class: 'row between' }, tile(c[1]), badge(i + 3)), h('h3', null, c[0]), h('p', null, c[2])); }));
-    pg.appendChild(h('section', { class: 'lp-wrap lp-section', id: 'capabilities' },
-      h('div', { class: 'lp-head' }, h('div', null, h('div', { class: 'lp-lbl' }, 'Capabilities'), h('h2', null, 'Everything operations needs, ', h('span', { class: 'accent' }, 'in one portal.'))), h('p', null, 'Every module is wired together with shared identity, audit and context — from detection to resolution.')),
-      h('div', { class: 'lp-caps' }, tiles)));
+    /* ---------- modules (bento) ---------- */
+    const mods = [
+      ['sparkles', 'Insights', 'Daily AI brief, health score and ranked findings, each with the fix that resolves it.', 'big'],
+      ['wand', 'Auto-Remediation', 'Playbooks with approvals, guardrails and run history.', ''],
+      ['calendar', 'Release Calendar', 'Releases, CAB status, freeze windows and conflicts in one month view.', ''],
+      ['activity', 'Observability', 'Logs, alerts, health checks and firewall events in one place.', ''],
+      ['server', 'Platform & Infrastructure', 'VMs, OpenShift, databases and Device42, with owners and lifecycle.', ''],
+      ['building', 'Operations & Resilience', 'Departments, sections and teams with headcount and coverage.', ''],
+      ['ticket', 'Tickets & Services', 'HPSM and Jira in one queue, with the service directory and on-call owners.', ''],
+      ['crown', 'Executive brief', 'Weekly team updates and a ready-to-present slide deck.', 'wide']
+    ];
+    pg.appendChild(h('section', { class: 'ob-band', id: 'modules' }, h('div', { class: 'ob-wrap' },
+      h('div', { class: 'ob-head' }, h('span', { class: 'ob-eyebrow' }, 'Modules'), h('h2', null, 'Everything the division runs on, ', h('em', null, 'connected.'))),
+      h('div', { class: 'ob-bento' }, mods.map(function (m) {
+        const card = h('a', { class: 'ob-mod ' + m[3], href: '#/login' }, h('span', { class: 'ic' }, U.ic(m[0], 20)), h('h3', null, m[1]), h('p', null, m[2]), h('span', { class: 'go' }, 'Open', U.ic('arrowright', 14)));
+        if (m[3] === 'big') card.appendChild(h('div', { class: 'ob-mini' }, [['Open insights', '20', 'red'], ['Auto-fix coverage', '70%', 'green'], ['Health score', '84', 'gold']].map(function (k) { return h('div', { class: 'k ' + k[2] }, h('span', null, k[0]), h('b', null, k[1])); })));
+        return card;
+      })))));
 
-    /* workflows */
-    const steps = [['Ticket Classification', 'Auto-classify and route tickets with AI-powered decisioning.', 'gitbranch'], ['Performance Reports', 'Real-time, resolved incidents and SLA metrics on KSA business hours.', 'chart'], ['All-in-One Service View', 'ELK · Grafana · Service Design unified per service with smart mapping.', 'layers']];
-    pg.appendChild(h('section', { class: 'lp-band', id: 'workflows' }, h('div', { class: 'lp-wrap' },
-      h('div', null, h('div', { class: 'lp-lbl' }, 'Workflows'), h('h2', null, 'Guided workflows. ', h('span', { class: 'accent' }, 'Actionable outcomes.'))),
-      h('ol', { class: 'lp-steps' }, steps.map(function (s, i) { return h('li', null, h('div', { class: 's' }, badge(i + 1), 'STEP ' + (i + 1)), h('h3', null, U.ic(s[2], 20), s[0]), h('p', null, s[1])); })))));
+    /* ---------- product preview ---------- */
+    const prevRow = function (sev, title, meta, fix) { return h('div', { class: 'ob-prow ' + sev }, h('i'), h('div', { class: 'grow' }, h('b', null, title), h('small', null, meta)), h('span', { class: 'fx' }, U.ic('wand', 12), fix)); };
+    pg.appendChild(h('section', { class: 'ob-wrap ob-sec ob-preview' },
+      h('div', { class: 'ob-prev-tx' }, h('span', { class: 'ob-eyebrow' }, 'Inside OpsBridge'), h('h2', null, 'Problems arrive with their fix ', h('em', null, 'already attached.')),
+        h('p', null, 'Every insight shows the evidence, the confidence and the recommended action. If a playbook exists, one click fixes it; if it needs a person, it goes to approval with the expected impact.'),
+        h('ul', { class: 'ob-ticks' }, ['Detect, diagnose and remediate in under two minutes', 'Freeze windows, rate limits and blast radius respected', 'Every run recorded and the ticket updated'].map(function (t) { return h('li', null, U.ic('circlecheck', 16), t); })),
+        h('button', { class: 'ob-btn ghost dark', type: 'button', onClick: openAiDemo }, U.ic('bot', 16), 'Ask the AI assistant')),
+      h('div', { class: 'ob-window' }, h('div', { class: 'ob-win-bar' }, h('i'), h('i'), h('i'), h('span', null, 'OpsBridge · Insights')),
+        h('div', { class: 'ob-win-body' },
+          prevRow('crit', '5xx errors 6× above normal after deployment', 'Service S-102 · Anomaly · 8 min ago', 'Roll back'),
+          prevRow('crit', 'Disk on db-node-03 full in about 6 hours', 'Service S-178 · Capacity · 15 min ago', 'Free disk space'),
+          prevRow('high', 'Pod crash-looping: a448-engine-7d9f', 'a448-engine · Anomaly · 22 min ago', 'Restart pod'),
+          prevRow('med', 'TLS certificate expires in 9 days', 'api-gateway · Security · 3 h ago', 'Renew certificate'),
+          h('div', { class: 'ob-win-done' }, U.ic('circlecheck', 15), h('b', null, 'Resolved automatically.'), ' Scale out on high latency · Service S-095 · 30 min saved')))));
 
-    /* integrations */
-    pg.appendChild(h('section', { class: 'lp-wrap lp-section lp-integ', id: 'stack' },
-      h('div', null, h('div', { class: 'lp-lbl' }, 'Integrations'), h('h2', null, 'Wired into the tools your teams already use.')),
-      h('ul', { class: 'lp-chips' }, integrations.map(function (it) { return h('li', null, h('i', { 'aria-hidden': 'true' }), it[0]); }))));
+    /* ---------- teams ---------- */
+    const teams = [
+      ['headset', 'NOC & Service Desk', 'Know what is broken, who owns it and what to tell users, without switching between six tools.'],
+      ['activity', 'SRE & Platform', 'Fewer pages at 3 a.m.: known problems fix themselves and capacity risks show up days early.'],
+      ['grid', 'Application owners', 'See your service end to end: health, releases, tickets and the infrastructure underneath it.'],
+      ['crown', 'Leadership', 'A weekly brief, SLA risk and team coverage in one view, ready for the management meeting.']
+    ];
+    pg.appendChild(h('section', { class: 'ob-wrap ob-sec', id: 'teams' },
+      h('div', { class: 'ob-head' }, h('span', { class: 'ob-eyebrow' }, 'Built for every team'), h('h2', null, 'One platform, ', h('em', null, 'four ways to use it.'))),
+      h('div', { class: 'ob-teams' }, teams.map(function (t) { return h('article', null, h('span', { class: 'ic' }, U.ic(t[0] === 'headset' ? 'users' : t[0], 18)), h('h3', null, t[1]), h('p', null, t[2])); }))));
 
-    /* close */
-    const art = '<svg viewBox="0 0 320 208" aria-hidden="true"><rect width="128" height="96" rx="20" fill="#e6c068"/><rect x="144" width="176" height="96" rx="20" fill="#2a6e4d"/><rect x="168" y="32" width="32" height="32" rx="12" fill="#5dc08d"/><rect x="216" y="32" width="32" height="32" rx="12" fill="#5dc08d"/><rect x="264" y="32" width="32" height="32" rx="12" fill="#5dc08d"/><rect y="112" width="320" height="96" rx="20" fill="#19191a"/><rect x="24" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/><rect x="72" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/><rect x="120" y="144" width="80" height="32" rx="12" fill="#5dc08d"/><rect x="216" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/><rect x="264" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/></svg>';
-    pg.appendChild(h('section', { class: 'lp-open', id: 'cta' }, h('div', { class: 'lp-wrap' },
-      h('div', { class: 'tx' }, h('h2', null, 'Ready to step into the cockpit?'), h('p', null, 'Sign in to OpsBridge and see every signal, ticket and automation in one place.'), portalBtn('lg')),
-      U.raw(art))));
+    /* ---------- trust ---------- */
+    pg.appendChild(h('section', { class: 'ob-wrap ob-trust', id: 'trust' },
+      h('div', null, h('span', { class: 'ob-eyebrow' }, 'Security & governance'), h('h2', null, 'Safe by design.')),
+      h('div', { class: 'ob-trust-grid' }, [['key', 'Najm SSO', 'Sign in with corporate credentials.'], ['shield', 'Roles & permissions', 'Every action checks what your role allows.'], ['history', 'Full audit trail', 'Who did what, when, from where.'], ['lock', 'Guardrails', 'Automation never acts outside approved limits.']].map(function (t) {
+        return h('div', null, U.ic(t[0], 18), h('b', null, t[1]), h('span', null, t[2]));
+      }))));
 
-    pg.appendChild(h('footer', { class: 'lp-wrap lp-foot' }, brand(), h('div', { class: 'lp-links' }, link('Capabilities', 'capabilities'), link('Workflows', 'workflows'), link('Integrations', 'stack'), h('a', { href: '#/login' }, 'Open portal')), h('span', null, '© 2026 Najm Technology — Insight Portal v2.0')));
+    /* ---------- close + footer ---------- */
+    pg.appendChild(h('section', { class: 'ob-close' }, h('div', { class: 'ob-wrap' },
+      h('div', null, h('h2', null, 'Cross to the other side of every incident.'), h('p', null, 'Sign in with your Najm credentials and see the whole division in one view.')),
+      h('div', { class: 'ob-cta' }, btn('Sign in to OpsBridge', 'lg gold'), h('button', { class: 'ob-btn lg ghost', type: 'button', onClick: openAiDemo }, U.ic('bot', 16), 'Try the AI demo')))));
+    pg.appendChild(h('footer', { class: 'ob-wrap ob-foot' }, brand(),
+      h('div', { class: 'ob-links' }, link('How it works', 'how'), link('Modules', 'modules'), link('Teams', 'teams'), link('Security', 'trust'), h('a', { href: '#/login' }, 'Sign in')),
+      h('span', null, '© 2026 Najm Technology · OpsBridge v2.0 · All data shown is mock.')));
     root.appendChild(pg);
   };
 
