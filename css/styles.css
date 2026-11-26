@@ -1849,3 +1849,6 @@ body { background: var(--bg); -webkit-font-smoothing: antialiased; }
 .dh-more:hover { background: var(--hover); }
 .dh-row3 .card-h .row a { white-space: nowrap; }
 .dh-row3 .card-title h3 { white-space: nowrap; }
+.grid.side .card .tbl th, .grid.side .card .tbl td { padding-left: 12px; padding-right: 12px; }
+.grid.side .card .tbl td:nth-child(3) .truncate { max-width: 130px !important; }
+@media (max-width: 1400px) { .grid.side .card .tbl th:nth-child(3), .grid.side .card .tbl td:nth-child(3) { display: none; } }
