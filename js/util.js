@@ -135,12 +135,11 @@
 
   U.kpi = function (label, value, opts) {
     opts = opts || {};
-    const k = U.h('div', { class: 'kpi ' + (opts.g || '') + (opts.active ? ' active' : ''), onClick: opts.onClick, style: opts.onClick ? { cursor: 'pointer' } : null },
-      U.h('div', { class: 'k-glow' }),
-      U.h('div', { class: 'k-label' }, label),
+    // Dashboard-style tile: icon chip + label on top, large value, sub-line, soft accent wash.
+    const k = U.h('div', { class: 'kpi kpi2 ' + (opts.g || '') + (opts.active ? ' active' : ''), onClick: opts.onClick, style: opts.onClick ? { cursor: 'pointer' } : null },
+      U.h('div', { class: 'k-top' }, opts.icon ? U.h('span', { class: 'k-ico' }, U.ic(opts.icon, 16)) : null, U.h('div', { class: 'k-label' }, label)),
       U.h('div', { class: 'k-val' }, value));
     if (opts.sub) k.appendChild(U.h('div', { class: 'k-sub ' + (opts.subCls || '') }, opts.sub));
-    if (opts.icon) k.appendChild(U.h('div', { class: 'k-ico' }, U.ic(opts.icon, 14)));
     return k;
   };
   U.kpis = function (items, cols) {
