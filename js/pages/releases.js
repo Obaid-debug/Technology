@@ -36,7 +36,7 @@
     const r = U.seeded(2026);
     const apps = APPS;
     const owners = ['user02', 'user03', 'user04', 'user06', 'user07', 'user01'];
-    const teams = ['Application Support', 'DevOps Support', 'Platform Support', 'Integration Support', 'Database Support', 'Performance Testing', 'Unified Communication'];
+    const teams = ['Application Operations', 'SRE & Resilience', 'Systems & Cloud Operations', 'Integration Operations', 'Database Operations', 'IT Service Management', 'IT Security'];
     const windows = ['20:00 – 22:00', '22:00 – 00:00', '23:00 – 01:00', '02:00 – 04:00', '18:00 – 19:00'];
     let n = 0;
     for (let d = new Date(2026, 8, 1); d <= new Date(2027, 2, 31); d.setDate(d.getDate() + 1)) {
@@ -65,9 +65,9 @@
       }
     }
     // a guaranteed conflict and a few headline releases for the demo
-    ST.releases.push({ id: 'REL-0901', chg: 'CHG300901', date: '2026-11-26', app: 'Claims Portal', version: '6.0.0', type: 'major', env: 'Production', window: '22:00 – 00:00', owner: 'user02', team: 'Application Support', risk: 'High', status: 'Pending CAB', downtime: '15 min', items: 34, notes: 'New claims journey and redesigned upload flow.' });
-    ST.releases.push({ id: 'REL-0902', chg: 'CHG300902', date: '2026-11-26', app: 'Claims Portal', version: '5.18.3', type: 'hotfix', env: 'Production', window: '20:00 – 22:00', owner: 'user06', team: 'DevOps Support', risk: 'Medium', status: 'CAB approved', downtime: 'None', items: 2, notes: '' });
-    ST.releases.push({ id: 'REL-0903', chg: 'CHG300903', date: '2026-11-29', app: 'Payments Gateway', version: '3.4.0', type: 'minor', env: 'Production', window: '23:00 – 01:00', owner: 'user03', team: 'Integration Support', risk: 'Medium', status: 'Planned', downtime: 'None', items: 7, notes: '' });
+    ST.releases.push({ id: 'REL-0901', chg: 'CHG300901', date: '2026-11-26', app: 'Claims Portal', version: '6.0.0', type: 'major', env: 'Production', window: '22:00 – 00:00', owner: 'user02', team: 'Application Operations', risk: 'High', status: 'Pending CAB', downtime: '15 min', items: 34, notes: 'New claims journey and redesigned upload flow.' });
+    ST.releases.push({ id: 'REL-0902', chg: 'CHG300902', date: '2026-11-26', app: 'Claims Portal', version: '5.18.3', type: 'hotfix', env: 'Production', window: '20:00 – 22:00', owner: 'user06', team: 'SRE & Resilience', risk: 'Medium', status: 'CAB approved', downtime: 'None', items: 2, notes: '' });
+    ST.releases.push({ id: 'REL-0903', chg: 'CHG300903', date: '2026-11-29', app: 'Payments Gateway', version: '3.4.0', type: 'minor', env: 'Production', window: '23:00 – 01:00', owner: 'user03', team: 'Integration Operations', risk: 'Medium', status: 'Planned', downtime: 'None', items: 7, notes: '' });
   }
 
   ST.releases.forEach(function (x) {
@@ -261,7 +261,7 @@
         footer: function (close) { return [U.btn('Cancel', { onClick: close }), U.btn(existing ? 'Save' : 'Schedule', { cls: 'btn-primary', onClick: function () {
           if (!ver.value.trim() || !date.value) { err.textContent = 'Enter a version and a date.'; return; }
           const needsCab = type.value === 'major' || (freezeOn(date.value) && type.value !== 'hotfix');
-          const rec = existing || { id: 'REL-' + (2000 + ST.releases.length), chg: 'CHG' + (310000 + ST.releases.length), owner: (Auth.user() || {}).username || 'user01', team: 'Application Support', items: 5, notes: '', features: ['Scope to be confirmed'], jira: 'NT-' + (5000 + ST.releases.length), tests: { total: 0, passed: 0 }, manager: 'user03', approvers: ['Team lead'], perf: 'Not required' };
+          const rec = existing || { id: 'REL-' + (2000 + ST.releases.length), chg: 'CHG' + (310000 + ST.releases.length), owner: (Auth.user() || {}).username || 'user01', team: 'Application Operations', items: 5, notes: '', features: ['Scope to be confirmed'], jira: 'NT-' + (5000 + ST.releases.length), tests: { total: 0, passed: 0 }, manager: 'user03', approvers: ['Team lead'], perf: 'Not required' };
           Object.assign(rec, { app: app.value, version: ver.value.trim(), type: type.value, env: env.value, date: date.value, window: win.value, risk: type.value === 'major' ? 'High' : type.value === 'hotfix' ? 'Medium' : 'Low', downtime: type.value === 'major' ? '15 min' : type.value === 'maint' ? '30 min' : 'None', status: needsCab ? 'Pending CAB' : 'Planned' });
           if (!existing) ST.releases.push(rec);
           const d = parse(rec.date); state.y = d.getFullYear(); state.m = d.getMonth();

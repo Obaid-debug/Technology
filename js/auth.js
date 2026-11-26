@@ -44,13 +44,13 @@ window.Auth = (function () {
   };
   const DEFAULT_USERS = [
     { id: 'u1', username: 'user01', name: 'Person 01', email: 'user01@example.com', idNumber: '9001', role: 'admin', status: 'Active', team: 'Najm Technology', lastLogin: '2026-09-09 08:41' },
-    { id: 'u2', username: 'user02', name: 'Person 02', email: 'user02@example.com', idNumber: '9002', role: 'engineer', status: 'Active', team: 'Application Support', lastLogin: '2026-09-09 07:20' },
-    { id: 'u3', username: 'user03', name: 'Person 03', email: 'user03@example.com', idNumber: '9003', role: 'engineer', status: 'Active', team: 'Application Support', lastLogin: '2026-09-08 16:02' },
+    { id: 'u2', username: 'user02', name: 'Person 02', email: 'user02@example.com', idNumber: '9002', role: 'engineer', status: 'Active', team: 'Application Operations', lastLogin: '2026-09-09 07:20' },
+    { id: 'u3', username: 'user03', name: 'Person 03', email: 'user03@example.com', idNumber: '9003', role: 'engineer', status: 'Active', team: 'Application Operations', lastLogin: '2026-09-08 16:02' },
     { id: 'u4', username: 'user04', name: 'Person 04', email: 'user04@example.com', idNumber: '9004', role: 'appowner', status: 'Active', team: 'AppOps', lastLogin: '2026-09-08 13:40' },
     { id: 'u5', username: 'user05', name: 'Person 05', email: 'user05@example.com', idNumber: '9005', role: 'executive', status: 'Active', team: 'Najm Technology Management', lastLogin: '2026-09-06 09:10' },
-    { id: 'u6', username: 'user06', name: 'Person 06', email: 'user06@example.com', idNumber: '9006', role: 'engineer', status: 'Active', team: 'Platform Support', lastLogin: '2026-09-09 06:55' },
+    { id: 'u6', username: 'user06', name: 'Person 06', email: 'user06@example.com', idNumber: '9006', role: 'engineer', status: 'Active', team: 'Systems & Cloud Operations', lastLogin: '2026-09-09 06:55' },
     { id: 'u7', username: 'guest.viewer', name: 'Guest Viewer', email: 'guest.viewer@example.com', idNumber: '9099', role: 'viewer', status: 'Active', team: 'External', lastLogin: '—' },
-    { id: 'u8', username: 'user07', name: 'Person 07', email: 'user07@example.com', idNumber: '9007', role: 'engineer', status: 'Disabled', team: 'Database Support', lastLogin: '2026-08-21 11:12' },
+    { id: 'u8', username: 'user07', name: 'Person 07', email: 'user07@example.com', idNumber: '9007', role: 'engineer', status: 'Disabled', team: 'Database Operations', lastLogin: '2026-08-21 11:12' },
     // Separate administrator account with its own password; not listed among the demo accounts on the login page.
     { id: 'u9', username: 'najm.admin', name: 'Portal Administrator', email: 'najm.admin@example.com', idNumber: '9100', role: 'admin', status: 'Active', team: 'Najm Technology', lastLogin: '—', password: 'NajmTech#2026!', hidden: true }
   ];
