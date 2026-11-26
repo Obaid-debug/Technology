@@ -143,23 +143,81 @@
       menuWrap.appendChild(m);
       const off = function () { m.remove(); document.removeEventListener('click', off); };
       setTimeout(function () { document.addEventListener('click', off); }, 0);
-    } }, h('span', { class: 'avatar' }, (u.name || u.username).charAt(0).toUpperCase()), u.username);
+    } }, h('span', { class: 'avatar' }, ((u.name || u.username).split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 2) || '?').toUpperCase()),
+      h('span', { class: 'ub-tx' }, h('b', null, u.username), h('small', null, role ? role.label : '')), U.ic('chevrondown', 14, 'ub-chev'));
     menuWrap.appendChild(userBtn);
 
-    const refreshBtn = U.btn('Refresh', { cls: 'btn-primary btn-sm', icon: 'refresh', onClick: function () {
-      const ic = refreshBtn.querySelector('.ico'); ic.classList.add('spin');
-      setTimeout(function () { ic.classList.remove('spin'); U.toast('Data refreshed'); render(); }, 700);
-    } });
+    if (!App.state.lastRefresh) App.state.lastRefresh = Date.now();
+    const ago = h('span', { class: 'tb-ago' });
+    const setAgo = function () { const m = Math.floor((Date.now() - App.state.lastRefresh) / 60000); ago.textContent = m < 1 ? 'Updated just now' : 'Updated ' + m + ' min ago'; };
+    setAgo(); clearInterval(App._agoT); App._agoT = setInterval(function () { if (ago.isConnected) setAgo(); }, 30000);
 
-    return h('div', { class: 'topbar' },
+    const refreshBtn = h('button', { class: 'tb-ico', title: 'Refresh data', onClick: function () {
+      const ic = refreshBtn.querySelector('.ico'); ic.classList.add('spin');
+      setTimeout(function () { ic.classList.remove('spin'); App.state.lastRefresh = Date.now(); U.toast('Data refreshed'); render(); }, 700);
+    } }, U.ic('refresh', 16));
+    const auto = U.toggle(App.state.autoRefresh, function (v) { App.state.autoRefresh = v; U.toast('Auto-refresh ' + (v ? 'enabled' : 'disabled')); });
+    auto.title = 'Auto-refresh every minute';
+    const theme = App.themeButton(); theme.className = 'tb-ico'; 
+    const unread = 4;
+
+    return h('div', { class: 'topbar tb2' },
       h('div', { class: 'brand' }, U.raw('<span class="ring360"><img class="logo" src="assets/najm-icon.png" alt="Najm"></span>'), h('div', null, h('div', { class: 't1' }, 'OpsBridge'), h('div', { class: 't2' }, 'Najm Technology'))),
+      h('button', { class: 'tb-search', type: 'button', onClick: function () { App.commandPalette(); } }, U.ic('search', 16), h('span', null, 'Search pages and actions…'), h('kbd', null, 'Ctrl K')),
       h('div', { class: 'right' },
-        h('span', { class: 'live-pill' }, h('i'), 'LIVE'),
-        h('label', { class: 'auto-refresh' }, U.toggle(App.state.autoRefresh, function (v) { App.state.autoRefresh = v; U.toast('Auto-refresh ' + (v ? 'enabled' : 'disabled')); }), 'Auto-refresh'),
-        App.themeButton(),
-        refreshBtn,
-        h('button', { class: 'btn btn-ghost btn-icon bell', title: 'Notifications', onClick: App.notifications }, U.ic('bell', 16), h('i')),
+        h('div', { class: 'tb-status', title: 'Live data from the production environment' }, h('i'), h('b', null, 'LIVE'), h('span', { class: 'sep' }), h('span', null, 'Production'), h('span', { class: 'sep' }), ago),
+        h('div', { class: 'tb-group', title: 'Refresh' }, refreshBtn, h('label', { class: 'tb-auto' }, auto, h('span', null, 'Auto'))),
+        h('span', { class: 'tb-div' }),
+        theme,
+        h('button', { class: 'tb-ico bell', title: unread + ' unread notifications', onClick: App.notifications }, U.ic('bell', 16), h('span', { class: 'tb-count' }, String(unread))),
         menuWrap));
+  }
+
+  /* Command palette (Ctrl/Cmd + K): jump to any page or run a common action. */
+  App.commandPalette = function () {
+    if (document.querySelector('.cmdk')) return;
+    const items = [];
+    items.push({ group: 'Pages', label: 'Dashboard', hint: 'Overview', icon: 'dashboard', run: function () { App.tab('dashboard'); } });
+    DATA.nav.forEach(function (g) { if (!Auth.canGroup(g.id)) return; (g.children || []).forEach(function (c) { items.push({ group: 'Pages', label: c.label, hint: g.label, icon: c.icon || g.icon, run: function () { if (c.href) App.go(c.href); else App.tab(c.id); } }); }); });
+    [['Schedule a release', 'Release Calendar', 'calendar', 'release-calendar'], ['New auto-remediation playbook', 'Auto-Remediation', 'wand', 'auto-remediation'], ['Review open insights', 'Insights', 'sparkles', 'ops-insights']].forEach(function (a) { items.push({ group: 'Actions', label: a[0], hint: a[1], icon: a[2], run: function () { App.tab(a[3]); } }); });
+    items.push({ group: 'Actions', label: 'Switch light / dark theme', hint: 'Appearance', icon: 'moon', run: function () { App.setTheme(App.theme() === 'dark' ? 'light' : 'dark'); render(); } });
+    items.push({ group: 'Actions', label: 'Sign out', hint: 'Account', icon: 'logout', run: function () { App.logout('user action'); } });
+    const input = h('input', { class: 'cmdk-in', placeholder: 'Type a page or an action…', autocomplete: 'off' });
+    const list = h('div', { class: 'cmdk-list', role: 'listbox' });
+    let sel = 0, shown = [];
+    const close = function () { ov.remove(); document.removeEventListener('keydown', keys, true); };
+    function draw() {
+      const q = input.value.trim().toLowerCase();
+      shown = items.filter(function (i) { return !q || (i.label + ' ' + i.hint).toLowerCase().indexOf(q) >= 0; }).slice(0, 40);
+      sel = Math.min(sel, Math.max(0, shown.length - 1));
+      U.clear(list); let last = '';
+      shown.forEach(function (it, i) {
+        if (it.group !== last) { list.appendChild(h('div', { class: 'cmdk-g' }, it.group)); last = it.group; }
+        list.appendChild(h('button', { class: 'cmdk-it' + (i === sel ? ' on' : ''), role: 'option', onMouseenter: function () { sel = i; mark(); }, onClick: function () { close(); it.run(); } }, h('span', { class: 'ci' }, U.ic(it.icon, 15)), h('span', { class: 'cl' }, it.label), h('span', { class: 'ch' }, it.hint), U.ic('arrowright', 14, 'ca')));
+      });
+      if (!shown.length) list.appendChild(h('div', { class: 'cmdk-empty' }, 'Nothing matches “' + input.value + '”'));
+    }
+    function mark() { list.querySelectorAll('.cmdk-it').forEach(function (b, i) { b.classList.toggle('on', i === sel); if (i === sel) b.scrollIntoView({ block: 'nearest' }); }); }
+    function keys(e) {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); sel = Math.min(sel + 1, shown.length - 1); mark(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); sel = Math.max(sel - 1, 0); mark(); }
+      else if (e.key === 'Enter' && shown[sel]) { e.preventDefault(); const it = shown[sel]; close(); it.run(); }
+    }
+    input.addEventListener('input', function () { sel = 0; draw(); });
+    const box = h('div', { class: 'cmdk', role: 'dialog', 'aria-label': 'Command palette' },
+      h('div', { class: 'cmdk-hd' }, U.ic('search', 18), input, h('kbd', null, 'Esc')), list,
+      h('div', { class: 'cmdk-ft' }, h('span', null, h('kbd', null, '↑'), h('kbd', null, '↓'), ' to move'), h('span', null, h('kbd', null, 'Enter'), ' to open'), h('span', null, h('kbd', null, 'Esc'), ' to close')));
+    const ov = h('div', { class: 'cmdk-ov', onClick: function (e) { if (e.target === ov) close(); } }, box);
+    document.getElementById('modal-root').appendChild(ov);
+    document.addEventListener('keydown', keys, true);
+    draw(); setTimeout(function () { input.focus(); }, 0);
+  };
+  if (!window.__cmdk) {
+    window.__cmdk = true;
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K') && location.hash.indexOf('#/app') === 0) { e.preventDefault(); App.commandPalette(); }
+    });
   }
 
   App.notifications = function () {

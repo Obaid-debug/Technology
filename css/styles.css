@@ -1712,3 +1712,60 @@ body { background: var(--bg); -webkit-font-smoothing: antialiased; }
 @media (max-width: 720px) {
   .body.collapsed .sidebar, .body.collapsed .sidebar.sb2 { display: flex !important; width: min(300px, 86vw) !important; transform: none; }
 }
+
+/* ============================================================
+   TOP BAR 3.0: command search, status chip, refresh group,
+   uniform icon buttons, count badge, richer user button,
+   command palette (Ctrl K).
+   ============================================================ */
+.topbar.tb2 { gap: 16px; padding: 0 16px 0 18px; box-shadow: 0 1px 0 var(--border), 0 6px 18px rgba(16,40,28,.04); border-bottom: none; }
+.tb2 .brand { width: calc(var(--sidebar-w) - 18px); flex: none; }
+.tb-search { flex: 0 1 440px; display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 8px 0 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); color: var(--muted); font-size: 14px; cursor: text; transition: border-color .15s, box-shadow .15s; }
+.tb-search:hover { border-color: var(--primary-100); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 8%, transparent); }
+.tb-search span { flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb2 kbd, .cmdk kbd { display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); font: 600 11px/1 inherit; font-family: inherit; box-shadow: inset 0 -1px 0 var(--border); }
+.tb2 .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.tb-status { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 999px; background: var(--green-bg); color: var(--green-fg); font-size: 12.5px; white-space: nowrap; }
+.tb-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: livePulse 1.8s infinite; }
+.tb-status b { font-size: 11.5px; letter-spacing: .1em; }
+.tb-status .sep { width: 1px; height: 14px; background: currentColor; opacity: .25; }
+.tb-ago { color: var(--muted); }
+.tb-group { display: inline-flex; align-items: center; gap: 2px; height: 38px; padding: 2px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); }
+.tb-group .tb-ico { width: 32px; height: 32px; border-radius: 9px; }
+.tb-auto { display: inline-flex; align-items: center; gap: 6px; padding: 0 8px 0 6px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+.tb-auto .switch { transform: scale(.85); }
+.tb-div { width: 1px; height: 24px; background: var(--border); margin: 0 2px; }
+.tb-ico { position: relative; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; border: none; background: transparent; color: var(--text); cursor: pointer; transition: background .15s; }
+.tb-ico:hover { background: var(--hover); }
+.tb-count { position: absolute; top: 3px; right: 2px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: #d15d5d; color: #fff; font-size: 10px; font-weight: 700; line-height: 17px; text-align: center; box-shadow: 0 0 0 2px var(--card); }
+.tb2 .bell > i { display: none; }
+.tb2 .user-btn { height: 42px; gap: 10px; padding: 3px 10px 3px 3px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); }
+.tb2 .user-btn:hover { background: var(--hover); }
+.tb2 .user-btn .avatar { width: 34px; height: 34px; font-size: 12.5px; background: linear-gradient(135deg, #5dc08d, #33835c); box-shadow: 0 0 0 2px var(--card), 0 0 0 3px #e6c068; }
+.ub-tx { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.ub-tx b { font-size: 13.5px; } .ub-tx small { font-size: 11.5px; color: var(--muted); }
+.ub-chev { color: var(--muted); }
+
+/* command palette */
+.cmdk-ov { position: fixed; inset: 0; z-index: 200; background: rgba(10,30,20,.45); backdrop-filter: blur(3px); display: flex; justify-content: center; align-items: flex-start; padding-top: 12vh; animation: rise .15s ease both; }
+.cmdk { width: min(640px, calc(100vw - 32px)); max-height: 70vh; display: flex; flex-direction: column; border-radius: 20px; background: var(--card); border: 1px solid var(--border); box-shadow: 0 30px 80px rgba(0,0,0,.3); overflow: hidden; }
+.cmdk-hd { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border-2); color: var(--muted); }
+.cmdk-in { flex: 1; border: none; outline: none; background: transparent; font-size: 17px; color: var(--text); font-family: inherit; }
+.cmdk-list { overflow-y: auto; padding: 8px; }
+.cmdk-g { padding: 10px 10px 6px; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.cmdk-it { display: flex; align-items: center; gap: 12px; width: 100%; padding: 9px 10px; border: none; border-radius: 12px; background: transparent; color: var(--text); text-align: left; cursor: pointer; font-size: 14.5px; }
+.cmdk-it .ci { width: 32px; height: 32px; flex: none; border-radius: 9px; display: grid; place-items: center; background: var(--primary-50); color: var(--primary); }
+.cmdk-it .cl { flex: 1; font-weight: 500; } .cmdk-it .ch { font-size: 12.5px; color: var(--muted); } .cmdk-it .ca { opacity: 0; color: var(--primary); }
+.cmdk-it.on { background: var(--hover); } .cmdk-it.on .ca { opacity: 1; } .cmdk-it.on .ci { background: var(--primary); color: var(--on-primary); }
+.cmdk-empty { padding: 24px; text-align: center; color: var(--muted); font-size: 14px; }
+.cmdk-ft { display: flex; gap: 18px; padding: 10px 16px; border-top: 1px solid var(--border-2); font-size: 12px; color: var(--muted); }
+.cmdk-ft kbd { height: 20px; margin-right: 3px; }
+
+@media (max-width: 1250px) { .tb-ago, .tb-status .sep:last-of-type { display: none; } }
+@media (max-width: 1100px) { .tb-search span, .tb-search kbd { display: none; } .tb-search { flex: none; width: 40px; padding: 0; justify-content: center; } .ub-tx { display: none; } }
+@media (max-width: 720px) {
+  .tb2 .brand { width: auto; }
+  .tb2 .brand > div { display: none; }
+  .tb-status, .tb-group, .tb-div { display: none !important; }
+  .tb2 .user-btn { padding: 3px; } .ub-chev { display: none; }
+}
