@@ -7,40 +7,54 @@
   Pages.dashboard = function (page) {
     const state = { elk: 'all', grafana: 'all', compare: 'none' };
 
-    page.appendChild(U.pageHeader({ icon: 'dashboard', label: 'DASHBOARD', title: 'System Overview', desc: 'One pane of glass across observability, infrastructure, tickets, and automation — live from your environment.', actions: [
-      h('button', { class: 'btn', onClick: customize }, U.ic('grid', 14), 'Customize Dashboard', U.badge('16/11', 'purple'))] }));
-
-    /* promo */
-    const promo = h('div', { class: 'promo' },
-      h('div', null, U.pill('✦ NEW', 'indigo'), h('h2', null, 'AI features are live'), h('p', null, 'Ask the assistant anything about your metrics, incidents, Jira or cluster state — and shape the dashboard around the widgets that matter to your team, in a couple of clicks.'),
-        h('div', { class: 'row mt-12' }, U.btn('Try the AI assistant', { cls: 'btn-primary', icon: 'sparkles', onClick: function () { aiBox.scrollIntoView({ behavior: 'smooth' }); aiInput.focus(); } }), U.btn('Customize dashboard', { icon: 'grid', onClick: customize }))),
-      h('div', { class: 'art' }, h('div', { class: 'orb', style: { width: '90px', height: '90px', left: '20px', top: '20px' } }), h('div', { class: 'orb', style: { width: '40px', height: '40px', left: '120px', top: '60px', opacity: .7 } }), h('div', { class: 'r' }, '🚀')),
-      h('button', { class: 'btn btn-ghost btn-icon close', onClick: function () { promo.remove(); } }, U.ic('x', 14)));
-    page.appendChild(promo);
+    /* welcome hero: greeting, status summary, health ring and quick actions */
+    const u = Auth.user() || {};
+    const hr = new Date().getHours();
+    const greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+    const R = window.REMEDIATION_STATE, crit = R ? R.insights.filter(function (i) { return i.sev === 'critical' && !R.dismissed[i.id] && !R.remediated[i.id]; }).length : 3;
+    const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const healthPct = 94;
+    page.appendChild(h('section', { class: 'dh' },
+      h('div', { class: 'dh-tx' },
+        h('div', { class: 'dh-date' }, U.ic('calendar', 14), today),
+        h('h1', null, greet + ', ', h('span', null, u.username || 'there')),
+        h('p', null, 'Most systems are healthy. ', h('b', null, crit + ' critical issues'), ' need attention and ', h('b', null, '7 problems'), ' were fixed automatically overnight.'),
+        h('div', { class: 'dh-acts' },
+          h('button', { class: 'dh-btn primary', onClick: function () { aiBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); aiInput.focus(); } }, U.ic('sparkles', 16), 'Ask AI'),
+          h('button', { class: 'dh-btn', onClick: function () { App.tab('ops-insights'); } }, U.ic('flame', 16), 'Review ' + crit + ' critical'),
+          h('button', { class: 'dh-btn', onClick: function () { App.tab('release-calendar'); } }, U.ic('calendar', 16), 'Release Calendar'),
+          h('button', { class: 'dh-btn ghost', title: 'Customize dashboard', onClick: customize }, U.ic('grid', 16), 'Customize'))),
+      h('div', { class: 'dh-ring' },
+        U.raw('<div class="dh-gauge" style="--p:' + healthPct + '"><b>' + healthPct + '<small>%</small></b><span>Overall health</span></div>'),
+        h('div', { class: 'dh-legend' }, [['Services healthy', '19 / 22', 'g'], ['Open incidents', '7', 'a'], ['SLA at risk', '3', 'r'], ['Releases today', '2', 'b']].map(function (x) { return h('div', null, h('i', { class: x[2] }), h('span', null, x[0]), h('b', null, x[1])); })))));
 
     /* filter bar */
     const kpiWrap = h('div');
     const elkSel = U.select([{ value: 'all', label: 'ELK: All Services' }].concat(DATA.services.map(function (s) { return { value: s, label: 'ELK: ' + s }; })), { value: 'all', onChange: function (e) { state.elk = e.target.value; renderKpis(); } });
     const grSel = U.select([{ value: 'all', label: 'Grafana: All Services' }].concat(DATA.services.map(function (s) { return { value: s, label: 'Grafana: ' + s }; })), { value: 'all', onChange: function (e) { state.grafana = e.target.value; U.toast('Grafana scope: ' + (state.grafana === 'all' ? 'All services' : state.grafana)); } });
-    const cmpSel = U.select([{ value: 'none', label: 'No comparison' }, { value: 'prev', label: 'Previous period' }, { value: 'week', label: 'Same period last week' }], { value: 'none', onChange: function (e) { state.compare = e.target.value; renderKpis(); } });
-    page.appendChild(U.filterBar([U.btn('Sep 02 08:41 – Sep 09 08:41', { icon: 'calendar', onClick: dateRange }), elkSel, grSel, cmpSel]));
+    const cmpSel = U.select([{ value: 'none', label: 'No comparison' }, { value: 'prev', label: 'Previous period' }, { value: 'week', label: 'Same period last week' }], { value: 'prev', onChange: function (e) { state.compare = e.target.value; renderKpis(); } });
+    state.compare = 'prev';
+    page.appendChild(h('div', { class: 'dh-filter' }, h('span', { class: 'dh-ftl' }, U.ic('filter', 14), 'Scope'), U.btn('Last 7 days', { icon: 'calendar', cls: 'btn-sm', onClick: dateRange }), elkSel, grSel, cmpSel));
     page.appendChild(kpiWrap);
 
     function renderKpis() {
       U.clear(kpiWrap);
-      const sel = state.elk !== 'all';
       const cmp = state.compare !== 'none';
-      const mk = function (label, val, icon, seed, g, delta) {
-        const k = U.kpi(label, sel ? val : '—', { icon: icon, g: g, sub: sel ? (cmp ? delta : null) : 'Select a service to load metrics', subCls: sel && cmp ? (delta.charAt(0) === '+' ? 'text-green' : 'text-red') : '' });
-        if (sel) k.appendChild(h('div', { style: { marginTop: '6px' } }, U.sparkline(U.series(seed + state.elk, 24, 50, 30), { w: 200, h: 26, color: g === 'g4' ? '#ef4444' : '#33835c', area: true })));
-        return k;
-      };
       const seed = U.hash(state.elk);
-      kpiWrap.appendChild(h('div', { class: 'kpis c4' },
-        mk('TOTAL REQUESTS', (1.0 + (seed % 40) / 10).toFixed(2) + 'M', 'activity', 'req', '', '+4.2% vs previous'),
-        mk('SUCCESS RATE', (99.1 + (seed % 9) / 10).toFixed(1) + '%', 'circlecheck', 'ok', 'g2', '+0.3% vs previous'),
-        mk('AVG RESPONSE TIME', (120 + seed % 300) + ' ms', 'clock', 'rt', 'g3', '-8 ms vs previous'),
-        mk('FAILED EVENTS', U.fmt(1200 + seed % 6000), 'alert', 'fail', 'g4', '-12.1% vs previous')));
+      const all = state.elk === 'all';
+      const tile = function (label, val, icon, key, tone, delta, good) {
+        const up = delta.charAt(0) === '+';
+        return h('div', { class: 'dk ' + tone },
+          h('div', { class: 'dk-top' }, h('span', { class: 'dk-ic' }, U.ic(icon, 16)), h('span', { class: 'dk-l' }, label), cmp ? h('span', { class: 'dk-d ' + (good ? 'ok' : 'bad') }, U.ic(up ? 'trending' : 'arrowdown', 12), delta) : null),
+          h('div', { class: 'dk-v' }, val),
+          h('div', { class: 'dk-sp' }, U.sparkline(U.series(key + state.elk, 28, 50, 26), { w: 280, h: 44, color: tone === 'red' ? '#d15d5d' : tone === 'gold' ? '#cca447' : tone === 'blue' ? '#5087a7' : '#33835c', area: true })),
+          h('div', { class: 'dk-s' }, all ? 'All services · last 7 days' : state.elk + ' · last 7 days'));
+      };
+      kpiWrap.appendChild(h('div', { class: 'dks' },
+        tile('Total requests', all ? '48.6M' : (1.0 + (seed % 40) / 10).toFixed(2) + 'M', 'activity', 'req', 'green', '+4.2%', true),
+        tile('Success rate', all ? '99.62%' : (99.1 + (seed % 9) / 10).toFixed(1) + '%', 'circlecheck', 'ok', 'gold', '+0.3%', true),
+        tile('Avg response time', all ? '214 ms' : (120 + seed % 300) + ' ms', 'clock', 'rt', 'blue', '−8 ms', true),
+        tile('Failed events', all ? U.fmt(18420) : U.fmt(1200 + seed % 6000), 'alert', 'fail', 'red', '−12.1%', true)));
     }
     renderKpis();
 
@@ -58,12 +72,13 @@
         return U.table([
           { key: 'service', label: 'Service', render: function (r) { return h('div', { class: 'health-row' }, h('div', { class: 'svc' }, r.service), h('div', { class: 'env' }, 'Production')); } },
           { key: 'status', label: 'Status', render: function (r) { return U.statusPill(r.status); } },
-          { key: 'signal', label: 'Signal', render: function (r) { return h('span', { class: 'truncate muted', style: { maxWidth: '180px', display: 'inline-block' }, title: r.signal }, r.signal); } },
+          { key: 'signal', label: 'Signal', render: function (r) { return h('span', { class: 'truncate muted', style: { maxWidth: '150px', display: 'inline-block' }, title: r.signal }, r.signal); } },
           { key: 'trend', label: 'Trend (24h)', align: 'right', render: function (r) { return U.sparkline(U.series(r.service, 20, 50, 18), { w: 70, h: 22, color: r.status === 'Analyzing' ? '#33835c' : '#38bdf8' }); } }
-        ], DATA.serviceHealth, { onRow: function (r) { Pages.healthDialog(r.service); } });
+        ], DATA.serviceHealth.slice().sort(function (a, b) { return (a.status === 'Healthy') - (b.status === 'Healthy'); }).slice(0, 8), { onRow: function (r) { Pages.healthDialog(r.service); } });
       });
     }
     loadHealth();
+    healthCard.appendChild(h('a', { class: 'dh-more', href: '#/app?tab=services-health-check' }, 'View all ' + DATA.serviceHealth.length + ' services', U.ic('arrowright', 14)));
 
     /* needs attention */
     const attn = U.card({ icon: 'bell', iconKind: 'red', title: 'Needs attention', sub: 'Highest severity alerts received most recently.', actions: [U.pill('3 critical', 'red'), h('a', { class: 'small text-primary row gap-4', href: '#/app?tab=alerts' }, 'View all', U.ic('external', 12))] });
@@ -83,6 +98,25 @@
     aiCard.body.appendChild(aiBox);
     aiCard.body.appendChild(h('div', { class: 'row mt-12', style: { alignItems: 'flex-end' } }, aiInput, sendBtn));
     right.appendChild(aiCard);
+
+    /* what's happening: insights, today's releases, latest auto-fixes */
+    const sev = { critical: 'red', high: 'amber', medium: 'blue', low: '' };
+    const insC = U.card({ icon: 'sparkles', title: 'Top AI insights', sub: 'Ranked by severity and confidence', actions: [h('a', { class: 'small text-primary row gap-4', href: '#/app?tab=ops-insights' }, 'View all', U.ic('arrowright', 12))] });
+    const ins = R ? R.insights.filter(function (i) { return !R.dismissed[i.id] && !R.remediated[i.id]; }).sort(function (a, b) { const o = { critical: 0, high: 1, medium: 2, low: 3 }; return o[a.sev] - o[b.sev] || b.conf - a.conf; }).slice(0, 4) : [];
+    insC.body.appendChild(h('div', { class: 'dl' }, ins.map(function (i) { return h('a', { class: 'dl-row', href: '#/app?tab=ops-insights' }, h('i', { class: 'dl-bar ' + sev[i.sev] }), h('div', { class: 'grow', style: { minWidth: 0 } }, h('b', { class: 'truncate' }, i.title), h('small', null, i.service + ' · ' + i.when)), U.pill(i.conf + '%', '')); })));
+    const RS = window.RELEASE_STATE;
+    const kd = function (d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+    const todayKey = kd(new Date()), nextKey = kd(new Date(Date.now() + 864e5));
+    const rels = RS ? RS.releases.filter(function (x) { return x.date === todayKey || x.date === nextKey; }).sort(function (a, b) { return a.date === b.date ? (a.window < b.window ? -1 : 1) : a.date < b.date ? -1 : 1; }).slice(0, 5) : [];
+    const relC = U.card({ icon: 'calendar', title: 'Upcoming releases', sub: rels.length + ' scheduled', actions: [h('a', { class: 'small text-primary row gap-4', href: '#/app?tab=release-calendar' }, 'View all', U.ic('arrowright', 12))] });
+    const stCls = { 'In progress': 'blue', 'CAB approved': 'blue', 'Pending CAB': 'amber', Planned: '', Released: 'green', 'Rolled back': 'red' };
+    relC.body.appendChild(h('div', { class: 'dl' }, rels.map(function (x) { return h('a', { class: 'dl-row', href: '#/app?tab=release-calendar' }, h('span', { class: 'dl-time' }, h('b', null, x.window.split(' ')[0]), h('small', null, x.date === todayKey ? 'Today' : 'Tomorrow')), h('div', { class: 'grow', style: { minWidth: 0 } }, h('b', { class: 'truncate' }, x.app + ' ' + x.version), h('small', null, x.type.charAt(0).toUpperCase() + x.type.slice(1) + ' · ' + x.env)), U.pill(x.status, stCls[x.status])); })));
+    const fixC = U.card({ icon: 'wand', title: 'Latest auto-fixes', sub: 'Playbooks that ran on their own', actions: [h('a', { class: 'small text-primary row gap-4', href: '#/app?tab=auto-remediation' }, 'View all', U.ic('arrowright', 12))] });
+    const runs = R ? R.history.slice(0, 5) : [];
+    const pbName = function (id) { const p = R.playbooks.find(function (x) { return x.id === id; }); return p ? p.name : id; };
+    const outC = { Resolved: 'green', 'Rolled back': 'amber', 'Dry run': 'blue', Failed: 'red' };
+    fixC.body.appendChild(h('div', { class: 'dl' }, runs.map(function (r) { return h('a', { class: 'dl-row', href: '#/app?tab=auto-remediation' }, h('span', { class: 'dl-ic ' + (outC[r.outcome] || '') }, U.ic(r.outcome === 'Resolved' ? 'circlecheck' : r.outcome === 'Failed' ? 'x' : 'refresh', 14)), h('div', { class: 'grow', style: { minWidth: 0 } }, h('b', { class: 'truncate' }, pbName(r.playbook)), h('small', null, r.target + ' · ' + r.when)), r.saved ? h('span', { class: 'dl-save' }, '+' + r.saved + ' min') : U.pill(r.outcome, outC[r.outcome])); })));
+    page.appendChild(h('div', { class: 'dh-row3' }, insC, relC, fixC));
 
     function ask(q) {
       q = (q || '').trim(); if (!q) return;
