@@ -1,6 +1,6 @@
-# TechOps 360 · Najm Technology
+# Opsbridge · Najm Technology
 
-TechOps 360 (every system, one view) is an internal prototype of the technology operations portal for the Najm Technology Division. It is a zero-dependency
+Opsbridge (every system, one view) is an internal prototype of the technology operations portal for the Najm Technology Division. It is a zero-dependency
 front-end: every page, filter, tab, table and action works against local mock data — no backend, no build step.
 
 > **Internal prototype — not an official Najm service.** It uses the Najm logo for internal demonstration

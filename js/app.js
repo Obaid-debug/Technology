@@ -152,7 +152,7 @@
     } });
 
     return h('div', { class: 'topbar' },
-      h('div', { class: 'brand' }, U.raw('<span class="ring360"><img class="logo" src="assets/najm-icon.png" alt="Najm"></span>'), h('div', null, h('div', { class: 't1' }, 'TechOps 360'), h('div', { class: 't2' }, 'Najm Technology'))),
+      h('div', { class: 'brand' }, U.raw('<span class="ring360"><img class="logo" src="assets/najm-icon.png" alt="Najm"></span>'), h('div', null, h('div', { class: 't1' }, 'Opsbridge'), h('div', { class: 't2' }, 'Najm Technology'))),
       h('div', { class: 'right' },
         h('span', { class: 'live-pill' }, h('i'), 'LIVE'),
         h('label', { class: 'auto-refresh' }, U.toggle(App.state.autoRefresh, function (v) { App.state.autoRefresh = v; U.toast('Auto-refresh ' + (v ? 'enabled' : 'disabled')); }), 'Auto-refresh'),

@@ -1293,7 +1293,7 @@ body { background: var(--bg); -webkit-font-smoothing: antialiased; }
   .page-h .desc { max-width: 100%; }
 }
 
-/* TechOps 360 ring: a full circle around the Najm mark, gold sweeping into green */
+/* Opsbridge ring: a full circle around the Najm mark, gold sweeping into green */
 .ring360 { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; flex: none; border-radius: 50%; }
 .ring360::before { content: ""; position: absolute; inset: 0; border-radius: 50%; padding: 2.5px;
   background: conic-gradient(from 0deg, #e6c068 0deg, #cca447 90deg, #5dc08d 200deg, #33835c 300deg, #e6c068 360deg);
@@ -1400,7 +1400,7 @@ body { background: var(--bg); -webkit-font-smoothing: antialiased; }
 .rc-feat { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
 
 /* ============================================================
-   LOVABLE ALIGNMENT: details from the TechOps 360 Lovable build
+   LOVABLE ALIGNMENT: details from the Opsbridge Lovable build
    (dotted status pills, plain-icon rail, cleaner KPI tiles, pill user
    button, centred sign-in card with large faint rings).
    ============================================================ */
