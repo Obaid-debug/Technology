@@ -6,7 +6,7 @@
 
   const logoSvg = '<span class="ring360"><img class="logo" src="assets/najm-icon.png" alt="Najm"></span>';
 
-  function brand() { return h('a', { class: 'pub-brand', href: '#/welcome' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'Opsbridge'), h('div', { class: 't2' }, 'NAJM TECHNOLOGY'))); }
+  function brand() { return h('a', { class: 'pub-brand', href: '#/welcome' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'OpsBridge'), h('div', { class: 't2' }, 'NAJM TECHNOLOGY'))); }
   function openPortal(extra) { return U.btn('Open portal', { cls: 'btn-grad ' + (extra || ''), iconRight: 'arrowright', onClick: function () { App.go('#/login'); } }); }
 
   const capabilities = [
@@ -77,7 +77,7 @@
     /* close */
     const art = '<svg viewBox="0 0 320 208" aria-hidden="true"><rect width="128" height="96" rx="20" fill="#e6c068"/><rect x="144" width="176" height="96" rx="20" fill="#2a6e4d"/><rect x="168" y="32" width="32" height="32" rx="12" fill="#5dc08d"/><rect x="216" y="32" width="32" height="32" rx="12" fill="#5dc08d"/><rect x="264" y="32" width="32" height="32" rx="12" fill="#5dc08d"/><rect y="112" width="320" height="96" rx="20" fill="#19191a"/><rect x="24" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/><rect x="72" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/><rect x="120" y="144" width="80" height="32" rx="12" fill="#5dc08d"/><rect x="216" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/><rect x="264" y="144" width="32" height="32" rx="12" fill="#f2f3f2"/></svg>';
     pg.appendChild(h('section', { class: 'lp-open', id: 'cta' }, h('div', { class: 'lp-wrap' },
-      h('div', { class: 'tx' }, h('h2', null, 'Ready to step into the cockpit?'), h('p', null, 'Sign in to Opsbridge and see every signal, ticket and automation in one place.'), portalBtn('lg')),
+      h('div', { class: 'tx' }, h('h2', null, 'Ready to step into the cockpit?'), h('p', null, 'Sign in to OpsBridge and see every signal, ticket and automation in one place.'), portalBtn('lg')),
       U.raw(art))));
 
     pg.appendChild(h('footer', { class: 'lp-wrap lp-foot' }, brand(), h('div', { class: 'lp-links' }, link('Capabilities', 'capabilities'), link('Workflows', 'workflows'), link('Integrations', 'stack'), h('a', { href: '#/login' }, 'Open portal')), h('span', null, '© 2026 Najm Technology — Insight Portal v2.0')));
@@ -220,7 +220,7 @@
     form.querySelector('.btn-dark').style.width = '100%';
 
     root.appendChild(h('div', { class: 'login' },
-      h('div', { class: 'left' }, h('div', { class: 'glow a', style: { left: '30%', top: '10%' } }), h('a', { href: '#/welcome', class: 'pub-brand', title: 'Opsbridge — back to welcome page' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'Opsbridge'), h('div', { class: 't2' }, 'NAJM TECHNOLOGY'))),
+      h('div', { class: 'left' }, h('div', { class: 'glow a', style: { left: '30%', top: '10%' } }), h('a', { href: '#/welcome', class: 'pub-brand', title: 'OpsBridge — back to welcome page' }, U.raw(logoSvg), h('div', null, h('div', { class: 't1' }, 'OpsBridge'), h('div', { class: 't2' }, 'NAJM TECHNOLOGY'))),
         h('div', { class: 'mid' }, h('div', { class: 'lbl' }, 'OPSBRIDGE · EVERY SYSTEM. ONE VIEW.'), h('h1', null, 'All operations. One intelligent ', h('span', { class: 'accent' }, 'cockpit.'))),
         h('div', null, h('div', { class: 'stats' }, h('div', null, h('b', null, '30+'), h('span', null, 'Integrations')), h('div', null, h('b', null, '24/7'), h('span', null, 'Monitoring')), h('div', null, h('b', null, '100%'), h('span', null, 'AI-powered RCA'))), h('div', { class: 'copy' }, '© 2026 Najm Technology · najm.sa'))),
       h('main', { class: 'right' }, form)));

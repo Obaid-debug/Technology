@@ -334,7 +334,7 @@
       });
   };
 
-  U.footer = function () { return U.h('div', { class: 'footer' }, 'Opsbridge v2.0 • Developed by Najm Technology Engineering'); };
+  U.footer = function () { return U.h('div', { class: 'footer' }, 'OpsBridge v2.0 • Developed by Najm Technology Engineering'); };
   U.kv = function (k, v) { return U.h('div', null, U.h('div', { class: 'xs muted', style: { letterSpacing: '.1em', textTransform: 'uppercase', fontWeight: 600 } }, k), U.h('div', { class: 'small' }, v)); };
   U.copy = function (text) { try { navigator.clipboard.writeText(text); U.toast('Copied to clipboard'); } catch (e) { U.toast('Copy not available', 'err'); } };
   U.download = function (name, content, type) {
